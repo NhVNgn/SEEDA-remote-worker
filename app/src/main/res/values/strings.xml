@@ -14,4 +14,8 @@
     <string name="relation">Relation:</string>
     <string name="specify_friend_or_family">Specify friend or family</string>
     <string name="sign_up">SIGN UP</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="user_not_found">The user is not found</string>
+    <string name="incorrect_password">Password is incorrect. Please try again</string>
+    <string name="password">Password</string>
 </resources>
