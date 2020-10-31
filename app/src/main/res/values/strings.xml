@@ -14,4 +14,12 @@
     <string name="relation">Relation:</string>
     <string name="specify_friend_or_family">Specify friend or family</string>
     <string name="sign_up">SIGN UP</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="user_not_found">The user is not found</string>
+    <string name="incorrect_password">Password is incorrect. Please try again</string>
+    <string name="password">Password</string>
+    <string name="sing_in">Sing in</string>
+    <string name="welcome">Welcome</string>
+    <string name="if_you_have_an_account_with_us_press">If you have an account with us, press:</string>
+    <string name="if_you_are_a_new_user_press">If you are a new user, press:</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.project.ui;
+package com.example.project.model;
 
 import android.content.Context;
 import android.database.SQLException;

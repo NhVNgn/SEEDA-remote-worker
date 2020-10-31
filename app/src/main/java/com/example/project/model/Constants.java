@@ -1,4 +1,4 @@
-package com.example.project.ui;
+package com.example.project.model;
 
 import java.util.ArrayList;
 import java.util.List;
