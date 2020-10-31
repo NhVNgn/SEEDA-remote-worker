@@ -34,7 +34,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/first_name" />
+                    android:hint="@string/first_name"
+                    android:inputType="textPersonName"/>
 
                 <EditText
                     android:id="@+id/lastNameEditText"
@@ -42,7 +43,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:hint="@string/last_name" />
+                    android:hint="@string/last_name"
+                    android:inputType="textPersonName"/>
 
             </LinearLayout>
 
@@ -87,7 +89,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/_1"
-                    android:layout_weight="2"/>
+                    android:layout_weight="2"
+                    android:inputType="phone"/>
             </LinearLayout>
 
             <LinearLayout
@@ -108,7 +111,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:hint="@string/dd_mm_yyyy" />
+                    android:hint="@string/dd_mm_yyyy"
+                    android:inputType="date"/>
             </LinearLayout>
 
             <LinearLayout
@@ -128,7 +132,8 @@
                     android:id="@+id/idEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"/>
+                    android:layout_weight="2"
+                    android:inputType="text"/>
 
             </LinearLayout>
 
@@ -152,7 +157,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/first_name"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:inputType="textPersonName"/>
 
                 <EditText
                     android:id="@+id/eLastNameEditText"
@@ -160,7 +166,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:hint="@string/last_name"
-                    android:layout_weight="2"/>
+                    android:layout_weight="2"
+                    android:inputType="textPersonName"/>
 
             </LinearLayout>
 
@@ -182,7 +189,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/_1"
-                    android:layout_weight="2"/>
+                    android:layout_weight="2"
+                    android:inputType="phone"/>
             </LinearLayout>
 
             <LinearLayout
@@ -205,7 +213,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/specify_friend_or_family"
                     android:textStyle="italic"
-                    android:layout_weight="2" />
+                    android:layout_weight="2"
+                    android:inputType="text"/>
             </LinearLayout>
 
             <Button
