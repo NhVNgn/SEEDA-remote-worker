@@ -1,211 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="16dp"
+    android:paddingTop="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"
-    android:paddingTop="16dp"
     tools:context=".ui.RegisterActivity">
 
 
-    <EditText
-        android:id="@+id/firstNameEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/first_name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-       />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="220dp"
+        tools:layout_editor_absoluteY="224dp">
 
-    <EditText
-        android:id="@+id/lastNameEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/last_name"
-        android:layout_toEndOf="@id/firstNameEditText"
-        android:layout_alignBottom="@id/firstNameEditText"
-        android:gravity="center"
-        android:layout_marginStart="10dp"
-        android:layout_alignParentEnd="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="12">
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:layout_below="@id/firstNameEditText"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:hint="@string/email"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/emailEditText"
-        android:hint="@string/password_8_digits_at_least"
-        />
+                <EditText
+                    android:id="@+id/firstNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/first_name" />
 
-    <TextView
-        android:id="@+id/personalInfoTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
-        android:layout_marginTop="10dp"
-        android:text="@string/personal_information"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        />
+                <EditText
+                    android:id="@+id/lastNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:hint="@string/last_name" />
 
-    <TextView
-        android:id="@+id/phoneTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/personalInfoTextView"
-        android:layout_marginTop="30dp"
-        android:text="@string/phone_number"
-        />
-    <EditText
-        android:id="@+id/phoneEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/phoneTextView"
-        android:layout_alignBottom="@id/phoneTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:hint="@string/_1"
-        />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password_8_digits_at_least"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/personalInfoTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/personal_information"
+                android:textStyle="bold"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/phoneTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/phone_number"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:id="@+id/phoneEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/_1"
+                    android:layout_weight="2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/birthdayTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/birthday" />
+
+                <EditText
+                    android:id="@+id/birthdayEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:hint="@string/dd_mm_yyyy" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/idTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/company_id"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/idEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/emergencyContactTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emergency_contacts"
+                android:textStyle="bold"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <EditText
+                    android:id="@+id/eFirstNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/first_name"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/eLastNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="@string/last_name"
+                    android:layout_weight="2"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/ePhoneTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/phone_number"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/ePhoneEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/_1"
+                    android:layout_weight="2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/relationTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/relation"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/relationEdittext"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/specify_friend_or_family"
+                    android:textStyle="italic"
+                    android:layout_weight="2" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/signUpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="addWorker"
+                android:text="@string/sign_up" />
+        </LinearLayout>
+    </ScrollView>
 
 
-    <TextView
-        android:id="@+id/birthdayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/phoneTextView"
-        android:layout_marginTop="30dp"
-        android:layout_alignRight="@+id/phoneTextView"
-        android:text="@string/birthday"
-        />
-    <EditText
-        android:id="@+id/birthdayEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/birthdayTextView"
-        android:layout_alignBottom="@id/birthdayTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:hint="@string/dd_mm_yyyy"
-        />
-
-
-    <TextView
-        android:id="@+id/idTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/birthdayTextView"
-        android:layout_marginTop="30dp"
-        android:layout_alignEnd="@+id/phoneTextView"
-        android:text="@string/company_id"
-        />
-    <EditText
-        android:id="@+id/idEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/idTextView"
-        android:layout_alignBottom="@id/idTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        />
-
-
-
-    <TextView
-        android:id="@+id/emergencyContactTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTextView"
-        android:layout_marginTop="30dp"
-        android:text="@string/emergency_contacts"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        />
-
-
-    <EditText
-        android:id="@+id/eFirstNameEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/first_name"
-        android:layout_below="@id/emergencyContactTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
-
-    <EditText
-        android:id="@+id/eLastNameEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/last_name"
-        android:layout_toEndOf="@id/eFirstNameEditText"
-        android:layout_alignBottom="@id/eFirstNameEditText"
-        android:gravity="center"
-        android:layout_marginStart="10dp"
-        android:layout_alignParentEnd="true"/>
-
-    <TextView
-        android:id="@+id/ePhoneTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/eFirstNameEditText"
-        android:layout_marginTop="30dp"
-        android:text="@string/phone_number"
-        />
-    <EditText
-        android:id="@+id/ePhoneEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/ePhoneTextView"
-        android:layout_alignBottom="@id/ePhoneTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:hint="@string/_1"
-        />
-
-    <TextView
-        android:id="@+id/relationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ePhoneTextView"
-        android:layout_alignRight="@+id/ePhoneTextView"
-        android:layout_marginTop="30dp"
-        android:text="@string/relation"
-        />
-    <EditText
-        android:id="@+id/relationEdittext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/relationTextView"
-        android:layout_alignBottom="@id/relationTextView"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="10dp"
-        android:hint="@string/specify_friend_or_family"
-        android:textStyle="italic"
-        />
-
-    <Button
-        android:id="@+id/signUpButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:text="@string/sign_up"
-        android:onClick="addWorker"
-        />
-
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
