@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
                         .show();
+                incorrectTextView.setText("");
             }
         });
     }

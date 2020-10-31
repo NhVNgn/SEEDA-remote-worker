@@ -20,7 +20,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome"
+            android:text="@string/welcome"
             android:textColor="@color/black"
             android:textSize="50sp"
             android:textStyle="bold|italic" />
@@ -42,7 +42,7 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="If you have an account with us, press:"
+                android:text="@string/if_you_have_an_account_with_us_press"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="Sing In" />
+                android:text="@string/sing_in" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="If you are a new user, press:"
+                    android:text="@string/if_you_are_a_new_user_press"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:text="Sing up" />
+                    android:text="@string/sign_up" />
             </LinearLayout>
 
         </LinearLayout>
