@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         db = new Database(this);
 
         setupSingInButton();
+        setupSignUpButton();
     }
 
     private void setupSingInButton() {
@@ -55,6 +56,14 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+        });
+    }
+
+    private void setupSignUpButton() {
+        Button button = findViewById(R.id.signUpButtonLogin);
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
