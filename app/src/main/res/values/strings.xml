@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Project</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last name</string>
+    <string name="first_name">First Name:</string>
+    <string name="last_name">Last Name:</string>
     <string name="email">Email</string>
     <string name="password_8_digits_at_least">Password (8 digits at least)</string>
     <string name="personal_information">Personal information</string>

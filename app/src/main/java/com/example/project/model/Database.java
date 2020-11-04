@@ -49,6 +49,11 @@ public class Database {
         return user;
     }
 
+    public int update(int id, ContentValues cv) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        return db.update(Constants.TABLE_NAME, cv, "_id=" + id, null);
+    }
+
     private void fillUser(User user, Cursor cursor) {
         user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.UID))));
         user.setCompanyID((cursor.getString(cursor.getColumnIndex(Constants.COMPANY_ID))));
