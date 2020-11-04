@@ -10,7 +10,7 @@
     <string name="birthday">Birthday:</string>
     <string name="dd_mm_yyyy">dd/mm/yyyy</string>
     <string name="company_id">Company ID:</string>
-    <string name="emergency_contacts">Emergency contacts:</string>
+    <string name="emergency_contacts">Emergency contacts</string>
     <string name="relation">Relation:</string>
     <string name="specify_friend_or_family">Specify friend or family</string>
     <string name="sign_up">SIGN UP</string>
