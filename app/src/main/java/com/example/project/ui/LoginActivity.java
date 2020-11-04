@@ -2,7 +2,9 @@ package com.example.project.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -51,12 +53,19 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
                         .show();
                 incorrectTextView.setText("");
+                
+                saveInSharedPrefs(email, password);
 
-                Intent intent = MainActivity.makeLaunchIntent(this, email);
+                Intent intent = MainActivity.makeLaunchIntent(this, email, password);
                 startActivity(intent);
                 finish();
             }
         });
+    }
+
+    private void saveInSharedPrefs(String email, String password) {
+        SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
+        prefs.edit().putString("email", email).putString("password", password).apply();
     }
 
     private void setupSignUpButton() {
