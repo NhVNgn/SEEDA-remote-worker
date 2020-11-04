@@ -2,6 +2,7 @@ package com.example.project.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -49,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
                         .show();
                 incorrectTextView.setText("");
+
+                Intent intent = MainActivity.makeLaunchIntent(this, email);
+                startActivity(intent);
+                finish();
             }
         });
     }
