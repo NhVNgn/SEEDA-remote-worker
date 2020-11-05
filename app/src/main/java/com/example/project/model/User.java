@@ -13,6 +13,8 @@ public class User {
     private String emLastName;
     private String emPhone;
     private String emRelation;
+    private String medicalConsiderations;
+    private String iconRes;
 
     public User() {
     }

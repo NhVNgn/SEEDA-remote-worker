@@ -63,11 +63,9 @@ public class RegisterActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
         }
-        else
-        {
+        else {
             Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
 
         }
-
     }
 }

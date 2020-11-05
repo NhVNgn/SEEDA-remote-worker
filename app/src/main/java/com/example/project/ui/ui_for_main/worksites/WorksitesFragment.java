@@ -13,23 +13,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.project.R;
+import com.example.project.model.SiteDatabase;
 
 public class WorksitesFragment extends Fragment {
 
-    private WorksitesViewModel worksitesViewModel;
-
+    SiteDatabase db;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        worksitesViewModel =
-                new ViewModelProvider(this).get(WorksitesViewModel.class);
         View root = inflater.inflate(R.layout.fragment_worksites, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        worksitesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        db = new SiteDatabase(root.getContext());
+        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGET into worksite activity");
         return root;
     }
 }
