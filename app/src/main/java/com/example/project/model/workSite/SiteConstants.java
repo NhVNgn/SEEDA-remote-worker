@@ -1,4 +1,4 @@
-package com.example.project.model;
+package com.example.project.model.workSite;
 
 import java.util.ArrayList;
 import java.util.List;
