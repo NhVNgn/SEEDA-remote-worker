@@ -1,8 +1,7 @@
-package com.example.project.model;
+package com.example.project.model.workSite;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -12,12 +11,13 @@ import java.util.List;
 public class SiteDatabase {
     private SQLiteDatabase db;
     private Context context;
+    private List<WorkSite> allWorkSite;
     private final dbSiteHelper helper;
     SiteConstants constants = new SiteConstants();
     public SiteDatabase (Context c){
         context = c;
         helper = new dbSiteHelper(context);
-
+        allWorkSite = new ArrayList<>();
         // add sample to siteDatabase
         addSample("Burnaby construction site", "burnaby123", "888 University Dr, Burnaby", "08:00AM-05:00PM" );
         addSample("Vancouver construction site", "van123", "515 W Hasting St, Vancouver", "11:30AM-05:00PM");
@@ -26,6 +26,9 @@ public class SiteDatabase {
         addSample("Port Moody construction site", "portmoody123", "300 loco Rd, Port Moody", "07:30AM-05:00PM");
     }
 
+    public List<WorkSite> getAllWorkSite() {
+        return allWorkSite;
+    }
 
     public long insertData (List<String> args){
         db = helper.getWritableDatabase();
@@ -56,7 +59,6 @@ public class SiteDatabase {
         }
         else {
             System.out.println("site added successfully");
-
         }
     }
 
@@ -65,11 +67,14 @@ public class SiteDatabase {
         String sql = "SELECT * FROM " + SiteConstants.TABLE_NAME +
                 " WHERE " + SiteConstants.SITE_ID + " =?";
         Cursor cursor = db.rawQuery(sql, new String[] {siteID});
-        WorkSite ws = new WorkSite();
+        WorkSite ws = new WorkSite("", "", "", "");
 
         if (cursor.moveToFirst()){
-            if (cursor.getString(cursor.getColumnIndex(SiteConstants.SITE_ID)).equals(siteID))
+            if (cursor.getString(cursor.getColumnIndex(SiteConstants.SITE_ID)).equals(siteID)) {
                 populateWorkSite(ws, cursor);
+                allWorkSite.add(ws);
+            }
+
             return ws;
         }
         else
