@@ -57,6 +57,21 @@ public class Database {
         return user;
     }
 
+    public User getUser(Integer id)
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String sql = "SELECT * FROM " + Constants.TABLE_NAME +
+                " WHERE " + Constants.UID + " =?";
+        Cursor cursor = db.rawQuery(sql, new String[] {id.toString()});
+        User user = new User();
+        if(cursor.moveToFirst()) {
+            fillUser(user, cursor);
+        } else {
+            user.setFirstName("NOT_FOUND");
+        }
+        return user;
+    }
+
     public int update(int id, ContentValues cv) {
         SQLiteDatabase db = helper.getReadableDatabase();
         return db.update(Constants.TABLE_NAME, cv, "_id=" + id, null);
@@ -121,5 +136,7 @@ public class Database {
         user.setEmLastName(cursor.getString(cursor.getColumnIndex(Constants.EM_LAST_NAME)));
         user.setEmPhone(cursor.getString(cursor.getColumnIndex(Constants.EM_PHONE)));
         user.setEmRelation(cursor.getString(cursor.getColumnIndex(Constants.EM_RELATION)));
+        user.setMedicalConsiderations(cursor.getString(cursor.getColumnIndex(Constants.MED_CONSIDERATIONS)));
+        user.setIconRes(cursor.getBlob(cursor.getColumnIndex(Constants.ICON_RES)));
     }
 }

@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                         .show();
                 incorrectTextView.setText("");
                 
-                saveInSharedPrefs(email, password);
+                saveInSharedPrefs(email, password, user.getId());
 
                 Intent intent = MainActivity.makeLaunchIntent(this, email, password);
                 startActivity(intent);
@@ -63,9 +63,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void saveInSharedPrefs(String email, String password) {
+    private void saveInSharedPrefs(String email, String password, int id) {
         SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
-        prefs.edit().putString("email", email).putString("password", password).apply();
+        prefs.edit().putString("email", email).putString("password", password)
+                .putInt("id", id).apply();
     }
 
     private void setupSignUpButton() {

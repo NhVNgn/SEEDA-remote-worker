@@ -27,7 +27,7 @@ public class dbHelper extends SQLiteOpenHelper {
                     Constants.EM_PHONE + " TEXT, " +
                     Constants.EM_RELATION + " TEXT, " +
                     Constants.MED_CONSIDERATIONS + " TEXT, " +
-                    Constants.ICON_RES + " TEXT);" ;
+                    Constants.ICON_RES + " BLOB);" ;
 
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + Constants.TABLE_NAME;
 
