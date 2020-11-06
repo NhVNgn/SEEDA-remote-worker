@@ -37,14 +37,14 @@ public class WorksitesFragment extends Fragment {
     ListView listView;
 
 
-    public class siteListAdapter extends ArrayAdapter<WorkSite>{
+    public class siteListAdapter extends ArrayAdapter<WorkSite> {
         public siteListAdapter() {
             super(globalContext, R.layout.item_view, userSites);
         }
 
         @SuppressLint("SetTextI18n")
         @Override
-        public View getView(int position, View convertView, ViewGroup parent){
+        public View getView(int position, View convertView, ViewGroup parent) {
             View itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.item_view, parent, false);
@@ -85,7 +85,7 @@ public class WorksitesFragment extends Fragment {
         return root;
     }
 
-    private void populateListView(){
+    private void populateListView() {
         ArrayAdapter<WorkSite> adapter = new siteListAdapter();
         listView.setAdapter(adapter);
     }
@@ -98,14 +98,19 @@ public class WorksitesFragment extends Fragment {
         String password = prefs.getString("password", "NONE");
         user = db.getUser(email, password);
     }
-    private void getWorkSiteForUser(){
-       for (Attendance a : attendanceDB.getAllAttendanceList())
-           if (a.getWorkerEmail().equals(user.getEmail()))
-               for (WorkSite ws : siteDB.getAllWorkSite())
-                   if (a.getSiteID().equals(ws.getSiteId())){
-                       System.out.println(ws.getName());
-                       userSites.add(ws);
-                   }
+
+    private void getWorkSiteForUser() {
+
+        if (userSites.size() > 0) // for the special case when user presses back instead of navigation panel
+            return;
+
+        for (Attendance a : attendanceDB.getAllAttendanceList())
+            if (a.getWorkerEmail().equals(user.getEmail()))
+                for (WorkSite ws : siteDB.getAllWorkSite())
+                    if (a.getSiteID().equals(ws.getSiteId())) {
+                        System.out.println(ws.getName());
+                        userSites.add(ws);
+                    }
 
     }
 
