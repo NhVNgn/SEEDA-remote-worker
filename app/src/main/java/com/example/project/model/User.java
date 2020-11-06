@@ -14,7 +14,7 @@ public class User {
     private String emPhone;
     private String emRelation;
     private String medicalConsiderations;
-    private String iconRes;
+    private byte[] iconRes;
 
     public User() {
     }
@@ -113,5 +113,21 @@ public class User {
 
     public void setEmRelation(String emRelation) {
         this.emRelation = emRelation;
+    }
+
+    public String getMedicalConsiderations() {
+        return medicalConsiderations;
+    }
+
+    public void setMedicalConsiderations(String medicalConsiderations) {
+        this.medicalConsiderations = medicalConsiderations;
+    }
+
+    public byte[] getIconRes() {
+        return iconRes;
+    }
+
+    public void setIconRes(byte[] iconRes) {
+        this.iconRes = iconRes;
     }
 }

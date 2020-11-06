@@ -2,8 +2,13 @@ package com.example.project.ui.ui_for_main.profile;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +24,17 @@ import com.example.project.R;
 import com.example.project.model.Constants;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
@@ -36,6 +48,9 @@ public class ProfileFragment extends Fragment {
     AtomicInteger btnCount1, btnCount2, btnCount3;
     List<EditText> editTextList1, editTextList2, editTextList3;
 
+    Uri resultUri;
+    boolean isIconUpdated;
+
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,26 +59,29 @@ public class ProfileFragment extends Fragment {
 
         db = new Database(root.getContext());
 
-        getUser();
+        isIconUpdated = false;
+
+        updateUser();
         initializeVariables();
 
         setupEditAction(editTextList1, editBtn1, cancelBtn1, btnCount1, 1);
         setupEditAction(editTextList2, editBtn2, cancelBtn2, btnCount2, 2);
         setupEditAction(editTextList3, editBtn3, cancelBtn3, btnCount3, 3);
 
+        setupIconAction();
+
         updateUI();
 
         return root;
     }
 
-    private void getUser() {
+    private void updateUser() {
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 "user", Context.MODE_PRIVATE);
 
-        String email = prefs.getString("email", "NONE");
-        String password = prefs.getString("password", "NONE");
+        Integer id = prefs.getInt("id", -1);
 
-        user = db.getUser(email, password);
+        user = db.getUser(id);
     }
 
     private void initializeVariables() {
@@ -127,10 +145,8 @@ public class ProfileFragment extends Fragment {
                     makeTextEditable(editText);
                 }
                 cancelBtn.setVisibility(View.VISIBLE);
-                editBtn.setText("Save");
+                editBtn.setText(R.string.save);
                 if(numOfBlock == 1) {
-                    Toast.makeText(getContext(), "HERE", Toast.LENGTH_SHORT).show();
-                    icon.setAlpha(0.5f);
                     icon.setImageResource(R.drawable.ic_red_add_circle_icon);
                 }
             } else {
@@ -138,14 +154,15 @@ public class ProfileFragment extends Fragment {
                     makeTextNotEditable(editText);
                 }
                 cancelBtn.setVisibility(View.GONE);
-                editBtn.setText("Edit");
+                editBtn.setText(R.string.edit);
                 updateDataInDatabase1(numOfBlock);
+                updateUser();
                 if(numOfBlock == 1) {
-                    icon.setAlpha(1f);
-                    icon.setImageResource(0);
+                    updateIcon();
                 }
             }
             btnCount.incrementAndGet();
+            isIconUpdated = false;
         });
 
         cancelBtn.setOnClickListener(v -> {
@@ -153,14 +170,27 @@ public class ProfileFragment extends Fragment {
                 makeTextNotEditable(editText);
             }
             cancelBtn.setVisibility(View.GONE);
-            editBtn.setText("Edit");
+            editBtn.setText(R.string.edit);
             btnCount.incrementAndGet();
             Toast.makeText(getContext(), "Canceled", Toast.LENGTH_SHORT).show();
-            if(numOfBlock == 1) {
-                icon.setImageResource(0);
-                icon.setAlpha(1f);
-            }
             updateUI();
+            isIconUpdated = false;
+        });
+    }
+
+    private void setupIconAction() {
+        icon.setOnClickListener(v -> {
+            if(btnCount1.get() % 2 != 0) {
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setMultiTouchEnabled(true)
+                        .setAllowFlipping(false)
+                        .setAllowRotation(false)
+                        .setAllowCounterRotation(false)
+                        .setFixAspectRatio(true)
+                        .start(getContext(), this);
+            }
         });
     }
 
@@ -177,7 +207,23 @@ public class ProfileFragment extends Fragment {
         editText.setPadding(0, 0, 0 ,0);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                icon.setImageURI(resultUri);
+                isIconUpdated = true;
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                error.printStackTrace();
+            }
+        }
+    }
+
     private void updateUI() {
+        updateIcon();
         emailEdit.setText(user.getEmail());
         passwordEdit.setText(user.getPassword());
         firstNameEdit.setText(user.getFirstName());
@@ -191,12 +237,23 @@ public class ProfileFragment extends Fragment {
         emRelationEdit.setText(user.getEmRelation());
     }
 
+    private void updateIcon() {
+        byte[] iconInBytes = user.getIconRes();
+        if(iconInBytes.length != 0) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(iconInBytes, 0, iconInBytes.length);
+            icon.setImageBitmap(bitmap);
+        } else {
+            icon.setImageResource(R.drawable.profile_icon);
+        }
+    }
+
     private void updateDataInDatabase1(int numOfBlock) {
         int result = 0;
         if(numOfBlock == 1) {
             ContentValues cv = new ContentValues();
             cv.put(Constants.EMAIL, emailEdit.getText().toString());
             cv.put(Constants.PASSWORD, passwordEdit.getText().toString());
+            saveIcon(cv);
             result = db.update(user.getId(), cv);
         } else if(numOfBlock == 2) {
             ContentValues cv = new ContentValues();
@@ -220,6 +277,22 @@ public class ProfileFragment extends Fragment {
             updateSharedPrefs(numOfBlock);
         } else {
             Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveIcon(ContentValues cv) {
+        if(isIconUpdated) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                        getActivity().getContentResolver(), resultUri);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
+                byte[] iconInBytes = stream.toByteArray();
+                cv.put(Constants.ICON_RES, iconInBytes);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
