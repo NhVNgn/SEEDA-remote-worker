@@ -70,6 +70,7 @@ public class attendanceDatabase {
             System.out.println("fail to add attendance");
         }
         else {
+            allAttendanceList.add(new Attendance(workerEmail, siteID));
             System.out.println("attendance added successfully");
 
         }

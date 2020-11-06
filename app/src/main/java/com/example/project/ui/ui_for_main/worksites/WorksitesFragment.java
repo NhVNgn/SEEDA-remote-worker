@@ -77,6 +77,9 @@ public class WorksitesFragment extends Fragment {
         db = new Database(root.getContext());
         getUser();
         getWorkSiteForUser();
+        System.out.println("size = " + userSites.size());
+        for (WorkSite ws : userSites)
+            System.out.println("WorkSite name = " + ws.getName());
         populateListView();
 
         return root;
@@ -93,7 +96,6 @@ public class WorksitesFragment extends Fragment {
 
         String email = prefs.getString("email", "NONE");
         String password = prefs.getString("password", "NONE");
-
         user = db.getUser(email, password);
     }
     private void getWorkSiteForUser(){
@@ -101,6 +103,7 @@ public class WorksitesFragment extends Fragment {
            if (a.getWorkerEmail().equals(user.getEmail()))
                for (WorkSite ws : siteDB.getAllWorkSite())
                    if (a.getSiteID().equals(ws.getSiteId())){
+                       System.out.println(ws.getName());
                        userSites.add(ws);
                    }
 

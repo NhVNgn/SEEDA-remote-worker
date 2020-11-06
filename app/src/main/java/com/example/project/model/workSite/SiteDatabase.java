@@ -58,6 +58,7 @@ public class SiteDatabase {
             System.out.println("fail to add site");
         }
         else {
+            allWorkSite.add(new WorkSite(name, siteID, location, hours));
             System.out.println("site added successfully");
         }
     }
