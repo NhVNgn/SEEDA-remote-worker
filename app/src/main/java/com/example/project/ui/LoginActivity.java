@@ -1,14 +1,16 @@
 package com.example.project.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView incorrectTextView;
     private Database db;
 
+    private Drawable emailRed, emailBlue, lockRed, lockBlue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +43,16 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new Database(this);
 
+        emailBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_blue, null);
+        emailRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_red, null);
+        lockBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_lock_blue, null);
+        lockRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_lock_red, null);
+
         setCustomTheme();
 
         setupSingInButton();
         setupSignUpButton();
+        setupFocusListener();
     }
 
     private void setCustomTheme() {
@@ -58,18 +68,50 @@ public class LoginActivity extends AppCompatActivity {
 
             if(user.getFirstName().equals("NOT_FOUND")) {
                 incorrectTextView.setText(getText(R.string.user_not_found));
+                setIncorrectEmail();
             } else if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
                 incorrectTextView.setText(getText(R.string.incorrect_password));
+                setIncorrectPassword();
             } else {
                 Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
                         .show();
                 incorrectTextView.setText("");
-                
+
                 saveInSharedPrefs(email, password, user.getId());
 
                 Intent intent = MainActivity.makeLaunchIntent(this, email, password);
                 startActivity(intent);
                 finish();
+            }
+        });
+    }
+
+    private void setIncorrectEmail() {
+        emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailRed,
+                null, null, null);
+        emailEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
+    }
+
+    private void setIncorrectPassword() {
+        passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockRed,
+                null, null, null);
+        passwordEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
+    }
+
+    private void setupFocusListener() {
+        emailEdit.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus) {
+                emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailBlue,
+                        null, null, null);
+                emailEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
+            }
+        });
+
+        passwordEdit.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus) {
+                passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockBlue,
+                        null, null, null);
+                passwordEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
             }
         });
     }
