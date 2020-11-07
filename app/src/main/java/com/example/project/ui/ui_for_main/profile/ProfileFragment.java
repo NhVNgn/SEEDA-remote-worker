@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,7 +29,6 @@ import com.example.project.model.User;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -247,7 +245,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateIcon() {
         byte[] iconInBytes = user.getIconRes();
-        if(iconInBytes.length != 0) {
+        if(iconInBytes.length > 1) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(iconInBytes, 0, iconInBytes.length);
             icon.setImageBitmap(bitmap);
         } else {

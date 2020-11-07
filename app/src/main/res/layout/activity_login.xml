@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.LoginActivity"
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -42,12 +43,12 @@
                 android:fontFamily="@font/login" />
 
             <TextView
-                android:id="@+id/incorrectTextView"
+                android:id="@+id/incorrectEmailText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAlignment="center"
-                android:textColor="#CF2E2B"
+                android:textColor="@color/red_incorrect"
                 android:textStyle="bold|italic" />
 
             <EditText
@@ -73,7 +74,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="16dp">
+                android:paddingTop="0dp">
+
+                <TextView
+                    android:id="@+id/incorrectPasswordText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/red_incorrect"
+                    android:textStyle="bold|italic" />
 
                 <EditText
                     android:id="@+id/passwordLogin"
