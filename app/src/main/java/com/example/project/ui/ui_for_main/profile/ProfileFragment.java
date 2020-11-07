@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.project.R;
@@ -43,10 +46,11 @@ public class ProfileFragment extends Fragment {
 
     EditText emailEdit, passwordEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
             companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit;
-    Button editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
+    ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
     ImageView icon;
     AtomicInteger btnCount1, btnCount2, btnCount3;
     List<EditText> editTextList1, editTextList2, editTextList3;
+    Drawable addIcon;
 
     Uri resultUri;
     boolean isIconUpdated;
@@ -60,6 +64,8 @@ public class ProfileFragment extends Fragment {
         db = new Database(root.getContext());
 
         isIconUpdated = false;
+
+        addIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_blue, null);
 
         updateUser();
         initializeVariables();
@@ -137,27 +143,28 @@ public class ProfileFragment extends Fragment {
         editTextList3.add(emRelationEdit);
     }
 
-    private void setupEditAction(List<EditText> editTextList, Button editBtn,
-                                 Button cancelBtn, AtomicInteger btnCount, int numOfBlock) {
+    private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
+                                 ImageButton cancelBtn, AtomicInteger btnCount, int numOfBlock) {
         editBtn.setOnClickListener(v -> {
             if(btnCount.get() % 2 == 0) {
                 for(EditText editText : editTextList) {
                     makeTextEditable(editText);
                 }
                 cancelBtn.setVisibility(View.VISIBLE);
-                editBtn.setText(R.string.save);
+                editBtn.setImageResource(R.drawable.ic_save_white);
                 if(numOfBlock == 1) {
-                    icon.setImageResource(R.drawable.ic_red_add_circle_icon);
+                    icon.setForeground(addIcon);
                 }
             } else {
                 for(EditText editText : editTextList) {
                     makeTextNotEditable(editText);
                 }
                 cancelBtn.setVisibility(View.GONE);
-                editBtn.setText(R.string.edit);
+                editBtn.setImageResource(R.drawable.ic_edit_white);
                 updateDataInDatabase1(numOfBlock);
                 updateUser();
                 if(numOfBlock == 1) {
+                    icon.setForeground(null);
                     updateIcon();
                 }
             }
@@ -170,9 +177,10 @@ public class ProfileFragment extends Fragment {
                 makeTextNotEditable(editText);
             }
             cancelBtn.setVisibility(View.GONE);
-            editBtn.setText(R.string.edit);
+            editBtn.setImageResource(R.drawable.ic_edit_white);
             btnCount.incrementAndGet();
             Toast.makeText(getContext(), "Canceled", Toast.LENGTH_SHORT).show();
+            icon.setForeground(null);
             updateUI();
             isIconUpdated = false;
         });
