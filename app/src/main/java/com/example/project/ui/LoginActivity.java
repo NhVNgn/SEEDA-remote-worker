@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -99,23 +101,44 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupFocusListener() {
-        emailEdit.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+        emailEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailBlue,
                         null, null, null);
                 emailEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
                 emailEdit.setTextColor(getColor(R.color.main_blue_color));
                 incorrectEmailText.setText("");
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
-        passwordEdit.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+        passwordEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockBlue,
                         null, null, null);
                 passwordEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
                 passwordEdit.setTextColor(getColor(R.color.main_blue_color));
                 incorrectPasswordText.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }

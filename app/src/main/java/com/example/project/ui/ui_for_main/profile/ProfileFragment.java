@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.project.R;
 import com.example.project.model.Constants;
@@ -29,6 +31,7 @@ import com.example.project.model.User;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,6 +154,7 @@ public class ProfileFragment extends Fragment {
                 cancelBtn.setVisibility(View.VISIBLE);
                 editBtn.setImageResource(R.drawable.ic_save_white);
                 if(numOfBlock == 1) {
+                    icon.setImageAlpha(50);
                     icon.setForeground(addIcon);
                 }
             } else {
@@ -162,6 +166,7 @@ public class ProfileFragment extends Fragment {
                 updateDataInDatabase1(numOfBlock);
                 updateUser();
                 if(numOfBlock == 1) {
+                    icon.setImageAlpha(255);
                     icon.setForeground(null);
                     updateIcon();
                 }
@@ -178,6 +183,7 @@ public class ProfileFragment extends Fragment {
             editBtn.setImageResource(R.drawable.ic_edit_white);
             btnCount.incrementAndGet();
             Toast.makeText(getContext(), "Canceled", Toast.LENGTH_SHORT).show();
+            icon.setImageAlpha(255);
             icon.setForeground(null);
             updateUI();
             isIconUpdated = false;
@@ -196,6 +202,12 @@ public class ProfileFragment extends Fragment {
                         .setAllowCounterRotation(false)
                         .setFixAspectRatio(true)
                         .start(getContext(), this);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(user.getIconRes(), 0,
+                        user.getIconRes().length);
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                ImageViewFragment fragment = new ImageViewFragment(bitmap);
+                fragment.show(manager, "MassageDialogue");
             }
         });
     }
@@ -245,7 +257,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateIcon() {
         byte[] iconInBytes = user.getIconRes();
-        if(iconInBytes.length > 1) {
+        if(iconInBytes.length != 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(iconInBytes, 0, iconInBytes.length);
             icon.setImageBitmap(bitmap);
         } else {
