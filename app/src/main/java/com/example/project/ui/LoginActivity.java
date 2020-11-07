@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import com.example.project.R;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEdit, passwordEdit;
@@ -35,8 +39,15 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new Database(this);
 
+        setCustomTheme();
+
         setupSingInButton();
         setupSignUpButton();
+    }
+
+    private void setCustomTheme() {
+        ColorDrawable color = new ColorDrawable(getColor(R.color.main_blue_color));
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(color);
     }
 
     private void setupSingInButton() {
