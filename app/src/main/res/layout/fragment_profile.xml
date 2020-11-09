@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ui_for_main.profile.ProfileFragment">
+    tools:context=".ui.ui_for_main.profile.ProfileFragment"
+    android:background="@color/white">
 
 
     <TextView
@@ -77,7 +78,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/email"
-                            android:textColor="@color/black"
+                            android:textColor="@color/main_blue_color"
                             android:textStyle="bold" />
 
                         <EditText
@@ -105,7 +106,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/password"
-                            android:textColor="@color/black"
+                            android:textColor="@color/main_blue_color"
                             android:textStyle="bold" />
 
                         <EditText
@@ -153,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="8dp"
-                android:background="#000000" />
+                android:background="@color/main_blue_color" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -161,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/personal_information"
-                android:textColor="@color/black"
+                android:textColor="@color/main_blue_color"
                 android:textStyle="bold"
                 android:paddingBottom="16dp"/>
 
@@ -184,7 +185,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/first_name"
-                        android:textColor="@color/black"
+                        android:textColor="@color/main_blue_color"
                         android:textStyle="bold" />
 
                     <EditText
@@ -212,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/last_name"
-                        android:textColor="@color/black"
+                        android:textColor="@color/main_blue_color"
                         android:textStyle="bold" />
 
                     <EditText
@@ -241,7 +242,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/birthday"
-                        android:textColor="@color/black"
+                        android:textColor="@color/main_blue_color"
                         android:textStyle="bold" />
 
                     <EditText
@@ -271,7 +272,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_number"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -299,7 +300,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/company_id"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -342,7 +343,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="8dp"
-                android:background="#000000" />
+                android:background="@color/main_blue_color" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -350,7 +351,7 @@
                 android:layout_marginStart="8dp"
                 android:paddingBottom="16dp"
                 android:text="@string/emergency_contacts"
-                android:textColor="@color/black"
+                android:textColor="@color/main_blue_color"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -367,7 +368,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/first_name"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -395,7 +396,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/last_name"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -424,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_number"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -452,7 +453,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/relation"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_blue_color"
                     android:textStyle="bold" />
 
                 <EditText
@@ -497,7 +498,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="8dp"
-                android:background="#000000" />
+                android:background="@color/main_blue_color" />
 
         </LinearLayout>
     </ScrollView>

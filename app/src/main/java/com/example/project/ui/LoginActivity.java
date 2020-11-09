@@ -9,9 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import java.util.Objects;
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEdit, passwordEdit;
     private Button signInButton;
-    private TextView incorrectTextView;
+    private TextView incorrectEmailText, incorrectPasswordText;
     private Database db;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
@@ -38,7 +37,8 @@ public class LoginActivity extends AppCompatActivity {
 
         emailEdit = findViewById(R.id.emailLogin);
         passwordEdit = findViewById(R.id.passwordLogin);
-        incorrectTextView = findViewById(R.id.incorrectTextView);
+        incorrectEmailText = findViewById(R.id.incorrectEmailText);
+        incorrectPasswordText = findViewById(R.id.incorrectPasswordText);
         signInButton = findViewById(R.id.signInButtonLogin);
 
         db = new Database(this);
@@ -67,15 +67,15 @@ public class LoginActivity extends AppCompatActivity {
             User user = db.getUser(email, password);
 
             if(user.getFirstName().equals("NOT_FOUND")) {
-                incorrectTextView.setText(getText(R.string.user_not_found));
+                incorrectEmailText.setText(getText(R.string.user_not_found));
                 setIncorrectEmail();
             } else if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
-                incorrectTextView.setText(getText(R.string.incorrect_password));
+                incorrectPasswordText.setText(getText(R.string.incorrect_password));
                 setIncorrectPassword();
             } else {
                 Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
                         .show();
-                incorrectTextView.setText("");
+                incorrectEmailText.setText("");
 
                 saveInSharedPrefs(email, password, user.getId());
 
@@ -90,28 +90,55 @@ public class LoginActivity extends AppCompatActivity {
         emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailRed,
                 null, null, null);
         emailEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
+        emailEdit.setTextColor(getColor(R.color.red_incorrect));
     }
 
     private void setIncorrectPassword() {
         passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockRed,
                 null, null, null);
         passwordEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
+        passwordEdit.setTextColor(getColor(R.color.red_incorrect));
     }
 
     private void setupFocusListener() {
-        emailEdit.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+        emailEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailBlue,
                         null, null, null);
                 emailEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
+                emailEdit.setTextColor(getColor(R.color.main_blue_color));
+                incorrectEmailText.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
-        passwordEdit.setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus) {
+        passwordEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockBlue,
                         null, null, null);
                 passwordEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
+                passwordEdit.setTextColor(getColor(R.color.main_blue_color));
+                incorrectPasswordText.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
