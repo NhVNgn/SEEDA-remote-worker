@@ -6,11 +6,13 @@ import androidx.core.content.res.ResourcesCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.example.project.R;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView incorrectEmailText, incorrectPasswordText;
     private Database db;
+    private Snackbar snackbar;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
 
@@ -53,6 +57,13 @@ public class LoginActivity extends AppCompatActivity {
         setupSingInButton();
         setupSignUpButton();
         setupFocusListener();
+        createSnackBar();
+    }
+
+    private void createSnackBar() {
+        snackbar = Snackbar.make(getWindow().getDecorView(), "", Snackbar.LENGTH_SHORT);
+        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
+                .setTextColor(Color.WHITE);
     }
 
     private void setCustomTheme() {
@@ -60,10 +71,19 @@ public class LoginActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(color);
     }
 
+    private boolean isValidMail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     private void setupSingInButton() {
         signInButton.setOnClickListener(v -> {
             String email = emailEdit.getText().toString();
             String password = passwordEdit.getText().toString();
+
+            if(!isValidMail(email)) {
+                snackbar.setText(getString(R.string.invalid_email)).show();
+            }
+
             User user = db.getUser(email, password);
 
             if(user.getFirstName().equals("NOT_FOUND")) {

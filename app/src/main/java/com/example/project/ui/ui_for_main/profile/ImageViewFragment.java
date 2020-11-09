@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +24,10 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.example.project.R;
 
 public class ImageViewFragment extends AppCompatDialogFragment {
-    private Bitmap bitmap;
+    private Uri iconUri;
 
-    public ImageViewFragment(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public ImageViewFragment(Uri uri) {
+        iconUri = uri;
     }
 
     @NonNull
@@ -41,7 +42,7 @@ public class ImageViewFragment extends AppCompatDialogFragment {
         });
 
         ImageView icon = v.findViewById(R.id.iconImageView);
-        icon.setImageBitmap(bitmap);
+        icon.setImageURI(iconUri);
 
         Dialog dialog = new AlertDialog.Builder(getActivity()).setView(v).create();
         dialog.setTitle(null);
