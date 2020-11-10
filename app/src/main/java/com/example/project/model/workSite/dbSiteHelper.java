@@ -16,7 +16,8 @@ public class dbSiteHelper extends SQLiteOpenHelper {
                     SiteConstants.NAME + " TEXT, " +
                     SiteConstants.SITE_ID + " TEXT, " +
                     SiteConstants.LOCATION + " TEXT, " +
-                    SiteConstants.HOURS + " TEXT);" ;
+                    SiteConstants.HOURS + " TEXT, " +
+                    SiteConstants.MASTER_POINT + " TEXT);" ;
 
     private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + SiteConstants.TABLE_NAME;
 

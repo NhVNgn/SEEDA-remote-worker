@@ -25,6 +25,12 @@ public class Database {
         addSample("Vy", "", "nhanvyn@sfu.ca", "123", "111", "", "",
                 "", "", "", "", "", "");
 
+        addSample("Vy2", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
+                "", "", "", "", "", "");
+
+        addSample("Vy3", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
+                "", "", "", "", "", "");
+
     }
 
     public long insertData (List<String> args)
@@ -64,6 +70,20 @@ public class Database {
         String sql = "SELECT * FROM " + Constants.TABLE_NAME +
                 " WHERE " + Constants.UID + " =?";
         Cursor cursor = db.rawQuery(sql, new String[] {id.toString()});
+        User user = new User();
+        if(cursor.moveToFirst()) {
+            fillUser(user, cursor);
+        } else {
+            user.setFirstName("NOT_FOUND");
+        }
+        return user;
+    }
+
+    public User getUserByEmail(String email){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String sql = "SELECT * FROM " + Constants.TABLE_NAME +
+                " WHERE " + Constants.EMAIL + " =?";
+        Cursor cursor = db.rawQuery(sql, new String[] {email});
         User user = new User();
         if(cursor.moveToFirst()) {
             fillUser(user, cursor);
@@ -122,6 +142,10 @@ public class Database {
         }
         else {
             System.out.println("user added successfully");
+            User newUser = new User(firstName, lastName, email, password, phone,
+                    birthday, companyID,  emFirstName,  emLastName,  emPhone,
+                     emRelation,  MedConsider,  IconRes.getBytes());
+            defaultUserList.add(newUser);
         }
     }
     private void fillUser(User user, Cursor cursor) {

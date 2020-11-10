@@ -10,14 +10,16 @@ public class WorkSite {
     private String siteId;
     private String location;
     private String hours;
+    private String masterPoint;
     private List<User> workerList;
     private List<User> contactList;
 
-    public WorkSite(String name, String siteId, String location, String hours) {
+    public WorkSite(String name, String siteId, String location, String hours, String masterPoint) {
         this.name = name;
         this.siteId = siteId;
         this.location = location;
         this.hours = hours;
+        this.masterPoint = masterPoint;
     }
 
     public void setName(String name) {
@@ -54,6 +56,14 @@ public class WorkSite {
 
     public String getHours() {
         return hours;
+    }
+
+    public void setMasterPoint(String masterPoint) {
+        this.masterPoint = masterPoint;
+    }
+
+    public String getMasterPoint() {
+        return masterPoint;
     }
 
     @Override
