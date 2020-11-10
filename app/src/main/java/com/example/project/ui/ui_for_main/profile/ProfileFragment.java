@@ -6,18 +6,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -28,12 +27,12 @@ import com.example.project.R;
 import com.example.project.model.Constants;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+import com.example.project.ui.MainActivity;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,19 +41,20 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-    User user;
-    Database db;
+    private User user;
+    private Database db;
 
-    EditText emailEdit, passwordEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
+    private EditText emailEdit, passwordEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
             companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit;
-    ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
-    ImageView icon;
-    AtomicInteger btnCount1, btnCount2, btnCount3;
-    List<EditText> editTextList1, editTextList2, editTextList3;
-    Drawable addIcon;
+    private ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
+    private ImageView icon;
+    private AtomicInteger btnCount1, btnCount2, btnCount3;
+    private List<EditText> editTextList1, editTextList2, editTextList3;
+    private Drawable addIcon;
 
-    Uri resultUri;
+    private Uri resultUri;
     boolean isIconUpdated;
+    private Snackbar snackbar;
 
     private View root;
 
@@ -80,6 +80,12 @@ public class ProfileFragment extends Fragment {
         updateUI();
 
         return root;
+    }
+
+    private void createSnackBar() {
+        snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG);
+        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
+                .setTextColor(Color.WHITE);
     }
 
     private void updateUser() {
@@ -147,6 +153,7 @@ public class ProfileFragment extends Fragment {
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
                                  ImageButton cancelBtn, AtomicInteger btnCount, int numOfBlock) {
         editBtn.setOnClickListener(v -> {
+            createSnackBar();
             if(btnCount.get() % 2 == 0) {
                 for(EditText editText : editTextList) {
                     makeTextEditable(editText);
@@ -158,6 +165,16 @@ public class ProfileFragment extends Fragment {
                     icon.setForeground(addIcon);
                 }
             } else {
+                if(!isValidMail(emailEdit.getText().toString())) {
+                    snackbar.setText(getString(R.string.invalid_email))
+                            .setDuration(Snackbar.LENGTH_LONG)
+                            .show();
+                    return;
+                } if(!isValidMobile(phoneEdit.getText().toString())) {
+                    snackbar.setText(getString(R.string.invalid_number))
+                            .setDuration(Snackbar.LENGTH_LONG)
+                            .show();
+                }
                 for(EditText editText : editTextList) {
                     makeTextNotEditable(editText);
                 }
@@ -165,6 +182,7 @@ public class ProfileFragment extends Fragment {
                 editBtn.setImageResource(R.drawable.ic_edit_white);
                 updateDataInDatabase1(numOfBlock);
                 updateUser();
+                updateNavView();
                 if(numOfBlock == 1) {
                     icon.setImageAlpha(255);
                     icon.setForeground(null);
@@ -182,12 +200,19 @@ public class ProfileFragment extends Fragment {
             cancelBtn.setVisibility(View.GONE);
             editBtn.setImageResource(R.drawable.ic_edit_white);
             btnCount.incrementAndGet();
-            Toast.makeText(getContext(), "Canceled", Toast.LENGTH_SHORT).show();
+            snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
             icon.setImageAlpha(255);
             icon.setForeground(null);
             updateUI();
             isIconUpdated = false;
         });
+    }
+
+    private boolean isValidMail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+    private boolean isValidMobile(String phone) {
+        return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
     private void setupIconAction() {
@@ -203,10 +228,8 @@ public class ProfileFragment extends Fragment {
                         .setFixAspectRatio(true)
                         .start(getContext(), this);
             } else {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(user.getIconRes(), 0,
-                        user.getIconRes().length);
                 FragmentManager manager = getActivity().getSupportFragmentManager();
-                ImageViewFragment fragment = new ImageViewFragment(bitmap);
+                ImageViewFragment fragment = new ImageViewFragment(user.getIconUri());
                 fragment.show(manager, "MassageDialogue");
             }
         });
@@ -256,13 +279,25 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateIcon() {
-        byte[] iconInBytes = user.getIconRes();
-        if(iconInBytes.length != 0) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(iconInBytes, 0, iconInBytes.length);
-            icon.setImageBitmap(bitmap);
+        if(user.getIconUri() != null) {
+            icon.setImageURI(user.getIconUri());
         } else {
             icon.setImageResource(R.drawable.profile_icon);
         }
+    }
+
+    private void updateNavView() {
+        View headerView = MainActivity.getHeaderView();
+        ImageView icon = headerView.findViewById(R.id.profileIconMain);
+        if(user.getIconUri() != null) {
+            icon.setImageURI(user.getIconUri());
+        } else {
+            icon.setImageResource(R.drawable.profile_icon);
+        }
+        TextView emailText = headerView.findViewById(R.id.emailMainTextView);
+        emailText.setText(user.getEmail());
+        TextView nameText = headerView.findViewById(R.id.nameMainTextView);
+        nameText.setText(user.getFirstName() + " " + user.getLastName());
     }
 
     private void updateDataInDatabase1(int numOfBlock) {
@@ -271,7 +306,10 @@ public class ProfileFragment extends Fragment {
             ContentValues cv = new ContentValues();
             cv.put(Constants.EMAIL, emailEdit.getText().toString());
             cv.put(Constants.PASSWORD, passwordEdit.getText().toString());
-            saveIcon(cv);
+//            saveIcon(cv);
+            if(isIconUpdated) {
+                cv.put(Constants.ICON_URI, resultUri.toString());
+            }
             result = db.update(user.getId(), cv);
         } else if(numOfBlock == 2) {
             ContentValues cv = new ContentValues();
@@ -291,28 +329,28 @@ public class ProfileFragment extends Fragment {
         }
 
         if(result > 0) {
-            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+            snackbar.setText("Saved").setDuration(Snackbar.LENGTH_SHORT).show();
             updateSharedPrefs(numOfBlock);
         } else {
-            Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+            snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
         }
     }
 
-    private void saveIcon(ContentValues cv) {
-        if(isIconUpdated) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                        getActivity().getContentResolver(), resultUri);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
-                byte[] iconInBytes = stream.toByteArray();
-                cv.put(Constants.ICON_RES, iconInBytes);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void saveIcon(ContentValues cv) {
+//        if(isIconUpdated) {
+//            try {
+//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+//                        getActivity().getContentResolver(), resultUri);
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
+//                byte[] iconInBytes = stream.toByteArray();
+//                cv.put(Constants.ICON_RES, iconInBytes);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     private void updateSharedPrefs(int numOfBlock) {
         if(numOfBlock == 1) {
