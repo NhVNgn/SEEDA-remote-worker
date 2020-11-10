@@ -1,5 +1,7 @@
 package com.example.project.model;
 
+import android.net.Uri;
+
 public class User {
     private int id;
     private String companyID;
@@ -14,7 +16,7 @@ public class User {
     private String emPhone;
     private String emRelation;
     private String medicalConsiderations;
-    private byte[] iconRes;
+    private Uri iconUri;
 
     public User() {
     }
@@ -123,12 +125,12 @@ public class User {
         this.medicalConsiderations = medicalConsiderations;
     }
 
-    public byte[] getIconRes() {
-        return iconRes;
+    public Uri getIconUri() {
+        return iconUri;
     }
 
-    public void setIconRes(byte[] iconRes) {
-        this.iconRes = iconRes;
+    public void setIconUri(Uri iconUri) {
+        this.iconUri = iconUri;
     }
 
     public User(String companyID, String firstName, String lastName, String email, String password, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, byte[] iconRes) {

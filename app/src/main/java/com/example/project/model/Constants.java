@@ -19,7 +19,7 @@ public class Constants {
     public static final String EM_PHONE = "emergencyPhone";
     public static final String EM_RELATION = "emergencyRelation";
     public static final String MED_CONSIDERATIONS = "MedicalConsideration";
-    public static final String ICON_RES = "iconRes";
+    public static final String ICON_URI = "iconUri";
     public static final String UID = "_id";
 
     public List<String> arrayOfConst;
@@ -38,7 +38,7 @@ public class Constants {
         arrayOfConst.add(EM_PHONE);
         arrayOfConst.add(EM_RELATION);
         arrayOfConst.add(MED_CONSIDERATIONS);
-        arrayOfConst.add(ICON_RES);
+        arrayOfConst.add(ICON_URI);
     }
 
 

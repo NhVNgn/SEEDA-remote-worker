@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +162,6 @@ public class Database {
         user.setEmPhone(cursor.getString(cursor.getColumnIndex(Constants.EM_PHONE)));
         user.setEmRelation(cursor.getString(cursor.getColumnIndex(Constants.EM_RELATION)));
         user.setMedicalConsiderations(cursor.getString(cursor.getColumnIndex(Constants.MED_CONSIDERATIONS)));
-        user.setIconRes(cursor.getBlob(cursor.getColumnIndex(Constants.ICON_RES)));
+        user.setIconUri(Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI))));
     }
 }

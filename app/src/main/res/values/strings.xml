@@ -57,4 +57,11 @@
     <string name="location">Location</string>
     <string name="site_address">Site address:</string>
     <string name="open_in_google_map">Open in Google Map</string>
+    <string name="sereem_account">Sereem Account</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="create_an_account">Create an Account</string>
+    <string name="invalid_email"><![CDATA[Invalid email format, use @<email>.<code>]]></string>
+    <string name="invalid_number">Invalid phone format</string>
+    <string name="enable_gps">Enable GPS visibility</string>
+    <string name="enable_dark_theme">Enable dark theme</string>
 </resources>
