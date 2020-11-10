@@ -12,6 +12,7 @@ public class SiteConstants {
     public static final String LOCATION = "location";
     public static final String HOURS = "HOURS";
     public static final String UID = "_id";
+    public static final String MASTER_POINT = "masterPoint";
 
     public List<String> arrayOfConst;
 
@@ -21,6 +22,7 @@ public class SiteConstants {
         arrayOfConst.add(SITE_ID);
         arrayOfConst.add(LOCATION);
         arrayOfConst.add(HOURS);
+        arrayOfConst.add(MASTER_POINT);
     }
 
 }

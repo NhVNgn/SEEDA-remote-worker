@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ui_for_main.worksites.SiteViewFragment"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        >
+        <TextView
+            android:id="@+id/siteNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/construction_site_name"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"/>
+
+
+        <TextView
+            android:id="@+id/siteNameTextDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/siteNameText"
+            android:layout_marginStart="80dp"
+            android:text="Construction name goes here" />
+
+        <TextView
+            android:id="@+id/siteIdText"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/project_id"
+            android:layout_below="@id/siteNameText"/>
+
+        <TextView
+            android:id="@+id/siteIdTextDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="siteId Text goes here"
+            android:layout_below="@+id/siteNameTextDisplay"
+            android:layout_alignStart="@+id/siteNameTextDisplay"
+            android:layout_alignTop="@+id/siteIdText"/>
+
+        <TextView
+            android:id="@+id/masterPointText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/siteIdText"
+            android:text="@string/master_point"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/masterPointTextDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/siteIdTextDisplay"
+            android:layout_alignStart="@+id/siteNameTextDisplay"
+            android:layout_alignTop="@id/masterPointText"
+            android:text="Master point text goes here"/>
+
+        <TextView
+            android:id="@+id/hoursText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/masterPointText"
+            android:layout_marginTop="16dp"
+            android:text="@string/operation_hours"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/hoursTextDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/masterPointTextDisplay"
+            android:layout_alignTop="@id/hoursText"
+            android:layout_alignStart="@+id/siteNameTextDisplay"
+            android:text="Hours goes here"/>
+
+
+
+        <Button
+            android:id="@+id/siteEmergencyInfoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/site_emergency_and_response_information"
+            android:layout_below="@+id/hoursText"
+            android:layout_marginTop="50dp"/>
+
+
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

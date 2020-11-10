@@ -2,11 +2,13 @@ package com.example.project.ui.ui_for_main.worksites;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,7 +37,7 @@ public class WorksitesFragment extends Fragment {
     Database db;
     List<WorkSite> userSites = new ArrayList<>();
     ListView listView;
-
+    public static final String PROJECT_ID = "project_id";
 
     public class siteListAdapter extends ArrayAdapter<WorkSite> {
         public siteListAdapter() {
@@ -81,6 +83,7 @@ public class WorksitesFragment extends Fragment {
         for (WorkSite ws : userSites)
             System.out.println("WorkSite name = " + ws.getName());
         populateListView();
+        setupListClick(root);
 
         return root;
     }
@@ -113,5 +116,25 @@ public class WorksitesFragment extends Fragment {
                     }
 
     }
+    private void setupListClick(View root){
+        ListView list = root.findViewById(R.id.listViewWorkSite);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(globalContext, SiteDetailActivity.class);
+                String site_id = userSites.get(position).getSiteId();
+                intent.putExtra(PROJECT_ID, site_id);
+                saveInSharedPrefs(site_id, root);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void saveInSharedPrefs(String site_id, View root) {
+        SharedPreferences prefs = root.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        prefs.edit().putString("last_accessed_site_id", site_id).apply();
+    }
+
+
 
 }

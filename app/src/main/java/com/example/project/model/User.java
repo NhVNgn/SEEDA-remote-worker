@@ -130,4 +130,20 @@ public class User {
     public void setIconRes(byte[] iconRes) {
         this.iconRes = iconRes;
     }
+
+    public User(String companyID, String firstName, String lastName, String email, String password, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, byte[] iconRes) {
+        this.companyID = companyID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.birthday = birthday;
+        this.emFirstName = emFirstName;
+        this.emLastName = emLastName;
+        this.emPhone = emPhone;
+        this.emRelation = emRelation;
+        this.medicalConsiderations = medicalConsiderations;
+        this.iconRes = iconRes;
+    }
 }

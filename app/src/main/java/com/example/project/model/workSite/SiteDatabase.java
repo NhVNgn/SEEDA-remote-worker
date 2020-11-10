@@ -19,11 +19,11 @@ public class SiteDatabase {
         helper = new dbSiteHelper(context);
         allWorkSite = new ArrayList<>();
         // add sample to siteDatabase
-        addSample("Burnaby construction site", "burnaby123", "888 University Dr, Burnaby", "08:00AM-05:00PM" );
-        addSample("Vancouver construction site", "van123", "515 W Hasting St, Vancouver", "11:30AM-05:00PM");
-        addSample("Surrey construction site", "surrey123", "10153 King George Blvd, Surrey", "08:30AM-05:00PM");
-        addSample("Coquitlam construction site", "coquitlam123", "2929 Barnet Hwy, Coquitlam", "12:30AM-05:00PM");
-        addSample("Port Moody construction site", "portmoody123", "300 loco Rd, Port Moody", "07:30AM-05:00PM");
+        addSample("Burnaby construction site", "burnaby123", "8888 University Dr, Burnaby", "08:00AM-05:00PM" , "30");
+        addSample("Vancouver construction site", "van123", "515 W Hasting St, Vancouver", "11:30AM-05:00PM", "25");
+        addSample("Surrey construction site", "surrey123", "10153 King George Blvd, Surrey", "08:30AM-05:00PM", "40");
+        addSample("Coquitlam construction site", "coquitlam123", "2929 Barnet Hwy, Coquitlam", "12:30AM-05:00PM", "10");
+        addSample("Port Moody construction site", "portmoody123", "300 loco Rd, Port Moody", "07:30AM-05:00PM", "15");
     }
 
     public List<WorkSite> getAllWorkSite() {
@@ -40,7 +40,7 @@ public class SiteDatabase {
         return id;
     }
 
-    public void addSample(String name, String siteID, String location, String hours){
+    public void addSample(String name, String siteID, String location, String hours, String masterPoint){
         // search if siteID is already in the table
         if (getSite(siteID) != null)
             return;
@@ -51,6 +51,7 @@ public class SiteDatabase {
         argsArray.add(siteID);
         argsArray.add(location);
         argsArray.add(hours);
+        argsArray.add(masterPoint);
         long id = insertData(argsArray);
 
         if (id < 0)
@@ -58,7 +59,7 @@ public class SiteDatabase {
             System.out.println("fail to add site");
         }
         else {
-            allWorkSite.add(new WorkSite(name, siteID, location, hours));
+            allWorkSite.add(new WorkSite(name, siteID, location, hours, masterPoint));
             System.out.println("site added successfully");
         }
     }
@@ -68,7 +69,7 @@ public class SiteDatabase {
         String sql = "SELECT * FROM " + SiteConstants.TABLE_NAME +
                 " WHERE " + SiteConstants.SITE_ID + " =?";
         Cursor cursor = db.rawQuery(sql, new String[] {siteID});
-        WorkSite ws = new WorkSite("", "", "", "");
+        WorkSite ws = new WorkSite("", "", "", "", "");
 
         if (cursor.moveToFirst()){
             if (cursor.getString(cursor.getColumnIndex(SiteConstants.SITE_ID)).equals(siteID)) {
@@ -87,6 +88,7 @@ public class SiteDatabase {
         ws.setName(cursor.getString(cursor.getColumnIndex(SiteConstants.NAME)));
         ws.setHours(cursor.getString(cursor.getColumnIndex(SiteConstants.HOURS)));
         ws.setLocation(cursor.getString(cursor.getColumnIndex(SiteConstants.LOCATION)));
+        ws.setMasterPoint(cursor.getString(cursor.getColumnIndex(SiteConstants.MASTER_POINT)));
     }
 }
 
