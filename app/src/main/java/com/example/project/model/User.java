@@ -146,6 +146,5 @@ public class User {
         this.emPhone = emPhone;
         this.emRelation = emRelation;
         this.medicalConsiderations = medicalConsiderations;
-        this.iconRes = iconRes;
     }
 }
