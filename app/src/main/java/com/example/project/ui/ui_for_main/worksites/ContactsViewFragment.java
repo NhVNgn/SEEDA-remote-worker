@@ -135,14 +135,11 @@ public class ContactsViewFragment extends Fragment {
         ListView list = root.findViewById(R.id.contactListView);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               /* Uri sms = Uri.parse("smsto:7782316872");
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, "How are you doing today dog?");
-                startActivity(Intent.createChooser(intent, "send a text to"));*/
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 FragmentManager manager = getFragmentManager();
+                User user = userList.get(position);
                 PopupFragment dialog = new PopupFragment();
-                dialog.show(manager, "Popup message is open");
+                dialog.showDialog(user.getEmail(), user.getPhone(), manager);
             }
         });
     }

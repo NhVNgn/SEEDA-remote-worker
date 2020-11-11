@@ -89,6 +89,7 @@
 
         <Button
             android:id="@+id/siteEmergencyInfoText"
+            android:backgroundTint="@color/main_blue_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/site_emergency_and_response_information"

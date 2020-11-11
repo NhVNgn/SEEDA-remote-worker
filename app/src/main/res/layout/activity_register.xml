@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,221 +11,62 @@
     tools:context=".ui.RegisterActivity">
 
 
-    <ScrollView
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/step_1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="220dp"
-        tools:layout_editor_absoluteY="224dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:weightSum="12">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="12">
+            android:orientation="horizontal"
+            android:weightSum="3"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_your_email_and_password"
+            android:layout_marginBottom="20dp"
+            android:textStyle="italic"
+            />
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
 
-                <EditText
-                    android:id="@+id/firstNameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/first_name"
-                    android:inputType="textPersonName"/>
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/password_8_digits_at_least"
+            android:inputType="textPassword" />
+    </LinearLayout>
 
-                <EditText
-                    android:id="@+id/lastNameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:hint="@string/last_name"
-                    android:inputType="textPersonName"/>
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/emailEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress" />
-
-            <EditText
-                android:id="@+id/passwordEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/password_8_digits_at_least"
-                android:inputType="textPassword" />
-
-            <TextView
-                android:id="@+id/personalInfoTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/personal_information"
-                android:textStyle="bold"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/phoneTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/phone_number"
-                    android:layout_weight="1" />
-
-                <EditText
-                    android:id="@+id/phoneEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/_1"
-                    android:layout_weight="2"
-                    android:inputType="phone"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/birthdayTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/birthday" />
-
-                <EditText
-                    android:id="@+id/birthdayEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:hint="@string/dd_mm_yyyy"
-                    android:inputType="date"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/idTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/company_id"
-                    android:layout_weight="1"/>
-
-                <EditText
-                    android:id="@+id/idEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:inputType="text"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/emergencyContactTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/emergency_contacts"
-                android:textStyle="bold"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <EditText
-                    android:id="@+id/eFirstNameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/first_name"
-                    android:layout_weight="1"
-                    android:inputType="textPersonName"/>
-
-                <EditText
-                    android:id="@+id/eLastNameEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:hint="@string/last_name"
-                    android:layout_weight="2"
-                    android:inputType="textPersonName"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/ePhoneTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/phone_number"
-                    android:layout_weight="1"/>
-
-                <EditText
-                    android:id="@+id/ePhoneEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/_1"
-                    android:layout_weight="2"
-                    android:inputType="phone"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingBottom="20dp"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/relationTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/relation"
-                    android:layout_weight="1"/>
-
-                <EditText
-                    android:id="@+id/relationEdittext"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/specify_friend_or_family"
-                    android:textStyle="italic"
-                    android:layout_weight="2"
-                    android:inputType="text"/>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/signUpButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:onClick="addWorker"
-                android:text="@string/sign_up" />
-        </LinearLayout>
-    </ScrollView>
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="nextStep"
+        android:text="@string/next"
+        android:backgroundTint="@color/main_blue_color"
+        />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>

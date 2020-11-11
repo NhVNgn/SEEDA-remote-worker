@@ -36,6 +36,7 @@
             android:layout_below="@+id/addressTextDisplay"
             android:text="@string/open_in_google_map"
             android:onClick="launchMapIntent"
+            android:backgroundTint="@color/main_blue_color"
             />
 
 

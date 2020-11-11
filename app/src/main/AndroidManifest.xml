@@ -13,21 +13,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project">
         <activity
+            android:name=".ui.Register2"
+            android:theme="@style/Theme.Project.NoActionBar"
+            android:noHistory="true">
+        </activity>
+        <activity
             android:name=".ui.ui_for_main.worksites.SiteDetailActivity"
             android:label="Work site information">
             <intent-filter>
-                <action android:name="android.intent.action.SENDTO"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.SENDTO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="*/*"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
+
                 <data android:scheme="mailto" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -45,7 +56,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.RegisterActivity" />
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:theme="@style/Theme.Project.NoActionBar" />
     </application>
 
 </manifest>

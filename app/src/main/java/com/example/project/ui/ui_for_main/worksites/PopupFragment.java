@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.project.R;
 
@@ -21,6 +22,9 @@ public class PopupFragment extends AppCompatDialogFragment {
     ImageButton sms;
     ImageButton phone;
     ImageButton email;
+
+    String contact_number = "000";
+    String contact_email = "user@gmail.com";
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -31,7 +35,7 @@ public class PopupFragment extends AppCompatDialogFragment {
         sms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri sms = Uri.parse("smsto:7782316872");
+                Uri sms = Uri.parse("smsto:" + contact_number);
                 Intent intent = new Intent(Intent.ACTION_SENDTO, sms);
                 intent.putExtra(Intent.EXTRA_TEXT, "How are you doing today?");
                 startActivity(Intent.createChooser(intent, "send a text to"));
@@ -43,7 +47,7 @@ public class PopupFragment extends AppCompatDialogFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"nhanvyhl1234@gmail.com"});
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact_email});
                 intent.putExtra(Intent.EXTRA_SUBJECT, "This is subject header");
                 startActivity(intent);
             }
@@ -53,7 +57,7 @@ public class PopupFragment extends AppCompatDialogFragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + "7782316872"));
+                intent.setData(Uri.parse("tel:" + contact_number));
                 startActivity(intent);
             }
         });
@@ -69,4 +73,10 @@ public class PopupFragment extends AppCompatDialogFragment {
                 .setPositiveButton("BACK", listener)
                 .create();
     }
+    public void showDialog(String email, String phone_number, FragmentManager manager){
+        this.show(manager, "Popup message is open");
+        contact_number = phone_number;
+        contact_email = email;
+    }
+
 }

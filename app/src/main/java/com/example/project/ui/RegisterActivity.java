@@ -1,9 +1,11 @@
 package com.example.project.ui;
 import com.example.project.R;
 import com.example.project.model.Database;
+import com.example.project.ui.ui_for_main.worksites.SiteDetailActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -15,10 +17,9 @@ import java.util.List;
 public class RegisterActivity extends AppCompatActivity {
 
 
-    EditText firstNameEditText, lastNameEditText, emailEditText, passwordEditText;
-    EditText phoneEditText, birthdayEditText, companyIdEditText;
-    EditText emFirstNameEditText, emLastNameEditText, emPhoneEditText, relationEditText;
-    Database db;
+    EditText emailEditText, passwordEditText;
+    public static final String NEW_EMAIL = "new_email";
+    public static final String NEW_PASSWORD = "new_password";
 
 
 
@@ -26,46 +27,24 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        firstNameEditText = findViewById(R.id.firstNameEditText);
-        lastNameEditText = findViewById(R.id.lastNameEditText);
+
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-
-        phoneEditText = findViewById(R.id.phoneEditText);
-        birthdayEditText = findViewById(R.id.birthdayEditText);
-        companyIdEditText = findViewById(R.id.idEditText);
-
-        emFirstNameEditText = findViewById(R.id.eFirstNameEditText);
-        emLastNameEditText = findViewById(R.id.eLastNameEditText);
-        emPhoneEditText = findViewById(R.id.ePhoneEditText);
-        relationEditText = findViewById(R.id.relationEdittext);
-
-
-        db = new Database(this);
     }
 
-    public void addWorker(View view){
-        List<String> argsArray = new ArrayList<>();
-        argsArray.add(firstNameEditText.getText().toString());
-        argsArray.add(lastNameEditText.getText().toString());
-        argsArray.add(emailEditText.getText().toString());
-        argsArray.add(passwordEditText.getText().toString());
-        argsArray.add(phoneEditText.getText().toString());
-        argsArray.add(birthdayEditText.getText().toString());
-        argsArray.add(companyIdEditText.getText().toString());
-        argsArray.add(emFirstNameEditText.getText().toString());
-        argsArray.add(emLastNameEditText.getText().toString());
-        argsArray.add(emPhoneEditText.getText().toString());
-        argsArray.add(relationEditText.getText().toString());
+    public void nextStep(View view){
+        Intent intent = new Intent(this, Register2.class);
+        String new_email = emailEditText.getText().toString();
+        String new_password = passwordEditText.getText().toString();
+        intent.putExtra(NEW_EMAIL, new_email);
+        intent.putExtra(NEW_PASSWORD, new_password);
+        startActivity(intent);
+        finish();
+        /*Intent intent = new Intent(globalContext, SiteDetailActivity.class);
+        String site_id = userSites.get(position).getSiteId();
+        intent.putExtra(PROJECT_ID, site_id);
+        saveInSharedPrefs(site_id, root);
+        startActivity(intent);*/
 
-        long id = db.insertData(argsArray);
-        if (id < 0)
-        {
-            Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
-
-        }
     }
 }
