@@ -107,13 +107,17 @@ public class WorksitesFragment extends Fragment {
         if (userSites.size() > 0) // for the special case when user presses back instead of navigation panel
             return;
 
-        for (Attendance a : attendanceDB.getAllAttendanceList())
-            if (a.getWorkerEmail().equals(user.getEmail()))
-                for (WorkSite ws : siteDB.getAllWorkSite())
+        
+        for (Attendance a : attendanceDB.getAllAttendanceList()) {
+            if (a.getWorkerEmail().equals(user.getEmail())) {
+                for (WorkSite ws : siteDB.getAllWorkSite()) {
                     if (a.getSiteID().equals(ws.getSiteId())) {
                         System.out.println(ws.getName());
                         userSites.add(ws);
                     }
+                }
+            }
+        }
 
     }
     private void setupListClick(View root){

@@ -5,10 +5,13 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,9 +21,12 @@ public class SiteDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ActionBar actionBar;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_detail);
-
+        actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#275F8E")));
         TabLayout tabLayout = findViewById(R.id.tabBar);
         TabItem tabSiteInfo = findViewById(R.id.siteInfo);
         TabItem tabContactInfo = findViewById(R.id.contactsInfo);
@@ -28,6 +34,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.viewPager);
         setUpBackButton();
 
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 

@@ -3,6 +3,7 @@ package com.example.project.model.siteAttendance;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.project.model.siteAttendance.*;
@@ -33,7 +34,7 @@ public class attendanceDatabase {
 
         addSample("dovsiien@sfu.ca", "burnaby123");
         addSample("dovsiien@sfu.ca", "van123");
-        addSample("dovsiien@sfu.ca", "coquitlam123");;
+        addSample("dovsiien@sfu.ca", "coquitlam123");
 
 
         addSample("nhanvyhl1234@gmail.com", "burnaby123");
@@ -41,8 +42,23 @@ public class attendanceDatabase {
 
     }
 
+
     public List<Attendance> getAllAttendanceList() {
-        return allAttendanceList;
+        List<Attendance> allAttendances = new ArrayList<>();
+        db = helper.getReadableDatabase();
+        String sql = "SELECT * FROM " + attendanceConstants.TABLE_NAME;
+        Cursor cursor = db.rawQuery(sql,null);
+
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
+            Attendance attendance = new Attendance("", "");
+            populateAttendance(attendance, cursor);
+            allAttendances.add(attendance);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        return allAttendances;
     }
 
     public long insertData (List<String> args){
@@ -58,7 +74,9 @@ public class attendanceDatabase {
     public void addSample(String workerEmail, String siteID){
         // search if siteID is already in the table
         if (getAttendance(siteID, workerEmail) != null)
+        {
             return;
+        }
 
 
         List<String> argsArray = new ArrayList<>();
@@ -71,7 +89,6 @@ public class attendanceDatabase {
         }
         else {
             allAttendanceList.add(new Attendance(workerEmail, siteID));
-            System.out.println("attendance added successfully");
 
         }
     }
