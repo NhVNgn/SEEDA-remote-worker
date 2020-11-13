@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +16,7 @@
         android:id="@+id/userAvatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_profile_icon_circle"/>
+        android:src="@{colorPalette.dark ? @drawable/ic_baseline_account_circle_white : @drawable/ic_profile_icon_circle}"/>
 
     <TextView
         android:id="@+id/parentHeader"
@@ -21,5 +28,7 @@
         android:textSize="20sp"
         android:text="parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@{colorPalette.text}"
         />
 </LinearLayout>
+</layout>

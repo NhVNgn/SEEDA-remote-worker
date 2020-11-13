@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,7 +27,8 @@
             android:layout_height="wrap_content"
             android:text="@string/construction_site_name"
             android:textStyle="bold"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            android:textColor="@{colorPalette.text}"/>
 
 
         <TextView
@@ -29,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/siteNameText"
             android:layout_marginStart="80dp"
-            android:text="Construction name goes here" />
+            android:text="Construction name goes here"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/siteIdText"
@@ -38,7 +47,8 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="@string/project_id"
-            android:layout_below="@id/siteNameText"/>
+            android:layout_below="@id/siteNameText"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/siteIdTextDisplay"
@@ -47,7 +57,8 @@
             android:text="siteId Text goes here"
             android:layout_below="@+id/siteNameTextDisplay"
             android:layout_alignStart="@+id/siteNameTextDisplay"
-            android:layout_alignTop="@+id/siteIdText"/>
+            android:layout_alignTop="@+id/siteIdText"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/masterPointText"
@@ -56,7 +67,8 @@
             android:layout_below="@+id/siteIdText"
             android:text="@string/master_point"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/masterPointTextDisplay"
@@ -65,7 +77,8 @@
             android:layout_below="@id/siteIdTextDisplay"
             android:layout_alignStart="@+id/siteNameTextDisplay"
             android:layout_alignTop="@id/masterPointText"
-            android:text="Master point text goes here"/>
+            android:text="Master point text goes here"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/hoursText"
@@ -74,7 +87,8 @@
             android:layout_below="@id/masterPointText"
             android:layout_marginTop="16dp"
             android:text="@string/operation_hours"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/hoursTextDisplay"
@@ -83,13 +97,15 @@
             android:layout_below="@id/masterPointTextDisplay"
             android:layout_alignTop="@id/hoursText"
             android:layout_alignStart="@+id/siteNameTextDisplay"
-            android:text="Hours goes here"/>
+            android:text="Hours goes here"
+            android:textColor="@{colorPalette.text}"/>
 
 
 
         <Button
             android:id="@+id/siteEmergencyInfoText"
-            android:backgroundTint="@color/main_blue_color"
+            android:backgroundTint="@{colorPalette.btnBackground}"
+            android:textColor="@{colorPalette.btnText}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/site_emergency_and_response_information"
@@ -103,3 +119,4 @@
 
 
 </FrameLayout>
+</layout>

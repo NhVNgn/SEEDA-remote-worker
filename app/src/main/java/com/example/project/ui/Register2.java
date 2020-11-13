@@ -1,11 +1,13 @@
 package com.example.project.ui;
 
 import com.example.project.R;
+import com.example.project.databinding.ActivityRegister2Binding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.example.project.model.siteAttendance.attendanceDatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ public class Register2 extends AppCompatActivity {
     EditText phoneEditText, birthdayEditText, companyIdEditText;
     String email;
     String password;
+    private ColorPalette colorPalette;
 
     Database db;
     attendanceDatabase attendDb;
@@ -34,7 +37,11 @@ public class Register2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register2);
+        ActivityRegister2Binding binding = DataBindingUtil.setContentView(this,
+                R.layout.activity_register2);
+        colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.REGISTER2);
+        binding.setColorPalette(colorPalette);
+        binding.setLifecycleOwner(this);
         db = new Database(this);
         attendDb = new attendanceDatabase(this);
         Intent intent = getIntent();
@@ -97,5 +104,17 @@ public class Register2 extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
         prefs.edit().putString("email", email).putString("password", password)
                 .putInt("id", id).apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 }

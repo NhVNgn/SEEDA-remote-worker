@@ -25,12 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.project.R;
+import com.example.project.databinding.ContactParentItemBinding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.example.project.model.siteAttendance.Attendance;
 import com.example.project.model.siteAttendance.attendanceDatabase;
 import com.example.project.model.workSite.SiteDatabase;
 import com.example.project.model.workSite.WorkSite;
+import com.example.project.ui.ColorPalette;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -48,6 +50,7 @@ public class ContactsViewFragment extends Fragment {
     List<User> userList = new ArrayList<>();
     ListView listView;
     User me;
+    private ColorPalette colorPalette;
 
 
 
@@ -62,12 +65,17 @@ public class ContactsViewFragment extends Fragment {
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.contact_parent_item, parent, false);
 
+            ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
+            colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
+            binding.setColorPalette(colorPalette);
+
             // get user
             User user = userList.get(position);
             System.out.println(user.getFirstName());
             // user name
             TextView userTextName = itemView.findViewById(R.id.parentHeader);
             userTextName.setText(user.getFirstName() + user.getLastName());
+            colorPalette.registerListener();
 
             // fill image
             return itemView;
@@ -145,6 +153,20 @@ public class ContactsViewFragment extends Fragment {
     }
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(colorPalette != null) {
+            colorPalette.unregisterListener();
+        }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(colorPalette != null) {
+            colorPalette.registerListener();
+        }
+    }
 
 }

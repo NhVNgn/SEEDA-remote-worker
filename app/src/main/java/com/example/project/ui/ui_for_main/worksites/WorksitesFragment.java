@@ -1,9 +1,14 @@
 package com.example.project.ui.ui_for_main.worksites;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +21,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import com.example.project.R;
+import com.example.project.databinding.FragmentWorksitesBinding;
+import com.example.project.databinding.ItemViewBinding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.example.project.model.siteAttendance.Attendance;
 import com.example.project.model.siteAttendance.attendanceDatabase;
 import com.example.project.model.workSite.SiteDatabase;
 import com.example.project.model.workSite.WorkSite;
+import com.example.project.ui.ColorPalette;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +44,12 @@ public class WorksitesFragment extends Fragment {
     Database db;
     List<WorkSite> userSites = new ArrayList<>();
     ListView listView;
+    private View itemView;
+
     public static final String PROJECT_ID = "project_id";
+
+    private ItemViewBinding binding;
+    private ColorPalette colorPalette;
 
     public class siteListAdapter extends ArrayAdapter<WorkSite> {
         public siteListAdapter() {
@@ -47,10 +59,17 @@ public class WorksitesFragment extends Fragment {
         @SuppressLint("SetTextI18n")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View itemView = convertView;
+            itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.item_view, parent, false);
             // get site
+            binding = ItemViewBinding.bind(itemView);
+            colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.ITEM_VIEW);
+            binding.setColorPalette(colorPalette);
+            binding.setLifecycleOwner(getViewLifecycleOwner());
+
+            colorPalette.registerListener();
+
             WorkSite ws = userSites.get(position);
 
             // site name
@@ -60,18 +79,19 @@ public class WorksitesFragment extends Fragment {
             textSiteId.setText("Site ID: " + ws.getSiteId());
 
             // fill image
-            ImageView imageView = itemView.findViewById(R.id.listView_image);
-            imageView.setImageResource(R.drawable.ic_worksite_logo);
 
             return itemView;
 
         }
+
+
     }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_worksites, container, false);
+
         globalContext = root.getContext().getApplicationContext();
         listView = root.findViewById(R.id.listViewWorkSite);
         siteDB = new SiteDatabase(root.getContext());
@@ -139,6 +159,20 @@ public class WorksitesFragment extends Fragment {
         prefs.edit().putString("last_accessed_site_id", site_id).apply();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(colorPalette != null) {
+            colorPalette.unregisterListener();
+        }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(colorPalette != null) {
+            colorPalette.registerListener();
+        }
+    }
 
 }

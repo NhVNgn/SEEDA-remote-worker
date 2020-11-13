@@ -1,24 +1,30 @@
 package com.example.project.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.databinding.DataBindingUtil;
+
 import com.example.project.R;
+import com.example.project.databinding.ActivityLoginBinding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,10 +40,20 @@ public class LoginActivity extends AppCompatActivity {
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
 
+    private ColorPalette colorPalette;
+
+    ActivityLoginBinding binding;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+
+        binding = DataBindingUtil.setContentView
+                (this, R.layout.activity_login);
+        colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.LOGIN);
+        binding.setColorPalette(colorPalette);
+        binding.setLifecycleOwner(this);
 
         emailEdit = findViewById(R.id.emailLogin);
         passwordEdit = findViewById(R.id.passwordLogin);
@@ -47,10 +63,11 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new Database(this);
 
-        emailBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_blue, null);
+        emailBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_blue_login, null);
         emailRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_red, null);
         lockBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_lock_blue, null);
         lockRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_lock_red, null);
+
 
         setCustomTheme();
 
@@ -59,6 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         setupFocusListener();
         createSnackBar();
     }
+
+
 
     private void createSnackBar() {
         snackbar = Snackbar.make(getWindow().getDecorView(), "", Snackbar.LENGTH_SHORT);
@@ -131,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailEdit.setCompoundDrawablesWithIntrinsicBounds(emailBlue,
                         null, null, null);
-                emailEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
+                emailEdit.setBackgroundResource(R.drawable.edit_text_light);
                 emailEdit.setTextColor(getColor(R.color.main_blue_color));
                 incorrectEmailText.setText("");
             }
@@ -151,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 passwordEdit.setCompoundDrawablesWithIntrinsicBounds(lockBlue,
                         null, null, null);
-                passwordEdit.setBackgroundResource(R.drawable.rounded_corners_edit_text);
+                passwordEdit.setBackgroundResource(R.drawable.edit_text_light);
                 passwordEdit.setTextColor(getColor(R.color.main_blue_color));
                 incorrectPasswordText.setText("");
             }
@@ -177,5 +196,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
+    }
 }

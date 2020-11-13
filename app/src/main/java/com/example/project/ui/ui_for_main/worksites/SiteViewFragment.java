@@ -15,8 +15,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.project.R;
+import com.example.project.databinding.FragmentSiteViewBinding;
 import com.example.project.model.workSite.SiteDatabase;
 import com.example.project.model.workSite.WorkSite;
+import com.example.project.ui.ColorPalette;
 
 import org.w3c.dom.Text;
 
@@ -30,11 +32,15 @@ public class SiteViewFragment extends Fragment {
     TextView siteIdText;
     TextView masterPointText;
     TextView operationHoursText;
+    private ColorPalette colorPalette;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_site_view, container, false);
+        FragmentSiteViewBinding binding = FragmentSiteViewBinding.bind(root);
+        colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.SITE_VIEW);
+        binding.setColorPalette(colorPalette);
         siteDB = new SiteDatabase(root.getContext());
         getSite();
         siteNameText = root.findViewById(R.id.siteNameTextDisplay);
@@ -55,5 +61,17 @@ public class SiteViewFragment extends Fragment {
 
         String id = prefs.getString("last_accessed_site_id", "NONE");
          userWorkSite = siteDB.getSite(id);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 }
