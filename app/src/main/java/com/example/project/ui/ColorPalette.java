@@ -2,11 +2,14 @@ package com.example.project.ui;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import androidx.preference.PreferenceManager;
 
 import com.example.project.R;
 import com.example.project.databinding.ActivityLoginBinding;
@@ -21,6 +24,8 @@ import com.example.project.databinding.FragmentProfileBinding;
 import com.example.project.databinding.FragmentSiteViewBinding;
 import com.example.project.databinding.ItemViewBinding;
 import com.example.project.databinding.PopupOptionsLayoutBinding;
+
+// TODO: refactor weird implementation (functional programming?)
 
 public class ColorPalette implements SensorEventListener {
     public enum TYPE {
@@ -46,6 +51,7 @@ public class ColorPalette implements SensorEventListener {
     private Drawable editBackground;
     private SensorManager sensorManager;
     private Sensor sensor;
+    private boolean isAutoOff;
 
     private Context context;
 
@@ -68,7 +74,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.mainBinding = mainBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -77,7 +83,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.imageViewBinding = imageViewBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -86,24 +92,24 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.contactBinding = contactBinding;
-        isDark = false;
-        setSensor();
-        setTheme();
-    }
-    public ColorPalette(Context context, FragmentSiteViewBinding siteViewBinding, TYPE type) {
-        this.context = context;
-        this.type = type;
-        this.siteViewBinding = siteViewBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
 
+    public ColorPalette(Context context, FragmentSiteViewBinding siteViewBinding, TYPE type) {
+        this.context = context;
+        this.type = type;
+        this.siteViewBinding = siteViewBinding;
+        getSettings();
+        setSensor();
+        setTheme();
+    }
     public ColorPalette(Context context, FragmentLocationViewBinding locationViewBinding, TYPE type) {
         this.context = context;
         this.type = type;
         this.locationViewBinding = locationViewBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -113,7 +119,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.popupOptionsLayoutBinding = popupOptionsLayoutBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -122,7 +128,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.detailBinding = detailBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -131,7 +137,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.registerBinding = registerBinding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -140,7 +146,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.register2Binding = register2Binding;
-        isDark = false;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -149,6 +155,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.profileBinding = profileBinding;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -157,6 +164,7 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.loginBinding = loginBinding;
+        getSettings();
         setSensor();
         setTheme();
     }
@@ -165,22 +173,36 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.itemViewBinding = itemViewBinding;
+        getSettings();
         setSensor();
         setTheme();
     }
 
+    private void getSettings() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        isAutoOff = prefs.getBoolean("auto_dark_theme", false);
+        if(isAutoOff) {
+            isDark = prefs.getBoolean("dark_theme", false);
+        }
+//        setTheme();
+    }
+
     private void setSensor() {
-        sensorManager = (SensorManager) context.getSystemService(Service.SENSOR_SERVICE);
-        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+            sensorManager = (SensorManager) context.getSystemService(Service.SENSOR_SERVICE);
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
     }
 
 
     public void registerListener() {
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if(!isAutoOff) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     public void unregisterListener() {
-        sensorManager.unregisterListener(this);
+        if (!isAutoOff) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     private void setTheme() {
@@ -239,13 +261,15 @@ public class ColorPalette implements SensorEventListener {
 
 
 
+
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_LIGHT) {
             switch (type) {
                 case LOGIN: {
                     ActivityLoginBinding binding = loginBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -256,7 +280,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case PROFILE: {
                     FragmentProfileBinding binding = profileBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -267,7 +291,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case SITE_VIEW: {
                     FragmentSiteViewBinding binding = siteViewBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -278,7 +302,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case IMAGE_VIEW: {
                     FragmentImageViewBinding binding = imageViewBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -289,7 +313,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case POPUP: {
                     PopupOptionsLayoutBinding binding = popupOptionsLayoutBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -300,7 +324,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case LOCATION: {
                     FragmentLocationViewBinding binding = locationViewBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -311,7 +335,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case CONTACT: {
                     ContactParentItemBinding binding = contactBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -322,7 +346,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case REGISTER2: {
                     ActivityRegister2Binding binding = register2Binding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -333,7 +357,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case REGISTER: {
                     ActivityRegisterBinding binding = registerBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -344,7 +368,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case DETAILS: {
                     ActivitySiteDetailBinding binding = detailBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -355,7 +379,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case MAIN: {
                     ActivityMainBinding binding = mainBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {
@@ -366,7 +390,7 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case ITEM_VIEW: {
                     ItemViewBinding binding = itemViewBinding;
-                    if (event.values[0] < 1.0 && !isDark()) {
+                    if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);
                     } else if (event.values[0] >= 1.0 && isDark()) {

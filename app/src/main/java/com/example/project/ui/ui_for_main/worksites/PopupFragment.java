@@ -74,6 +74,7 @@ public class PopupFragment extends AppCompatDialogFragment {
 
             }
         };
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Choose an app to contact")
                 .setView(v)

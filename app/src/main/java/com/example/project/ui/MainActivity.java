@@ -32,7 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private Database db;
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity{
                 (this, R.layout.activity_main);
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.MAIN);
         binding.setColorPalette(colorPalette);
-        binding.setLifecycleOwner(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -126,5 +125,4 @@ public class MainActivity extends AppCompatActivity{
         super.onResume();
         colorPalette.registerListener();
     }
-
 }

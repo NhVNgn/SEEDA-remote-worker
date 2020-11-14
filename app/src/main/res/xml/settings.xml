@@ -8,9 +8,19 @@
         android:key="gps_visibility"
         android:title="@string/enable_gps" />
     <SwitchPreference
+        android:defaultValue="true"
+        android:key="auto_dark_theme"
+        android:summary="Contains bugs(not fully implemented)
+        Recommended keeping turned ON"
+        android:title="Disable auto dark theme"
+        android:icon="@drawable/ic_image_blue"/>
+    <SwitchPreference
+        android:dependency="auto_dark_theme"
         android:defaultValue="false"
         android:key="dark_theme"
         android:title="@string/enable_dark_theme"
+        android:summary="Contains bugs(not fully implemented)
+        Recommended keeping turned OFF"
         android:icon="@drawable/ic_image_blue"/>
     <Preference
         android:key="feedback"
