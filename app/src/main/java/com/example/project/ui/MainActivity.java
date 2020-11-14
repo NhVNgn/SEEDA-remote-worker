@@ -1,11 +1,16 @@
 package com.example.project.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -13,10 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.project.R;
+import com.example.project.databinding.ActivityMainBinding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -30,11 +37,18 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private Database db;
     private static View headerView;
+    private ColorPalette colorPalette;
+    private ActivityMainBinding binding;
+    private SensorManager sensorManager;
+    private Sensor sensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView
+                (this, R.layout.activity_main);
+        colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.MAIN);
+        binding.setColorPalette(colorPalette);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -49,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         db = new Database(this);
         showUserInfo();
@@ -97,5 +114,15 @@ public class MainActivity extends AppCompatActivity {
         return intent;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
+    }
 }

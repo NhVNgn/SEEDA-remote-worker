@@ -24,9 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.project.R;
+import com.example.project.databinding.FragmentProfileBinding;
 import com.example.project.model.Constants;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+import com.example.project.ui.ColorPalette;
 import com.example.project.ui.MainActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -56,11 +58,18 @@ public class ProfileFragment extends Fragment {
     boolean isIconUpdated;
     private Snackbar snackbar;
 
+    private ColorPalette colorPalette;
+
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        FragmentProfileBinding binding = FragmentProfileBinding.bind(root);
+        colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.PROFILE);
+        binding.setColorPalette(colorPalette);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
 
         db = new Database(root.getContext());
 
@@ -159,7 +168,11 @@ public class ProfileFragment extends Fragment {
                     makeTextEditable(editText);
                 }
                 cancelBtn.setVisibility(View.VISIBLE);
-                editBtn.setImageResource(R.drawable.ic_save_white);
+                if(colorPalette.isDark()) {
+                    editBtn.setImageResource(R.drawable.ic_save_dark);
+                } else {
+                    editBtn.setImageResource(R.drawable.ic_save_white);
+                }
                 if(numOfBlock == 1) {
                     icon.setImageAlpha(50);
                     icon.setForeground(addIcon);
@@ -179,7 +192,11 @@ public class ProfileFragment extends Fragment {
                     makeTextNotEditable(editText);
                 }
                 cancelBtn.setVisibility(View.GONE);
-                editBtn.setImageResource(R.drawable.ic_edit_white);
+                if(colorPalette.isDark()) {
+                    editBtn.setImageResource(R.drawable.ic_edit_dark);
+                } else {
+                    editBtn.setImageResource(R.drawable.ic_edit_white);
+                }
                 updateDataInDatabase1(numOfBlock);
                 updateUser();
                 updateNavView();
@@ -198,7 +215,11 @@ public class ProfileFragment extends Fragment {
                 makeTextNotEditable(editText);
             }
             cancelBtn.setVisibility(View.GONE);
-            editBtn.setImageResource(R.drawable.ic_edit_white);
+            if(colorPalette.isDark()) {
+                editBtn.setImageResource(R.drawable.ic_edit_dark);
+            } else {
+                editBtn.setImageResource(R.drawable.ic_edit_white);
+            }
             btnCount.incrementAndGet();
             snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
             icon.setImageAlpha(255);
@@ -238,6 +259,11 @@ public class ProfileFragment extends Fragment {
     private void makeTextEditable(EditText editText) {
         editText.setFocusable(true);
         editText.setFocusableInTouchMode(true);
+        if(colorPalette.isDark()) {
+            editText.setTextColor(getContext().getColor(R.color.text_light));
+        } else {
+            editText.setTextColor(getContext().getColor(R.color.text_dark));
+        }
         editText.setBackgroundResource(android.R.drawable.edit_text);
     }
 
@@ -246,6 +272,11 @@ public class ProfileFragment extends Fragment {
         editText.setFocusableInTouchMode(false);
         editText.setBackgroundResource(0);
         editText.setPadding(0, 0, 0 ,0);
+        if(colorPalette.isDark()) {
+            editText.setTextColor(getContext().getColor(R.color.text_dark));
+        } else {
+            editText.setTextColor(getContext().getColor(R.color.text_light));
+        }
     }
 
     @Override
@@ -361,5 +392,17 @@ public class ProfileFragment extends Fragment {
                     .putString("password", passwordEdit.getText().toString())
                     .apply();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 }
