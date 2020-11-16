@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SiteDatabase {
+public class    SiteDatabase {
     private SQLiteDatabase db;
     private Context context;
     private List<WorkSite> allWorkSite;
