@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:background="@{colorPalette.background}">
     <LinearLayout
         android:id="@+id/groupAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:id="@+id/group1"
@@ -19,7 +26,9 @@
                 android:id="@+id/emailButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/email_icon"
+                android:src="@{colorPalette.dark ? @drawable/ic_email_blue : @drawable/ic_email_white}"
+                android:layout_gravity="center_horizontal"
+                android:background="@{colorPalette.btnBackground}"
                 />
             <TextView
                 android:id="@+id/emailTextView"
@@ -27,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:text="Gmail"
                 android:layout_gravity="center_horizontal"
+                android:textColor="@{colorPalette.text}"
                 />
         </LinearLayout>
 
@@ -42,8 +52,8 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/phone_icon"
-
+                android:src="@{colorPalette.dark ? @drawable/ic_phone_blue : @drawable/ic_phone_white}"
+                android:background="@{colorPalette.btnBackground}"
                 />
             <TextView
                 android:id="@+id/phoneTextView"
@@ -51,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:text="Phone"
                 android:layout_gravity="center_horizontal"
+                android:textColor="@{colorPalette.text}"
                 />
         </LinearLayout>
 
@@ -60,21 +71,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginStart="20dp">
+
             <ImageButton
                 android:id="@+id/smsButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/sms_icon"
-
+                android:src="@{colorPalette.dark ? @drawable/ic_sms_blue : @drawable/ic_sms_white}"
+                android:background="@{colorPalette.btnBackground}"
                 />
+
             <TextView
                 android:id="@+id/smsTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SMS"
                 android:layout_gravity="center_horizontal"
+                android:textColor="@{colorPalette.text}"
                 />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
+</layout>

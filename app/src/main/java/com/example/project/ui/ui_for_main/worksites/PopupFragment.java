@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.project.R;
+import com.example.project.databinding.PopupOptionsLayoutBinding;
+import com.example.project.ui.ColorPalette;
 
 public class PopupFragment extends AppCompatDialogFragment {
     ImageButton sms;
@@ -25,10 +27,15 @@ public class PopupFragment extends AppCompatDialogFragment {
 
     String contact_number = "000";
     String contact_email = "user@gmail.com";
+
+    private ColorPalette colorPalette;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
        View v = LayoutInflater.from(getActivity()).inflate(R.layout.popup_options_layout, null);
+       PopupOptionsLayoutBinding binding = PopupOptionsLayoutBinding.bind(v);
+       colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.POPUP);
+       binding.setColorPalette(colorPalette);
         sms = v.findViewById(R.id.smsButton);
         phone = v.findViewById(R.id.phoneButton);
         email = v.findViewById(R.id.emailButton);
@@ -67,6 +74,7 @@ public class PopupFragment extends AppCompatDialogFragment {
 
             }
         };
+
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Choose an app to contact")
                 .setView(v)
@@ -77,6 +85,18 @@ public class PopupFragment extends AppCompatDialogFragment {
         this.show(manager, "Popup message is open");
         contact_number = phone_number;
         contact_email = email;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 
 }

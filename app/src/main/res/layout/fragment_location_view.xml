@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,7 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:text="@string/site_address"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@{colorPalette.text}"/>
 
         <TextView
             android:id="@+id/addressTextDisplay"
@@ -26,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/addressText"
             android:layout_marginStart="16dp"
-            android:text="Address will be displayed here"/>
+            android:text="Address will be displayed here"
+            android:textColor="@{colorPalette.text}"/>
 
         <Button
             android:id="@+id/addressButton"
@@ -36,7 +45,8 @@
             android:layout_below="@+id/addressTextDisplay"
             android:text="@string/open_in_google_map"
             android:onClick="launchMapIntent"
-            android:backgroundTint="@color/main_blue_color"
+            android:backgroundTint="@{colorPalette.btnBackground}"
+            android:textColor="@{colorPalette.btnText}"
             />
 
 
@@ -44,3 +54,4 @@
 
     </RelativeLayout>
 </FrameLayout>
+</layout>

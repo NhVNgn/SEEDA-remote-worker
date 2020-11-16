@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="16dp"
     android:paddingTop="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"
-    tools:context=".ui.RegisterActivity">
+    tools:context=".ui.RegisterActivity"
+    android:background="@{colorPalette.background}">
 
 
     <TextView
@@ -16,6 +24,7 @@
         android:layout_height="wrap_content"
         android:text="@string/step_1"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@{colorPalette.text}"
         android:textSize="30sp"/>
 
     <LinearLayout
@@ -38,13 +47,15 @@
             android:text="@string/enter_your_email_and_password"
             android:layout_marginBottom="20dp"
             android:textStyle="italic"
+            android:textColor="@{colorPalette.text}"
             />
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="@{colorPalette.text}"/>
 
         <EditText
             android:id="@+id/passwordEditText"
@@ -52,7 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/password_8_digits_at_least"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@{colorPalette.text}"/>
     </LinearLayout>
 
     <Button
@@ -63,10 +75,12 @@
         android:layout_alignParentEnd="true"
         android:onClick="nextStep"
         android:text="@string/next"
-        android:backgroundTint="@color/main_blue_color"
+        android:backgroundTint="@{colorPalette.btnBackground}"
+        android:textColor="@{colorPalette.btnText}"
         />
 
 
 
 
 </RelativeLayout>
+</layout>

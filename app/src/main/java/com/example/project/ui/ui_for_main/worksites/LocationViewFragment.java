@@ -15,20 +15,26 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.project.R;
+import com.example.project.databinding.FragmentLocationViewBinding;
 import com.example.project.model.workSite.SiteDatabase;
 import com.example.project.model.workSite.WorkSite;
+import com.example.project.ui.ColorPalette;
 
 public class LocationViewFragment extends Fragment {
     SiteDatabase siteDB;
     WorkSite userWorkSite = null;
     TextView addressText;
     Button mapButton;
+    private ColorPalette colorPalette;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_location_view, container, false);
+        FragmentLocationViewBinding binding = FragmentLocationViewBinding.bind(root);
+        colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.LOCATION);
+        binding.setColorPalette(colorPalette);
         siteDB = new SiteDatabase(root.getContext());
         getSite();
         mapButton = (Button) root.findViewById(R.id.addressButton);
@@ -67,5 +73,17 @@ public class LocationViewFragment extends Fragment {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 }

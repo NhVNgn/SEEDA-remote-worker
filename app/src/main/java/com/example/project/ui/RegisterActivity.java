@@ -1,11 +1,14 @@
 package com.example.project.ui;
 import com.example.project.R;
+import com.example.project.databinding.ActivityRegister2Binding;
+import com.example.project.databinding.ActivityRegisterBinding;
 import com.example.project.model.Constants;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.example.project.ui.ui_for_main.worksites.SiteDetailActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,12 +28,18 @@ public class RegisterActivity extends AppCompatActivity {
     public static final String NEW_EMAIL = "new_email";
     public static final String NEW_PASSWORD = "new_password";
     Database db;
+    private ColorPalette colorPalette;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityRegisterBinding binding = DataBindingUtil.setContentView(this,
+                R.layout.activity_register);
+        colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.REGISTER);
+        binding.setColorPalette(colorPalette);
+        binding.setLifecycleOwner(this);
         setContentView(R.layout.activity_register);
         db = new Database(this);
 
@@ -71,5 +80,17 @@ public class RegisterActivity extends AppCompatActivity {
         saveInSharedPrefs(site_id, root);
         startActivity(intent);*/
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        colorPalette.unregisterListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        colorPalette.registerListener();
     }
 }

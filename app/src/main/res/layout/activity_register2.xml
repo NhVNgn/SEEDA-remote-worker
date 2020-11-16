@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="colorPalette"
+            type="com.example.project.ui.ColorPalette" />
+    </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,13 +14,15 @@
     android:paddingTop="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"
-    tools:context=".ui.Register2">
+    tools:context=".ui.Register2"
+    android:background="@{colorPalette.background}">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/step_2"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@{colorPalette.text}"
         android:textSize="30sp"/>
 
 
@@ -38,6 +46,7 @@
             android:text="@string/personal_information"
             android:layout_marginBottom="20dp"
             android:textStyle="italic"
+            android:textColor="@{colorPalette.text}"
             />
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -47,6 +56,7 @@
                 android:id="@+id/firstNameEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@{colorPalette.text}"
                 android:hint="@string/first_name"/>
             <EditText
                 android:id="@+id/lastNameEditText"
@@ -55,6 +65,7 @@
                 android:hint="@string/last_name"
                 android:layout_toEndOf="@id/firstNameEditText"
                 android:gravity="center_horizontal"
+                android:textColor="@{colorPalette.text}"
                 />
         </RelativeLayout>
 
@@ -70,7 +81,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textSize="15sp"
-                android:text="@string/birthday"/>
+                android:text="@string/birthday"
+                android:textColor="@{colorPalette.text}"/>
             <EditText
                 android:id="@+id/birthdayEditText"
                 android:layout_width="match_parent"
@@ -79,6 +91,7 @@
                 android:gravity="center_horizontal"
                 android:layout_toEndOf="@id/birthDayText"
                 android:layout_marginStart="35dp"
+                android:textColor="@{colorPalette.text}"
                 />
         </RelativeLayout>
 
@@ -93,7 +106,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textSize="15sp"
-                android:text="@string/company_id"/>
+                android:text="@string/company_id"
+                android:textColor="@{colorPalette.text}"/>
             <EditText
                 android:id="@+id/idEditText"
                 android:layout_width="match_parent"
@@ -101,6 +115,7 @@
                 android:gravity="center_horizontal"
                 android:layout_toEndOf="@id/companyIdText"
                 android:layout_marginStart="10dp"
+                android:textColor="@{colorPalette.text}"
                 />
         </RelativeLayout>
 
@@ -116,7 +131,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textSize="15sp"
-                android:text="@string/phone_number"/>
+                android:text="@string/phone_number"
+                android:textColor="@{colorPalette.text}"/>
             <EditText
                 android:id="@+id/prefix"
                 android:layout_width="match_parent"
@@ -125,6 +141,7 @@
                 android:hint="@string/_1"
                 android:layout_below="@id/PhoneNumberText"
                 android:layout_alignEnd="@id/PhoneNumberText"
+                android:textColor="@{colorPalette.text}"
                 />
             <EditText
                 android:id="@+id/phoneEditText"
@@ -133,6 +150,7 @@
                 android:gravity="center_horizontal"
                 android:layout_below="@id/PhoneNumberText"
                 android:layout_toEndOf="@+id/prefix"
+                android:textColor="@{colorPalette.text}"
                 />
         </RelativeLayout>
 
@@ -149,6 +167,8 @@
         android:onClick="addWorker"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="@color/main_blue_color"
-        android:text="@string/sign_up" />
+        android:text="@string/sign_up"
+        android:backgroundTint="@{colorPalette.btnBackground}"
+        android:textColor="@{colorPalette.btnText}"/>
 </RelativeLayout>
+</layout>
