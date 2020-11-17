@@ -207,4 +207,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         colorPalette.registerListener();
     }
+
+    public static Intent makeIntent(Context context) {
+        return new Intent(context, LoginActivity.class);
+    }
 }

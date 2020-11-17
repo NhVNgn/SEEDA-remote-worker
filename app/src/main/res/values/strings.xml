@@ -68,4 +68,8 @@
     <string name="enter_your_email_and_password">Enter your email and password</string>
     <string name="step_2">STEP 2</string>
     <string name="choose_app_to_contact">Choose an app to contact</string>
+    <string name="are_you_sure_you_want_to_delete_your_account">Are you sure you want to delete your account?</string>
+    <string name="enter_password_to_delete_your_account">Enter password to delete your account:</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="confirm">CONFIRM</string>
 </resources>

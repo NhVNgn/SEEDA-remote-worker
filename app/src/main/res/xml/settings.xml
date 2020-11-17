@@ -27,4 +27,11 @@
         android:summary="Report technical issues or suggest new features"
         android:title="Send feedback"
         android:icon="@drawable/ic_feedback_blue"/>
+    <Preference
+        android:key="delete_account"
+        android:defaultValue="false"
+        android:summary="Delete your account"
+        android:title="Advanced setting"
+        android:icon="@drawable/ic_feedback_blue"
+        />
 </PreferenceScreen>

@@ -164,4 +164,10 @@ public class Database {
         user.setMedicalConsiderations(cursor.getString(cursor.getColumnIndex(Constants.MED_CONSIDERATIONS)));
         user.setIconUri(Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI))));
     }
+
+    public int deleteRow(String email){
+        db = helper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(email)};
+        return db.delete(Constants.TABLE_NAME, Constants.EMAIL + "=?", whereArgs);
+    }
 }
