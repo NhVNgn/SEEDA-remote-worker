@@ -43,7 +43,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals("delete_account"));
+        if (preference.getKey().equals("delete_account"))
         {
             FragmentManager manager = getFragmentManager();
             PopupDeleteFragmnet dialog = new PopupDeleteFragmnet();
