@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.project.model.Constants;
 import com.example.project.model.siteAttendance.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +118,13 @@ public class attendanceDatabase {
         attendance.setUID(Integer.parseInt(cursor.getString(cursor.getColumnIndex(attendanceConstants.UID))));
         attendance.setSiteID(cursor.getString(cursor.getColumnIndex(attendanceConstants.SITE_ID)));
         attendance.setWorkerEmail(cursor.getString(cursor.getColumnIndex(attendanceConstants.WORKER_EMAIL)));
+    }
+
+    public int deleteRow(String email){
+        // delete all row that has username like this
+        db = helper.getWritableDatabase();
+        String[] whereArgs = new String[]{String.valueOf(email)};
+        return db.delete(attendanceConstants.TABLE_NAME, attendanceConstants.WORKER_EMAIL + "=?", whereArgs);
     }
 }
 

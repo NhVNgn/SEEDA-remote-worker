@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.project.R;
 import com.example.project.databinding.PopupOptionsLayoutBinding;
 import com.example.project.model.Database;
+import com.example.project.model.siteAttendance.attendanceDatabase;
 import com.example.project.ui.ColorPalette;
 import com.example.project.ui.LoginActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -35,6 +36,7 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
     String correct_email;
     EditText passwordConfirmEditText;
     Database db;
+    attendanceDatabase attendDatabase;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
         //binding.setColorPalette(colorPalette);
         passwordConfirmEditText = v.findViewById(R.id.deletePasswordEditText);
         db = new Database(v.getContext());
+        attendDatabase = new attendanceDatabase(v.getContext());
         DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -51,6 +54,8 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
                 if (isPasswordMatch(entered_password))
                 {
                     db.deleteRow(correct_email);
+                    attendDatabase.deleteRow(correct_email);
+
                     Toast.makeText(getContext(), "YOUR ACCOUNT IS DELETED", Toast.LENGTH_SHORT).show();
                     SharedPreferences prefs = getContext()
                             .getSharedPreferences("user", Context.MODE_PRIVATE);
