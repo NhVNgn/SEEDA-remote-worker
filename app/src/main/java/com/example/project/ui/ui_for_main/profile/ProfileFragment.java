@@ -259,11 +259,7 @@ public class ProfileFragment extends Fragment {
     private void makeTextEditable(EditText editText) {
         editText.setFocusable(true);
         editText.setFocusableInTouchMode(true);
-        if(colorPalette.isDark()) {
-            editText.setTextColor(getContext().getColor(R.color.text_light));
-        } else {
-            editText.setTextColor(getContext().getColor(R.color.text_dark));
-        }
+        editText.setTextColor(getContext().getColor(R.color.text_light));
         editText.setBackgroundResource(android.R.drawable.edit_text);
     }
 
@@ -310,7 +306,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void updateIcon() {
-        if(user.getIconUri() != null) {
+        if(user.getIconUri() != null && !user.getIconUri().toString().equals("")) {
             icon.setImageURI(user.getIconUri());
         } else {
             icon.setImageResource(R.drawable.profile_icon);

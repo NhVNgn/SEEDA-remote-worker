@@ -49,6 +49,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+        if(sharedPreferences != null && sharedPreferences.getInt("id", -1)
+                != -1) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         binding = DataBindingUtil.setContentView
                 (this, R.layout.activity_login);
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.LOGIN);
@@ -112,8 +120,6 @@ public class LoginActivity extends AppCompatActivity {
                 incorrectPasswordText.setText(getText(R.string.incorrect_password));
                 setIncorrectPassword();
             } else {
-                Toast.makeText(this, user.getFirstName() + " is found", Toast.LENGTH_SHORT)
-                        .show();
                 incorrectEmailText.setText("");
 
                 saveInSharedPrefs(email, password, user.getId());

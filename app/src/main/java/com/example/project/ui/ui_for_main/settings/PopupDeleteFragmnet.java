@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -25,6 +26,7 @@ import com.example.project.databinding.PopupOptionsLayoutBinding;
 import com.example.project.model.Database;
 import com.example.project.ui.ColorPalette;
 import com.example.project.ui.LoginActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
 
@@ -50,6 +52,10 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
                 {
                     db.deleteRow(correct_email);
                     Toast.makeText(getContext(), "YOUR ACCOUNT IS DELETED", Toast.LENGTH_SHORT).show();
+                    SharedPreferences prefs = getContext()
+                            .getSharedPreferences("user", Context.MODE_PRIVATE);
+                    prefs.edit().putString("username", null).putString("password", null)
+                            .putInt("id", -1).apply();
                     Intent intent = LoginActivity.makeIntent(v.getContext());
                     startActivity(intent);
                     getActivity().finish();
@@ -65,7 +71,6 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
 
             }
         };
-
 
 
         return new AlertDialog.Builder(getActivity())

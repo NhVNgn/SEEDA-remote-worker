@@ -30,9 +30,7 @@ public class dbSiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase dbSite) {
         try {
             dbSite.execSQL(CREATE_TABLE);
-            Toast.makeText(context, "onCreate() called", Toast.LENGTH_LONG).show();
         } catch (SQLException e) {
-            Toast.makeText(context, "exception onCreate() db", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -41,9 +39,7 @@ public class dbSiteHelper extends SQLiteOpenHelper {
         try {
             dbSite.execSQL(DROP_TABLE);
             onCreate(dbSite);
-            Toast.makeText(context, "onUpgrade called", Toast.LENGTH_LONG).show();
         } catch (SQLException e) {
-            Toast.makeText(context, "exception onUpgrade() db", Toast.LENGTH_LONG).show();
         }
     }
 }

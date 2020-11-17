@@ -32,6 +32,6 @@
         android:defaultValue="false"
         android:summary="Delete your account"
         android:title="Advanced setting"
-        android:icon="@drawable/ic_feedback_blue"
+        android:icon="@drawable/ic_delete_red"
         />
 </PreferenceScreen>

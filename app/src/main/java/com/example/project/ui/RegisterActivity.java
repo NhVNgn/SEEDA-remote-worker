@@ -6,6 +6,7 @@ import com.example.project.model.Constants;
 import com.example.project.model.Database;
 import com.example.project.model.User;
 import com.example.project.ui.ui_for_main.worksites.SiteDetailActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -13,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -29,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     public static final String NEW_PASSWORD = "new_password";
     Database db;
     private ColorPalette colorPalette;
+    private Snackbar snackbar;
 
 
 
@@ -45,30 +48,41 @@ public class RegisterActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        createSnackBar();
     }
 
+    private void createSnackBar() {
+        snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_LONG);
+        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
+                .setTextColor(Color.WHITE);
+    }
+
+    private boolean isValidMail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     public void nextStep(View view) {
         Intent intent = new Intent(this, Register2.class);
         String new_email = emailEditText.getText().toString();
         String new_password = passwordEditText.getText().toString();
         if (new_email.isEmpty()) {
-            Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show();
+            snackbar.setText("Email is empty").show();
             return;
         }
         if (new_password.isEmpty()) {
-            Toast.makeText(this, "Password is empty", Toast.LENGTH_SHORT).show();
+            snackbar.setText("Password is empty").show();
             return;
         }
         User user = db.getUserByEmail(new_email);
         if (!user.getFirstName().equals("NOT_FOUND")){
-            Toast.makeText(this, "This user name is already used", Toast.LENGTH_SHORT).show();
+            snackbar.setText("This user name is already used").show();
+
             return;
         }
-
-
-
-
+        if(!isValidMail(new_email)) {
+            snackbar.setText("Email is invalid").show();
+            return;
+        }
 
         intent.putExtra(NEW_EMAIL, new_email);
         intent.putExtra(NEW_PASSWORD, new_password);

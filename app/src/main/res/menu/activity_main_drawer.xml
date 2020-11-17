@@ -2,19 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+    <item android:title="General">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_worksites"
+                    android:icon="@drawable/ic_worksite_logo"
+                    android:title="Work sites" />
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/ic_profile_icon_circle"
+                    android:title="@string/profile" />
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_black_settings_icon"
+                    android:title="@string/settings" />
+            </group>
+        </menu>
+    </item>
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_worksites"
-            android:icon="@drawable/ic_worksite_logo"
-            android:title="Work sites" />
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_profile_icon_circle"
-            android:title="@string/profile" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_black_settings_icon"
-            android:title="@string/settings" />
-    </group>
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/nav_sign_out"
+                android:icon="@drawable/ic_sign_out"
+                android:title="Sign Out" />
+        </menu>
+    </item>
 </menu>

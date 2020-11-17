@@ -1,36 +1,38 @@
 package com.example.project.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.project.R;
 import com.example.project.databinding.ActivityMainBinding;
 import com.example.project.model.Database;
 import com.example.project.model.User;
+import com.example.project.ui.ui_for_main.PopupSignOutFragment;
+import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SensorManager sensorManager;
     private Sensor sensor;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -71,14 +75,21 @@ public class MainActivity extends AppCompatActivity {
         showUserInfo();
     }
 
+    private void setUpSignOutOption() {
+        NavigationMenuItemView signOut = (NavigationMenuItemView) navigationView.findViewById(R.id.nav_sign_out);
+        signOut.setOnClickListener(v -> {
+            PopupSignOutFragment dialog = new PopupSignOutFragment(MainActivity.this);
+            dialog.showDialog(getSupportFragmentManager());
+        });
+    }
+
     @SuppressLint("SetTextI18n")
     private void showUserInfo() {
         SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
         User user = db.getUser(prefs.getInt("id", -1));
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
         ImageView icon = headerView.findViewById(R.id.profileIconMain);
-        if(user.getIconUri() != null) {
+        if(user.getIconUri() != null && !user.getIconUri().toString().equals("")) {
             icon.setImageURI(user.getIconUri());
         } else {
             icon.setImageResource(R.drawable.profile_icon);
@@ -103,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        setUpSignOutOption();
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }

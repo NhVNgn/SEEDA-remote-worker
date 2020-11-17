@@ -56,6 +56,7 @@
                 android:id="@+id/firstNameEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:inputType="textPersonName"
                 android:textColor="@{colorPalette.text}"
                 android:hint="@string/first_name"/>
             <EditText
@@ -63,6 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/last_name"
+                android:inputType="textPersonName"
                 android:layout_toEndOf="@id/firstNameEditText"
                 android:gravity="center_horizontal"
                 android:textColor="@{colorPalette.text}"
@@ -88,6 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dd_mm_yyyy"
+                android:inputType="date"
                 android:gravity="center_horizontal"
                 android:layout_toEndOf="@id/birthDayText"
                 android:layout_marginStart="35dp"
@@ -139,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:hint="@string/_1"
+                android:inputType="phone"
                 android:layout_below="@id/PhoneNumberText"
                 android:layout_alignEnd="@id/PhoneNumberText"
                 android:textColor="@{colorPalette.text}"
@@ -150,6 +154,7 @@
                 android:gravity="center_horizontal"
                 android:layout_below="@id/PhoneNumberText"
                 android:layout_toEndOf="@+id/prefix"
+                android:inputType="phone"
                 android:textColor="@{colorPalette.text}"
                 />
         </RelativeLayout>
