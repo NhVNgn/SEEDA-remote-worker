@@ -3,7 +3,7 @@
     <data>
         <variable
             name="colorPalette"
-            type="com.example.project.ui.ColorPalette" />
+            type="com.sereem.remoteworker.ui.ColorPalette" />
     </data>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

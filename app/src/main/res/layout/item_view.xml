@@ -5,7 +5,7 @@
     <data>
         <variable
             name="colorPalette"
-            type="com.example.project.ui.ColorPalette" />
+            type="com.sereem.remoteworker.ui.ColorPalette" />
     </data>
     <RelativeLayout
         android:layout_width="match_parent" android:layout_height="match_parent"

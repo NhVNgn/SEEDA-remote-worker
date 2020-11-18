@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.project">
+    package="com.sereem.remoteworker">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project">
         <activity
-            android:name=".ui.Register2"
+            android:name="com.sereem.remoteworker.ui.Register2"
             android:theme="@style/Theme.Project.NoActionBar"
             android:noHistory="true">
         </activity>
         <activity
-            android:name=".ui.ui_for_main.worksites.SiteDetailActivity"
+            android:name="com.sereem.remoteworker.ui.ui_for_main.worksites.SiteDetailActivity"
             android:label="Work site information">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
@@ -43,13 +43,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.sereem.remoteworker.ui.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.Project.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".ui.LoginActivity">
+        <activity android:name="com.sereem.remoteworker.ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.RegisterActivity"
+            android:name="com.sereem.remoteworker.ui.RegisterActivity"
             android:theme="@style/Theme.Project.NoActionBar" />
     </application>
 

@@ -50,7 +50,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="construction_site_name">Name:</string>
-    <string name="project_id">Project ID:</string>
+    <string name="project_id_worksite">Project ID:</string>
     <string name="master_point">Master point:</string>
     <string name="operation_hours">Operation hours:</string>
     <string name="site_emergency_and_response_information">Show site emergency and response information</string>

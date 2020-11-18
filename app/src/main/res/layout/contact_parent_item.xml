@@ -3,7 +3,7 @@
     <data>
         <variable
             name="colorPalette"
-            type="com.example.project.ui.ColorPalette" />
+            type="com.sereem.remoteworker.ui.ColorPalette" />
     </data>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
