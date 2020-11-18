@@ -1,5 +1,7 @@
 package com.sereem.remoteworker.ui;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
 import com.sereem.remoteworker.model.Database;
@@ -29,7 +31,7 @@ public class Register2 extends AppCompatActivity {
     String email;
     String password;
     private ColorPalette colorPalette;
-
+    DatabaseReference fireBase;
     Database db;
     attendanceDatabase attendDb;
 
@@ -43,6 +45,7 @@ public class Register2 extends AppCompatActivity {
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(this);
         db = new Database(this);
+        fireBase = FirebaseDatabase.getInstance().getReference().child("Users");
         attendDb = new attendanceDatabase(this);
         Intent intent = getIntent();
         email = intent.getStringExtra(NEW_EMAIL);
@@ -71,12 +74,14 @@ public class Register2 extends AppCompatActivity {
         argsArray.add(phoneEditText.getText().toString());
         argsArray.add(birthdayEditText.getText().toString());
         argsArray.add(companyIdEditText.getText().toString());
-        argsArray.add("");
-        argsArray.add("");
-        argsArray.add("");
-        argsArray.add("");
-        argsArray.add("");
-        argsArray.add("");
+        argsArray.add(null);
+        argsArray.add(null);
+        argsArray.add(null);
+        argsArray.add(null);
+        argsArray.add(null);
+        argsArray.add(null);
+
+
 
         long id = db.insertData(argsArray);
         if (id < 0)
@@ -93,6 +98,11 @@ public class Register2 extends AppCompatActivity {
             
             User user = db.getUser(email, password);
             saveInSharedPrefs(email, password, user.getId());
+
+            // Saves User to the database
+            // IMPORTANT: all fields show be filled in the register page
+
+            fireBase.child("" + user.getEmail()).setValue(user);
 
             Intent intent = MainActivity.makeLaunchIntent(this, email, password);
             startActivity(intent);

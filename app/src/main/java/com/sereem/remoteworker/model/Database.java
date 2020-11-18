@@ -162,7 +162,8 @@ public class Database {
         user.setEmPhone(cursor.getString(cursor.getColumnIndex(Constants.EM_PHONE)));
         user.setEmRelation(cursor.getString(cursor.getColumnIndex(Constants.EM_RELATION)));
         user.setMedicalConsiderations(cursor.getString(cursor.getColumnIndex(Constants.MED_CONSIDERATIONS)));
-        user.setIconUri(Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI))));
+        if(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI)) != null)
+            user.setIconUri(Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI))));
     }
 
     public int deleteRow(String email){
