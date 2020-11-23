@@ -9,14 +9,22 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityLoginBinding;
 import com.sereem.remoteworker.model.Database;
@@ -31,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView incorrectEmailText, incorrectPasswordText;
     private Database db;
     private Snackbar snackbar;
+    private FirebaseAuth fAuth;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
 
@@ -42,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fAuth = FirebaseAuth.getInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
         if(sharedPreferences != null && sharedPreferences.getInt("id", -1)
@@ -110,18 +121,29 @@ public class LoginActivity extends AppCompatActivity {
             if(user.getFirstName().equals("NOT_FOUND")) {
                 incorrectEmailText.setText(getText(R.string.user_not_found));
                 setIncorrectEmail();
-            } else if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
+            } if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
                 incorrectPasswordText.setText(getText(R.string.incorrect_password));
                 setIncorrectPassword();
-            } else {
-                incorrectEmailText.setText("");
-
-                saveInSharedPrefs(email, password, user.getId());
-
-                Intent intent = MainActivity.makeLaunchIntent(this, email, password);
-                startActivity(intent);
-                finish();
             }
+
+            ProgressBar progressBar = findViewById(R.id.progressBarLogin);
+            progressBar.setVisibility(View.VISIBLE);
+
+            fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    incorrectEmailText.setText("");
+
+                    saveInSharedPrefs(email, password, user.getId());
+
+                    Intent intent = MainActivity.makeLaunchIntent(LoginActivity.this, email, password);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, task.getException().toString(),
+                            Toast.LENGTH_LONG).show();
+                }
+                progressBar.setVisibility(View.INVISIBLE);
+            });
         });
     }
 
@@ -193,6 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 
