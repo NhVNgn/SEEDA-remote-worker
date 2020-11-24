@@ -10,23 +10,30 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,99 +46,168 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import com.sereem.remoteworker.R;
+import com.sereem.remoteworker.model.workSite.SiteDatabase;
+import com.sereem.remoteworker.model.workSite.WorkSite;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 
-public class MapsFragment extends Fragment implements LocationListener{
+public class MapsFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
 
-    private GoogleMap mMap;
-    Drawable site_icon;
-    View view;
-    BitmapDescriptor site_icon_descriptor;
+    GoogleMap mGoogleMap;
+    LocationRequest mLocationRequest;
+    Location mLastLocation;
+    Marker mCurrLocationMarker;
+    SiteDatabase siteDB;
+    WorkSite userWorkSite = null;
 
-
-    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
-        Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    public Bitmap createSmallerMarker(int marker){
+        int height = 100;
+        int width = 100;
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) ResourcesCompat.getDrawable(getResources(), marker, null);
+        Bitmap b = bitmapDrawable.getBitmap();
+        return Bitmap.createScaledBitmap(b, width, height, false);
     }
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
+        setUpMapIfNeeded();
+    }
 
+    private void setUpMapIfNeeded() {
 
-            mMap = googleMap;
-            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-            }
-            mMap.setMyLocationEnabled(true);
-
-
+        if (mGoogleMap == null) {
+            getMapAsync(this);
         }
-    };
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("requestCode: " + requestCode);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_maps, container, false);
-        site_icon = ResourcesCompat.getDrawable(getResources(), R.drawable.construction, null);
-        site_icon_descriptor = getMarkerIconFromDrawable(site_icon);
-
-        return view;
     }
 
     @Override
-    public void onLocationChanged(@NonNull Location location) {
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap=googleMap;
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        //Initialize Google Play Services
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            //Location Permission already granted
+            mGoogleMap.setMyLocationEnabled(true);
+        } else {
+            //Request Location Permission
+            checkLocationPermission();
+        }
+        // add marker to location
+        siteDB = new SiteDatabase(getContext());
+        getSite();
+        LatLng site_coordinate = getLocationFromAddress(getContext(), userWorkSite.getLocation());
+        String site_title = userWorkSite.getName() + "\n" + userWorkSite.getHours();
+        MarkerOptions marker = new MarkerOptions().position(site_coordinate).title(site_title);
+        mGoogleMap.addMarker(marker).setIcon(BitmapDescriptorFactory.fromBitmap(createSmallerMarker(R.drawable.construction)));
+        float zoomLevel = 16.0f;
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site_coordinate, zoomLevel));
+    }
+
+    public LatLng getLocationFromAddress(Context context, String siteAddress){
+        Geocoder coder = new Geocoder(context);
+        List<Address> addresses;
+        LatLng site_coordinates = null;
         try{
-            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
-                    location.getLongitude(), 1);
-            String address = addresses.get(0).getAddressLine(0);
-            System.out.println("Your address is " + address);
-            LatLng my_location = new LatLng(location.getLatitude(), location.getLongitude());
-            float zoomLevel = 16.0f;
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(my_location,zoomLevel));
+            addresses = coder.getFromLocationName(siteAddress, 5);
+            if (addresses == null)
+                return null;
+            Address location = addresses.get(0);
+            site_coordinates = new LatLng(location.getLatitude(), location.getLongitude());
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        return site_coordinates;
+    }
 
-        } catch (Exception e){
-            e.printStackTrace();
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+        //move map camera
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        //optionally, stop location updates if only current location is needed
+    }
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Location Permission Needed")
+                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION );
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION );
+            }
         }
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
+                // permission was granted, yay! Do the
+                // location-related task you need to do.
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mGoogleMap.setMyLocationEnabled(true);
+                }
+
+            } else {
+                Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    private void getSite() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                "user", Context.MODE_PRIVATE);
+
+        String id = prefs.getString("last_accessed_site_id", "NONE");
+        userWorkSite = siteDB.getSite(id);
     }
 
 }
