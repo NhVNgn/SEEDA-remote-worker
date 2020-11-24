@@ -9,9 +9,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityMainBinding;
 //import com.sereem.remoteworker.model.Database;
@@ -35,9 +39,12 @@ import com.sereem.remoteworker.ui.ui_for_main.PopupSignOutFragment;
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.File;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static Uri iconUri;
 
     private AppBarConfiguration mAppBarConfiguration;
 //    private Database db;
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private Sensor sensor;
     private NavigationView navigationView;
     private DocumentReference documentReference;
+    private StorageReference storageReference;
     private User user;
 
     @Override
@@ -78,6 +86,27 @@ public class MainActivity extends AppCompatActivity {
 
 //        db = new Database(this);
         initializeDocumentReference();
+//        initializeStorageReference();
+//        downloadIconFromUri();
+    }
+
+    private void downloadIconFromUri() {
+//        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
+//        progressBar.setVisibility(View.VISIBLE);
+        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpg");
+        iconUri = Uri.fromFile(file);
+        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
+            if(!task.isSuccessful()) {
+                Toast.makeText(this, task.getException().getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+//            progressBarsBar.setVisibility(View.INVISIBLE);
+        });
+    }
+
+    private void initializeStorageReference() {
+        storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
+                user.getUID() + ".jpg");
     }
 
     private void initializeDocumentReference() {
@@ -90,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 if(document != null && document.exists()) {
                     user = User.createNewInstance(document.toObject(User.class));
+                    initializeStorageReference();
+                    downloadIconFromUri();
                     showUserInfo();
                 }
             } else {
@@ -123,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         headerView = navigationView.getHeaderView(0);
         ImageView icon = headerView.findViewById(R.id.profileIconMain);
         if(user.getIconUri() != null && !user.getIconUri().equals("")) {
-            icon.setImageURI(Uri.parse(user.getIconUri()));
+            icon.setImageURI(iconUri);
         } else {
             icon.setImageResource(R.drawable.profile_icon);
         }

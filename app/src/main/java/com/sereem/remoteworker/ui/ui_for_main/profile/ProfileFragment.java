@@ -64,7 +64,6 @@ public class ProfileFragment extends Fragment {
     private Drawable addIcon;
 
     private Uri resultUri;
-    private Uri iconUri;
     boolean isIconUpdated;
     private Snackbar snackbar;
 
@@ -88,7 +87,6 @@ public class ProfileFragment extends Fragment {
 
         initializeDocumentReference();
         initializeStorageReference();
-        downloadIconFromUri();
 
         db = new Database(root.getContext());
 
@@ -119,20 +117,6 @@ public class ProfileFragment extends Fragment {
     private void initializeStorageReference() {
         storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
                 user.getUID() + ".jpg");
-    }
-
-    private void downloadIconFromUri() {
-        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
-        progressBar.setVisibility(View.VISIBLE);
-        File file = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpg");
-        iconUri = Uri.fromFile(file);
-        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
-            if(!task.isSuccessful()) {
-                Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
-            progressBar.setVisibility(View.INVISIBLE);
-            });
     }
 
     private void createSnackBar() {
@@ -236,8 +220,10 @@ public class ProfileFragment extends Fragment {
                 if(numOfBlock == 1) {
                     icon.setImageAlpha(255);
                     icon.setForeground(null);
-                    saveIcon(resultUri);
-                    updateIcon();
+                    if(isIconUpdated) {
+                        saveIcon(resultUri);
+                        updateIcon();
+                    }
                 } else {
                     updateDataInDatabase1(numOfBlock);
                 }
@@ -286,7 +272,7 @@ public class ProfileFragment extends Fragment {
                         .start(getContext(), this);
             } else {
                 FragmentManager manager = getActivity().getSupportFragmentManager();
-                ImageViewFragment fragment = new ImageViewFragment(iconUri);
+                ImageViewFragment fragment = new ImageViewFragment(MainActivity.iconUri);
                 fragment.show(manager, "MassageDialogue");
             }
         });
@@ -317,9 +303,10 @@ public class ProfileFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
+                MainActivity.iconUri = resultUri;
                 Toast.makeText(getContext(), resultUri.toString(), Toast.LENGTH_LONG).show();
-                icon.setImageURI(resultUri);
                 isIconUpdated = true;
+                updateIcon();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 error.printStackTrace();
@@ -346,8 +333,8 @@ public class ProfileFragment extends Fragment {
         View headerView = MainActivity.getHeaderView();
         ImageView iconMain = headerView.findViewById(R.id.profileIconMain);
         if(user.getIconUri() != null && !user.getIconUri().equals("")) {
-            icon.setImageURI(iconUri);
-            iconMain.setImageURI(iconUri);
+            icon.setImageURI(MainActivity.iconUri);
+            iconMain.setImageURI(MainActivity.iconUri);
         } else {
             icon.setImageResource(R.drawable.profile_icon);
         }
