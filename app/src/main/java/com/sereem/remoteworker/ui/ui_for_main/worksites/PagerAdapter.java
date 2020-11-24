@@ -19,7 +19,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         if (position == 0)
             return new SiteViewFragment();
         else if (position == 1)
-            return new LocationViewFragment();
+            return new MapsFragment();
         else if (position == 2)
             return new ContactsViewFragment();
         return null;
