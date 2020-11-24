@@ -3,7 +3,7 @@ package com.sereem.remoteworker.model;
 import android.net.Uri;
 
 public class User {
-    private int id;
+    private String UID;
     private String companyID;
     private String firstName;
     private String lastName;
@@ -16,17 +16,30 @@ public class User {
     private String emPhone;
     private String emRelation;
     private String medicalConsiderations;
-    private Uri iconUri;
+    private String iconUri;
+    private static User instance;
+
+    public static User getInstance() {
+        if(instance == null) {
+            instance = new User();
+        }
+        return instance;
+    }
+
+    public static User createNewInstance(User user) {
+        instance = user;
+        return instance;
+    }
 
     public User() {
     }
 
-    public int getId() {
-        return id;
+    public String getUID() {
+        return UID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUID(String UID) {
+        this.UID = UID;
     }
 
     public String getCompanyID() {
@@ -125,20 +138,25 @@ public class User {
         this.medicalConsiderations = medicalConsiderations;
     }
 
-    public Uri getIconUri() {
+    public String getIconUri() {
         return iconUri;
     }
 
-    public void setIconUri(Uri iconUri) {
+    public void setIconUri(String iconUri) {
         this.iconUri = iconUri;
     }
 
-    public User(String companyID, String firstName, String lastName, String email, String password, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, byte[] iconRes) {
+    public static User createUserForSaving(String id, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri) {
+        return new User(id, companyID, firstName, lastName, email, phone,
+                birthday, emFirstName, emLastName, emPhone,emRelation, medicalConsiderations, iconUri);
+    }
+
+    private User(String UID, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri) {
+        this.UID = UID;
         this.companyID = companyID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.phone = phone;
         this.birthday = birthday;
         this.emFirstName = emFirstName;
@@ -146,5 +164,6 @@ public class User {
         this.emPhone = emPhone;
         this.emRelation = emRelation;
         this.medicalConsiderations = medicalConsiderations;
+        this.iconUri = iconUri;
     }
 }

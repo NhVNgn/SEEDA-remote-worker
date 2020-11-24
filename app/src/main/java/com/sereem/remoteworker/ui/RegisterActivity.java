@@ -6,14 +6,16 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
 import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
-import com.sereem.remoteworker.model.Database;
+//import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText;
     public static final String NEW_EMAIL = "new_email";
     public static final String NEW_PASSWORD = "new_password";
-    Database db;
+//    Database db;
     private ColorPalette colorPalette;
     private Snackbar snackbar;
     private FirebaseAuth fAuth;
@@ -48,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
 
         fAuth = FirebaseAuth.getInstance();
-        db = new Database(this);
+//        db = new Database(this);
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -72,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
             if(task.isSuccessful()) {
                 intent.putExtra(NEW_EMAIL, new_email);
                 intent.putExtra(NEW_PASSWORD, new_password);
+                saveInSharedPrefs(new_email, fAuth.getCurrentUser().getUid());
                 startActivity(intent);
                 finish();
             } else {
@@ -99,6 +102,11 @@ public class RegisterActivity extends AppCompatActivity {
         saveInSharedPrefs(site_id, root);
         startActivity(intent);*/
 
+    }
+
+    private void saveInSharedPrefs(String email, String id) {
+        SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
+        prefs.edit().putString("email", email).putString("UID", id).apply();
     }
 
     @Override

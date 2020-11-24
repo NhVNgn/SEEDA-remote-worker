@@ -17,11 +17,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.ui.LoginActivity;
 
 public class PopupSignOutFragment  extends AppCompatDialogFragment {
     Activity activity;
+    private FirebaseAuth fAuth;
 
     public PopupSignOutFragment(Activity activity) {
         this.activity = activity;
@@ -35,13 +37,15 @@ public class PopupSignOutFragment  extends AppCompatDialogFragment {
         //PopupOptionsLayoutBinding binding = PopupOptionsLayoutBinding.bind(v);
         //colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.POPUP);
         //binding.setColorPalette(colorPalette);
+        fAuth = FirebaseAuth.getInstance();
         DialogInterface.OnClickListener yesListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 SharedPreferences prefs = getContext()
                         .getSharedPreferences("user", Context.MODE_PRIVATE);
                 prefs.edit().putString("email", null).putString("password", null)
-                        .putInt("id", -1).apply();
+                        .putString("UID", "").apply();
+                fAuth.signOut();
                 Intent intent = new Intent(activity, LoginActivity.class);
                 startActivity(intent);
                 activity.finish();

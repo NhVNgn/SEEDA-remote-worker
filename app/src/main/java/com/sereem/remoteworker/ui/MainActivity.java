@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,24 +24,31 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityMainBinding;
-import com.sereem.remoteworker.model.Database;
+//import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ui_for_main.PopupSignOutFragment;
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private Database db;
+//    private Database db;
     private static View headerView;
     private ColorPalette colorPalette;
     private ActivityMainBinding binding;
     private SensorManager sensorManager;
     private Sensor sensor;
     private NavigationView navigationView;
+    private DocumentReference documentReference;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +76,38 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
-        db = new Database(this);
-        showUserInfo();
+//        db = new Database(this);
+        initializeDocumentReference();
+    }
+
+    private void initializeDocumentReference() {
+        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
+        String UID = prefs.getString("UID", "");
+        documentReference = FirebaseFirestore.getInstance().document(
+                "/users/" + UID + "/");
+        documentReference.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if(document != null && document.exists()) {
+                    user = User.createNewInstance(document.toObject(User.class));
+                    showUserInfo();
+                }
+            } else {
+                Toast.makeText(MainActivity.this,
+                        Objects.requireNonNull(task.getException()).getLocalizedMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        documentReference.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG)
+                .show();
+            }
+            else if(value != null && value.exists()) {
+                user = User.createNewInstance(value.toObject(User.class));
+                showUserInfo();
+            }
+        });
     }
 
     private void setUpSignOutOption() {
@@ -81,12 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void showUserInfo() {
-        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
-        User user = db.getUser(prefs.getInt("id", -1));
         headerView = navigationView.getHeaderView(0);
         ImageView icon = headerView.findViewById(R.id.profileIconMain);
-        if(user.getIconUri() != null && !user.getIconUri().toString().equals("")) {
-            icon.setImageURI(user.getIconUri());
+        if(user.getIconUri() != null && !user.getIconUri().equals("")) {
+            icon.setImageURI(Uri.parse(user.getIconUri()));
         } else {
             icon.setImageResource(R.drawable.profile_icon);
         }

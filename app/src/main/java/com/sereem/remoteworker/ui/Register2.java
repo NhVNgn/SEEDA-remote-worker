@@ -7,7 +7,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
-import com.sereem.remoteworker.model.Database;
+//import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
 
@@ -43,7 +43,7 @@ public class Register2 extends AppCompatActivity {
     private ColorPalette colorPalette;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    Database db;
+//    Database db;
     attendanceDatabase attendDb;
 
 
@@ -55,7 +55,7 @@ public class Register2 extends AppCompatActivity {
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.REGISTER2);
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(this);
-        db = new Database(this);
+//        db = new Database(this);
         attendDb = new attendanceDatabase(this);
         Intent intent = getIntent();
 
@@ -80,46 +80,38 @@ public class Register2 extends AppCompatActivity {
     }
 
     public void addWorker(View view){
-        List<String> argsArray = new ArrayList<>();
-        argsArray.add(firstNameEditText.getText().toString());
-        argsArray.add(lastNameEditText.getText().toString());
-        argsArray.add(email);
-        argsArray.add(password);
-        argsArray.add(phoneEditText.getText().toString());
-        argsArray.add(birthdayEditText.getText().toString());
-        argsArray.add(companyIdEditText.getText().toString());
-        argsArray.add(null);
-        argsArray.add(null);
-        argsArray.add(null);
-        argsArray.add(null);
-        argsArray.add(null);
-        argsArray.add(null);
-
-
-
-        long id = db.insertData(argsArray);
-        if (id < 0)
-        {
-            Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            attendDb.addSample(email, "burnaby123");
-            attendDb.addSample(email, "surrey123");
-            attendDb.addSample(email, "portmoody123");
-            attendDb.addSample(email, "coquitlam123");
-            attendDb.addSample(email, "van123");
-            
-            User user = db.getUser(email, password);
-            saveInSharedPrefs(email, password, user.getId());
-
-            saveUserToFirebase();
-        }
-    }
-
-    private void saveInSharedPrefs(String email, String password, int id) {
-        SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
-        prefs.edit().putString("email", email).putString("password", password)
-                .putInt("id", id).apply();
+//        List<String> argsArray = new ArrayList<>();
+//        argsArray.add(firstNameEditText.getText().toString());
+//        argsArray.add(lastNameEditText.getText().toString());
+//        argsArray.add(email);
+//        argsArray.add(password);
+//        argsArray.add(phoneEditText.getText().toString());
+//        argsArray.add(birthdayEditText.getText().toString());
+//        argsArray.add(companyIdEditText.getText().toString());
+//        argsArray.add(null);
+//        argsArray.add(null);
+//        argsArray.add(null);
+//        argsArray.add(null);
+//        argsArray.add(null);
+//        argsArray.add(null);
+//
+//
+//
+//        long id = db.insertData(argsArray);
+//        if (id < 0)
+//        {
+//            Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
+//        }
+//        else {
+//            attendDb.addSample(email, "burnaby123");
+//            attendDb.addSample(email, "surrey123");
+//            attendDb.addSample(email, "portmoody123");
+//            attendDb.addSample(email, "coquitlam123");
+//            attendDb.addSample(email, "van123");
+//
+//
+//        }
+        saveUserToFirebase();
     }
 
     private void saveUserToFirebase() {
@@ -127,22 +119,19 @@ public class Register2 extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         String userID = fAuth.getCurrentUser().getUid();
         DocumentReference documentReference = fStore.collection("users").document(userID);
-        Map<String, Object> userMap = new HashMap<>();
 
-        userMap.put("firstName", firstNameEditText.getText().toString());
-        userMap.put("lastName", lastNameEditText.getText().toString());
-        userMap.put("email", email);
-        userMap.put("phone", phoneEditText.getText().toString());
-        userMap.put("birthday", birthdayEditText.getText().toString());
-        userMap.put("companyID", companyIdEditText.getText().toString());
-        userMap.put("emFirstName", null);
-        userMap.put("emLastName", null);
-        userMap.put("emPhone", null);
-        userMap.put("emRelation", null);
-        userMap.put("medicalConsiderations", null);
-        userMap.put("iconURL", null);
+        User user = User.createUserForSaving(
+                fAuth.getCurrentUser().getUid(),
+                companyIdEditText.getText().toString(),
+                firstNameEditText.getText().toString(),
+                lastNameEditText.getText().toString(),
+                email,
+                phoneEditText.getText().toString(),
+                birthdayEditText.getText().toString(),
+                null, null, null,
+                null, null, null);
 
-        documentReference.set(userMap).addOnCompleteListener(task -> {
+        documentReference.set(user).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 Intent intent = MainActivity.makeLaunchIntent(Register2.this, email, password);
                 startActivity(intent);
