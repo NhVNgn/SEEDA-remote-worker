@@ -425,6 +425,7 @@ public class ProfileFragment extends Fragment {
                     user.setIconUri(task.getResult().toString());
                     Toast.makeText(getContext(), task.getResult().toString(), Toast.LENGTH_LONG).show();
                     updateDataInDatabase1(1);
+                    updateIcon();
                 } else {
                     Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
                             Toast.LENGTH_LONG).show();
