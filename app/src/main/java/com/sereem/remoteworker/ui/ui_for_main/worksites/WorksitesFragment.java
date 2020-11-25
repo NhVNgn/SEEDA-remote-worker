@@ -151,6 +151,7 @@ public class WorksitesFragment extends Fragment {
 //            }
 //        }
         if(user.getWorksites() == null) {
+            progressBar.setVisibility(View.INVISIBLE);
             return;
         }
         DocumentReference documentReference;
