@@ -104,9 +104,12 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
         siteDB = new SiteDatabase(getContext());
         getSite();
         LatLng site_coordinate = getLocationFromAddress(getContext(), userWorkSite.getLocation());
-        String site_title = userWorkSite.getName() + "\n" + userWorkSite.getHours();
-        MarkerOptions marker = new MarkerOptions().position(site_coordinate).title(site_title);
-        mGoogleMap.addMarker(marker).setIcon(BitmapDescriptorFactory.fromBitmap(createSmallerMarker(R.drawable.construction)));
+        String site_title = userWorkSite.getName();
+        String site_snippet = userWorkSite.getLocation();
+        MarkerOptions marker = new MarkerOptions().position(site_coordinate).title(site_title).snippet(site_snippet);
+        Marker m = mGoogleMap.addMarker(marker);
+        m.setIcon(BitmapDescriptorFactory.fromBitmap(createSmallerMarker(R.drawable.construction)));
+        m.showInfoWindow();
         float zoomLevel = 16.0f;
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site_coordinate, zoomLevel));
     }
