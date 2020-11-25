@@ -1,7 +1,5 @@
 package com.sereem.remoteworker.ui.ui_for_main.profile;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,19 +9,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentProfileBinding;
-import com.sereem.remoteworker.model.Constants;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ColorPalette;
@@ -32,23 +43,29 @@ import com.google.android.material.snackbar.Snackbar;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileFragment extends Fragment {
 
     private User user;
     private Database db;
 
-    private EditText emailEdit, passwordEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
-            companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit;
-    private ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
+    private EditText emailEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
+            companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit, medicalConsider;
+    private ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3,
+                        editBtn4, cancelBtn4;
     private ImageView icon;
-    private AtomicInteger btnCount1, btnCount2, btnCount3;
-    private List<EditText> editTextList1, editTextList2, editTextList3;
+    private Button changePassButton;
+    private AtomicInteger btnCount1, btnCount2, btnCount3, btnCount4;
+    private List<EditText> editTextList1, editTextList2, editTextList3, editTextList4;
     private Drawable addIcon;
 
     private Uri resultUri;
@@ -59,6 +76,9 @@ public class ProfileFragment extends Fragment {
 
     private View root;
 
+    private DocumentReference documentReference;
+    private StorageReference storageReference;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -68,18 +88,25 @@ public class ProfileFragment extends Fragment {
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
+        user = User.getInstance();
+
+        initializeDocumentReference();
+        initializeStorageReference();
+
         db = new Database(root.getContext());
 
         isIconUpdated = false;
 
         addIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_add_blue, null);
 
-        updateUser();
         initializeVariables();
 
         setupEditAction(editTextList1, editBtn1, cancelBtn1, btnCount1, 1);
         setupEditAction(editTextList2, editBtn2, cancelBtn2, btnCount2, 2);
         setupEditAction(editTextList3, editBtn3, cancelBtn3, btnCount3, 3);
+        setupEditAction(editTextList4, editBtn4, cancelBtn4, btnCount4, 4);
+
+        setupChangePasswordButton();
 
         setupIconAction();
 
@@ -88,19 +115,37 @@ public class ProfileFragment extends Fragment {
         return root;
     }
 
+    private void setupChangePasswordButton() {
+        PopupChangePassword dialogue = new PopupChangePassword();
+        changePassButton.setOnClickListener(v -> {
+            dialogue.showDialog(getFragmentManager());
+            FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            dialogue.setMessage("The link was sent to:", user.getEmail());
+                        } else {
+                            dialogue.setMessage("Error occurred. Try again later.", null);
+                        }
+                    });
+        });
+    }
+
+    private void initializeDocumentReference() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("user", MODE_PRIVATE);
+        String UID = prefs.getString("UID", "");
+        documentReference = FirebaseFirestore.getInstance().document(
+                "/users/" + UID + "/");
+    }
+
+    private void initializeStorageReference() {
+        storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
+                user.getUID() + ".jpg");
+    }
+
     private void createSnackBar() {
         snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG);
         snackbar.setBackgroundTint(Color.parseColor("#204E75"))
                 .setTextColor(Color.WHITE);
-    }
-
-    private void updateUser() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                "user", Context.MODE_PRIVATE);
-
-        Integer id = prefs.getInt("id", -1);
-
-        user = db.getUser(id);
     }
 
     private void initializeVariables() {
@@ -110,14 +155,14 @@ public class ProfileFragment extends Fragment {
         icon = root.findViewById(R.id.profileIconProfile);
 
         emailEdit = root.findViewById(R.id.emailProfileEdit);
-        passwordEdit = root.findViewById(R.id.passwordProfileEdit);
 
         editBtn1 = root.findViewById(R.id.editButtonProfile1);
         cancelBtn1 = root.findViewById(R.id.cancelButtonProfile1);
 
         editTextList1 = new ArrayList<>();
-        editTextList1.add(emailEdit);
-        editTextList1.add(passwordEdit);
+
+        changePassButton = root.findViewById(R.id.buttonChangePassword);
+
 
         // Second Block
         btnCount2 = new AtomicInteger();
@@ -154,6 +199,17 @@ public class ProfileFragment extends Fragment {
         editTextList3.add(emLastNameEdit);
         editTextList3.add(emPhoneEdit);
         editTextList3.add(emRelationEdit);
+
+        //Medical Considerations
+        btnCount4 = new AtomicInteger();
+
+        medicalConsider = root.findViewById(R.id.medicalConsiderProfileEdit);
+
+        editBtn4 = root.findViewById(R.id.editButtonProfile4);
+        cancelBtn4 = root.findViewById(R.id.cancelButtonProfile4);
+
+        editTextList4 = new ArrayList<>();
+        editTextList4.add(medicalConsider);
     }
 
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
@@ -194,13 +250,16 @@ public class ProfileFragment extends Fragment {
                 } else {
                     editBtn.setImageResource(R.drawable.ic_edit_white);
                 }
-                updateDataInDatabase1(numOfBlock);
-                updateUser();
-                updateNavView();
+//                updateNavView();
                 if(numOfBlock == 1) {
                     icon.setImageAlpha(255);
                     icon.setForeground(null);
-                    updateIcon();
+                    if(isIconUpdated) {
+                        saveIcon(resultUri);
+                        updateIcon();
+                    }
+                } else {
+                    updateDataInDatabase1(numOfBlock);
                 }
             }
             btnCount.incrementAndGet();
@@ -247,7 +306,7 @@ public class ProfileFragment extends Fragment {
                         .start(getContext(), this);
             } else {
                 FragmentManager manager = getActivity().getSupportFragmentManager();
-                ImageViewFragment fragment = new ImageViewFragment(user.getIconUri());
+                ImageViewFragment fragment = new ImageViewFragment(MainActivity.iconUri);
                 fragment.show(manager, "MassageDialogue");
             }
         });
@@ -278,8 +337,10 @@ public class ProfileFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
-                icon.setImageURI(resultUri);
+                MainActivity.iconUri = resultUri;
+                Toast.makeText(getContext(), resultUri.toString(), Toast.LENGTH_LONG).show();
                 isIconUpdated = true;
+                updateIcon();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 error.printStackTrace();
@@ -290,7 +351,6 @@ public class ProfileFragment extends Fragment {
     private void updateUI() {
         updateIcon();
         emailEdit.setText(user.getEmail());
-        passwordEdit.setText(user.getPassword());
         firstNameEdit.setText(user.getFirstName());
         lastNameEdit.setText(user.getLastName());
         birthdayEdit.setText(user.getBirthday());
@@ -300,92 +360,126 @@ public class ProfileFragment extends Fragment {
         emLastNameEdit.setText(user.getEmLastName());
         emPhoneEdit.setText(user.getEmPhone());
         emRelationEdit.setText(user.getEmRelation());
+        medicalConsider.setText(user.getMedicalConsiderations());
     }
 
     private void updateIcon() {
-        if(user.getIconUri() != null && !user.getIconUri().toString().equals("")) {
-            icon.setImageURI(user.getIconUri());
-        } else {
-            icon.setImageResource(R.drawable.profile_icon);
-        }
-    }
-
-    private void updateNavView() {
         View headerView = MainActivity.getHeaderView();
-        ImageView icon = headerView.findViewById(R.id.profileIconMain);
-        if(user.getIconUri() != null) {
-            icon.setImageURI(user.getIconUri());
+        ImageView iconMain = headerView.findViewById(R.id.profileIconMain);
+        if(user.getIconUri() != null && !user.getIconUri().equals("")) {
+            icon.setImageURI(MainActivity.iconUri);
+            iconMain.setImageURI(MainActivity.iconUri);
         } else {
             icon.setImageResource(R.drawable.profile_icon);
         }
-        TextView emailText = headerView.findViewById(R.id.emailMainTextView);
-        emailText.setText(user.getEmail());
-        TextView nameText = headerView.findViewById(R.id.nameMainTextView);
-        nameText.setText(user.getFirstName() + " " + user.getLastName());
     }
 
-    private void updateDataInDatabase1(int numOfBlock) {
-        int result = 0;
-        if(numOfBlock == 1) {
-            ContentValues cv = new ContentValues();
-            cv.put(Constants.EMAIL, emailEdit.getText().toString());
-            cv.put(Constants.PASSWORD, passwordEdit.getText().toString());
-//            saveIcon(cv);
-            if(isIconUpdated) {
-                cv.put(Constants.ICON_URI, resultUri.toString());
-            }
-            result = db.update(user.getId(), cv);
-        } else if(numOfBlock == 2) {
-            ContentValues cv = new ContentValues();
-            cv.put(Constants.FIRST_NAME, firstNameEdit.getText().toString());
-            cv.put(Constants.LAST_NAME, lastNameEdit.getText().toString());
-            cv.put(Constants.BIRTHDAY, birthdayEdit.getText().toString());
-            cv.put(Constants.PHONE, phoneEdit.getText().toString());
-            cv.put(Constants.COMPANY_ID, companyIdEdit.getText().toString());
-            result = db.update(user.getId(), cv);
-        } else if(numOfBlock == 3) {
-            ContentValues cv = new ContentValues();
-            cv.put(Constants.EM_FIRST_NAME, emFirstNameEdit.getText().toString());
-            cv.put(Constants.EM_LAST_NAME, emLastNameEdit.getText().toString());
-            cv.put(Constants.EM_PHONE, emPhoneEdit.getText().toString());
-            cv.put(Constants.EM_RELATION, emRelationEdit.getText().toString());
-            result = db.update(user.getId(), cv);
-        }
-
-        if(result > 0) {
-            snackbar.setText("Saved").setDuration(Snackbar.LENGTH_SHORT).show();
-            updateSharedPrefs(numOfBlock);
-        } else {
-            snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-//    private void saveIcon(ContentValues cv) {
-//        if(isIconUpdated) {
-//            try {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-//                        getActivity().getContentResolver(), resultUri);
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
-//                byte[] iconInBytes = stream.toByteArray();
-//                cv.put(Constants.ICON_RES, iconInBytes);
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+//    private void updateNavView() {
+//        View headerView = MainActivity.getHeaderView();
+//        ImageView icon = headerView.findViewById(R.id.profileIconMain);
+//        if(user.getIconUri() != null) {
+//            icon.setImageURI(user.getIconUri());
+//        } else {
+//            icon.setImageResource(R.drawable.profile_icon);
 //        }
+//        TextView emailText = headerView.findViewById(R.id.emailMainTextView);
+//        emailText.setText(user.getEmail());
+//        TextView nameText = headerView.findViewById(R.id.nameMainTextView);
+//        nameText.setText(user.getFirstName() + " " + user.getLastName());
 //    }
 
-    private void updateSharedPrefs(int numOfBlock) {
-        if(numOfBlock == 1) {
-            SharedPreferences prefs = getActivity().getSharedPreferences("user",
-                    Context.MODE_PRIVATE);
-            prefs.edit().remove("email").remove("password")
-                    .putString("email", emailEdit.getText().toString())
-                    .putString("password", passwordEdit.getText().toString())
-                    .apply();
+    private void updateDataInDatabase1(int numOfBlock) {
+        documentReference.set(User.createUserForSaving(
+                user.getUID(),
+                companyIdEdit.getText().toString(),
+                firstNameEdit.getText().toString(),
+                lastNameEdit.getText().toString(),
+                emailEdit.getText().toString(),
+                phoneEdit.getText().toString(),
+                birthdayEdit.getText().toString(),
+                emFirstNameEdit.getText().toString(),
+                emLastNameEdit.getText().toString(),
+                emPhoneEdit.getText().toString(),
+                emRelationEdit.getText().toString(),
+                medicalConsider.getText().toString(),
+                user.getIconUri(),
+                user.getWorksites())).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                snackbar.setText("Saved").show();
+            } else {
+                snackbar.setText("Error occurred").show();
+            }
+        });
+
+//        int result = 0;
+//        if(numOfBlock == 1) {
+//            ContentValues cv = new ContentValues();
+//            cv.put(Constants.EMAIL, emailEdit.getText().toString());
+//            cv.put(Constants.PASSWORD, passwordEdit.getText().toString());
+////            saveIcon(cv);
+//            if(isIconUpdated) {
+//                cv.put(Constants.ICON_URI, resultUri.toString());
+//            }
+////            result = db.update(user.getUID(), cv);
+//        } else if(numOfBlock == 2) {
+//            ContentValues cv = new ContentValues();
+//            cv.put(Constants.FIRST_NAME, firstNameEdit.getText().toString());
+//            cv.put(Constants.LAST_NAME, lastNameEdit.getText().toString());
+//            cv.put(Constants.BIRTHDAY, birthdayEdit.getText().toString());
+//            cv.put(Constants.PHONE, phoneEdit.getText().toString());
+//            cv.put(Constants.COMPANY_ID, companyIdEdit.getText().toString());
+////            result = db.update(user.getUID(), cv);
+//        } else if(numOfBlock == 3) {
+//            ContentValues cv = new ContentValues();
+//            cv.put(Constants.EM_FIRST_NAME, emFirstNameEdit.getText().toString());
+//            cv.put(Constants.EM_LAST_NAME, emLastNameEdit.getText().toString());
+//            cv.put(Constants.EM_PHONE, emPhoneEdit.getText().toString());
+//            cv.put(Constants.EM_RELATION, emRelationEdit.getText().toString());
+////            result = db.update(user.getUID(), cv);
+//        }
+//
+//        if(result > 0) {
+//            snackbar.setText("Saved").setDuration(Snackbar.LENGTH_SHORT).show();
+//            updateSharedPrefs(numOfBlock);
+//        } else {
+//            snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
+//        }
+//    }
+    }
+
+    private void saveIcon(Uri uri) {
+        if(isIconUpdated) {
+            storageReference.putFile(uri).continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+                return storageReference.getDownloadUrl();
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    user.setIconUri(task.getResult().toString());
+                    Toast.makeText(getContext(), task.getResult().toString(), Toast.LENGTH_LONG).show();
+                    updateDataInDatabase1(1);
+                    updateIcon();
+                } else {
+                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            isIconUpdated = false;
         }
     }
+
+//    private void updateSharedPrefs(int numOfBlock) {
+//        if(numOfBlock == 1) {
+//            SharedPreferences prefs = getActivity().getSharedPreferences("user",
+//                    MODE_PRIVATE);
+//            prefs.edit().remove("email").remove("password")
+//                    .putString("email", emailEdit.getText().toString())
+//                    .putString("password", passwordEdit.getText().toString())
+//                    .apply();
+//        }
+//    }
 
     @Override
     public void onPause() {

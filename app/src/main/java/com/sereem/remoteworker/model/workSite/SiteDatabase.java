@@ -83,8 +83,8 @@ public class    SiteDatabase {
             return null;
     }
     public void populateWorkSite(WorkSite ws, Cursor cursor){
-        ws.setUID(Integer.parseInt(cursor.getString(cursor.getColumnIndex(SiteConstants.UID))));
-        ws.setSiteId(cursor.getString(cursor.getColumnIndex(SiteConstants.SITE_ID)));
+//        ws.setUID(Integer.parseInt(cursor.getString(cursor.getColumnIndex(SiteConstants.UID))));
+        ws.setSiteID(cursor.getString(cursor.getColumnIndex(SiteConstants.SITE_ID)));
         ws.setName(cursor.getString(cursor.getColumnIndex(SiteConstants.NAME)));
         ws.setHours(cursor.getString(cursor.getColumnIndex(SiteConstants.HOURS)));
         ws.setLocation(cursor.getString(cursor.getColumnIndex(SiteConstants.LOCATION)));

@@ -9,17 +9,25 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityLoginBinding;
-import com.sereem.remoteworker.model.Database;
+//import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,8 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEdit, passwordEdit;
     private Button signInButton;
     private TextView incorrectEmailText, incorrectPasswordText;
-    private Database db;
+//    private Database db;
     private Snackbar snackbar;
+    private FirebaseAuth fAuth;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
 
@@ -43,9 +52,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fAuth = FirebaseAuth.getInstance();
+
         SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
-        if(sharedPreferences != null && sharedPreferences.getInt("id", -1)
-                != -1) {
+        if(sharedPreferences != null && !sharedPreferences.getString("UID", "").equals("")) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -63,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         incorrectPasswordText = findViewById(R.id.incorrectPasswordText);
         signInButton = findViewById(R.id.signInButtonLogin);
 
-        db = new Database(this);
+//        db = new Database(this);
 
         emailBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_blue_login, null);
         emailRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_red, null);
@@ -105,23 +115,34 @@ public class LoginActivity extends AppCompatActivity {
                 snackbar.setText(getString(R.string.invalid_email)).show();
             }
 
-            User user = db.getUser(email, password);
+//            User user = db.getUser(email, password);
 
-            if(user.getFirstName().equals("NOT_FOUND")) {
-                incorrectEmailText.setText(getText(R.string.user_not_found));
-                setIncorrectEmail();
-            } else if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
-                incorrectPasswordText.setText(getText(R.string.incorrect_password));
-                setIncorrectPassword();
-            } else {
-                incorrectEmailText.setText("");
+//            if(user.getFirstName().equals("NOT_FOUND")) {
+//                incorrectEmailText.setText(getText(R.string.user_not_found));
+//                setIncorrectEmail();
+//            } if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
+//                incorrectPasswordText.setText(getText(R.string.incorrect_password));
+//                setIncorrectPassword();
+//            }
 
-                saveInSharedPrefs(email, password, user.getId());
+            ProgressBar progressBar = findViewById(R.id.progressBarLogin);
+            progressBar.setVisibility(View.VISIBLE);
 
-                Intent intent = MainActivity.makeLaunchIntent(this, email, password);
-                startActivity(intent);
-                finish();
-            }
+            fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    incorrectEmailText.setText("");
+
+                    saveInSharedPrefs(email, fAuth.getCurrentUser().getUid());
+
+                    Intent intent = MainActivity.makeLaunchIntent(LoginActivity.this, email, password);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(LoginActivity.this, task.getException().toString(),
+                            Toast.LENGTH_LONG).show();
+                }
+                progressBar.setVisibility(View.INVISIBLE);
+            });
         });
     }
 
@@ -182,10 +203,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void saveInSharedPrefs(String email, String password, int id) {
+    private void saveInSharedPrefs(String email, String id) {
         SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
-        prefs.edit().putString("email", email).putString("password", password)
-                .putInt("id", id).apply();
+        prefs.edit().putString("email", email).putString("UID", id).apply();
     }
 
     private void setupSignUpButton() {
@@ -193,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 

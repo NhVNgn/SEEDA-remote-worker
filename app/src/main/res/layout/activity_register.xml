@@ -65,6 +65,14 @@
             android:hint="@string/password_8_digits_at_least"
             android:inputType="textPassword"
             android:textColor="@{colorPalette.text}"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarRegister1"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:paddingTop="10dp"/>
     </LinearLayout>
 
     <Button

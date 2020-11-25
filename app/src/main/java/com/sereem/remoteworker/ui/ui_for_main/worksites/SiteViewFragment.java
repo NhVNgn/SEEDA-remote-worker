@@ -4,13 +4,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentSiteViewBinding;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
@@ -42,18 +49,19 @@ public class SiteViewFragment extends Fragment {
         operationHoursText = root.findViewById(R.id.hoursTextDisplay);
 
         siteNameText.setText(userWorkSite.getName());
-        siteIdText.setText(userWorkSite.getSiteId());
+        siteIdText.setText(userWorkSite.getSiteID());
         operationHoursText.setText(userWorkSite.getHours());
         masterPointText.setText(userWorkSite.getMasterPoint());
         return root;
     }
 
     private void getSite() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                "user", Context.MODE_PRIVATE);
+//        SharedPreferences prefs = getActivity().getSharedPreferences(
+//                "user", Context.MODE_PRIVATE);
 
-        String id = prefs.getString("last_accessed_site_id", "NONE");
-         userWorkSite = siteDB.getSite(id);
+//        String id = prefs.getString("last_accessed_site_id", "NONE");
+
+        userWorkSite = WorkSite.getChosenWorksite();
     }
 
     @Override

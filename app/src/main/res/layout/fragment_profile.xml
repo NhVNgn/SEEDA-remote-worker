@@ -11,10 +11,10 @@
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profileLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ui_for_main.profile.ProfileFragment">
-
 
     <TextView
         android:id="@+id/text_gallery"
@@ -32,6 +32,7 @@
 
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,30 +45,30 @@
             android:padding="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/view2"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:elevation="12dp"
-                    android:id="@+id/view2"
                     app:cardCornerRadius="40dp">
 
                     <ImageView
                         android:id="@+id/profileIconProfile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/profile_icon"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profile_icon" />
 
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -79,15 +80,7 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="horizontal"
                         android:paddingBottom="16dp"
-                        android:weightSum="3">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/email"
-                            android:textStyle="bold"
-                            android:textColor="@{colorPalette.text}"/>
+                        android:weightSum="2">
 
                         <EditText
                             android:id="@+id/emailProfileEdit"
@@ -98,8 +91,20 @@
                             android:ems="10"
                             android:focusable="false"
                             android:inputType="textEmailAddress"
-                            android:textColor="@{colorPalette.text}"/>
+                            android:textColor="@{colorPalette.text}"
+                            android:textAlignment="center"/>
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/buttonChangePassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@{colorPalette.btnBackground}"
+                        android:text="@string/change_password"
+                        android:textColor="@{colorPalette.btnText}"
+                        android:textSize="10sp"
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:id="@+id/linearLayout2"
@@ -108,27 +113,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="8dp"
                         android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/password"
-                            android:textStyle="bold"
-                            android:textColor="@{colorPalette.text}"/>
-
-                        <EditText
-                            android:id="@+id/passwordProfileEdit"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:background="@null"
-                            android:ems="10"
-                            android:focusable="false"
-                            android:inputType="textPassword"
-                            android:textColor="@{colorPalette.text}"/>
-                    </LinearLayout>
+                        android:weightSum="2"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -136,18 +121,18 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp">
+                android:paddingTop="8dp">
 
                 <ImageButton
                     android:id="@+id/cancelButtonProfile1"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/editButtonProfile1"
@@ -155,8 +140,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="0dp"
-                    android:padding="8dp"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
+                    android:padding="8dp"
                     android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}" />
 
             </RelativeLayout>
@@ -172,10 +157,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/personal_information"
-                android:textStyle="bold"
                 android:paddingBottom="16dp"
-                android:textColor="@{colorPalette.text}"/>
+                android:text="@string/personal_information"
+                android:textColor="@{colorPalette.text}"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -196,8 +181,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/first_name"
-                        android:textStyle="bold"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}"
+                        android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/firstNameProfileEdit"
@@ -208,7 +193,7 @@
                         android:ems="10"
                         android:focusable="false"
                         android:inputType="textPersonName"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -225,8 +210,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/last_name"
-                        android:textStyle="bold"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}"
+                        android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/lastNameProfileEdit"
@@ -237,7 +222,7 @@
                         android:ems="10"
                         android:focusable="false"
                         android:inputType="textPersonName"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}" />
 
                 </LinearLayout>
 
@@ -255,8 +240,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/birthday"
-                        android:textStyle="bold"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}"
+                        android:textStyle="bold" />
 
                     <EditText
                         android:id="@+id/birthdayProfileEdit"
@@ -267,7 +252,7 @@
                         android:ems="10"
                         android:focusable="false"
                         android:inputType="date"
-                        android:textColor="@{colorPalette.text}"/>
+                        android:textColor="@{colorPalette.text}" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -286,8 +271,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_number"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/phoneProfileEdit"
@@ -298,7 +283,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="phone"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
             </LinearLayout>
 
             <LinearLayout
@@ -315,8 +300,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/company_id"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/companyIdProfileEdit"
@@ -327,23 +312,24 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="text"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
             </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp">
+                android:paddingTop="8dp">
 
                 <ImageButton
                     android:id="@+id/cancelButtonProfile2"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/editButtonProfile2"
@@ -351,11 +337,70 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
-                    android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}" />
 
             </RelativeLayout>
+
             <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="8dp"
+                android:background="@color/main_blue_color" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingBottom="16dp"
+                android:text="Medical considerations"
+                android:textColor="@{colorPalette.text}"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/medicalConsiderProfileEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@null"
+                android:ems="10"
+                android:focusable="false"
+                android:inputType="text"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@{colorPalette.text}" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:paddingTop="8dp">
+
+                <ImageButton
+                    android:id="@+id/cancelButtonProfile4"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/editButtonProfile4"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="8dp"
@@ -367,8 +412,8 @@
                 android:layout_marginStart="8dp"
                 android:paddingBottom="16dp"
                 android:text="@string/emergency_contacts"
-                android:textStyle="bold"
-                android:textColor="@{colorPalette.text}"/>
+                android:textColor="@{colorPalette.text}"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -384,8 +429,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/first_name"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/emFirstNameProfileEdit"
@@ -396,7 +441,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="textPersonName"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
             </LinearLayout>
 
             <LinearLayout
@@ -413,8 +458,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/last_name"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/emLastNameProfileEdit"
@@ -425,7 +470,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="textPersonName"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
 
             </LinearLayout>
 
@@ -443,8 +488,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_number"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/emPhoneProfileEdit"
@@ -455,7 +500,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="phone"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
             </LinearLayout>
 
             <LinearLayout
@@ -472,8 +517,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/relation"
-                    android:textStyle="bold"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/emRelationProfileEdit"
@@ -484,24 +529,24 @@
                     android:ems="10"
                     android:focusable="false"
                     android:inputType="text"
-                    android:textColor="@{colorPalette.text}"/>
+                    android:textColor="@{colorPalette.text}" />
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp">
+                android:paddingTop="8dp">
 
                 <ImageButton
                     android:id="@+id/cancelButtonProfile3"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_cancel_dark : @drawable/ic_cancel_white}"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/editButtonProfile3"
@@ -509,8 +554,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@{colorPalette.dark ? @drawable/rounded_dark : @drawable/rounded_corners}"
-                    android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:src="@{colorPalette.dark ? @drawable/ic_edit_dark : @drawable/ic_edit_white}" />
 
             </RelativeLayout>
 

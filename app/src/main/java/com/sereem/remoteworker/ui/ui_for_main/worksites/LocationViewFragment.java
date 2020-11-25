@@ -52,11 +52,11 @@ public class LocationViewFragment extends Fragment {
 
     }
     private void getSite() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                "user", Context.MODE_PRIVATE);
-
-        String id = prefs.getString("last_accessed_site_id", "NONE");
-        userWorkSite = siteDB.getSite(id);
+//        SharedPreferences prefs = getActivity().getSharedPreferences(
+//                "user", Context.MODE_PRIVATE);
+//
+//        String id = prefs.getString("last_accessed_site_id", "NONE");
+        userWorkSite = WorkSite.getChosenWorksite();
     }
 
     public void launchMapIntent(View view){
