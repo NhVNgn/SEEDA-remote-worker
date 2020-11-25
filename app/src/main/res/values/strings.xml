@@ -74,4 +74,5 @@
     <string name="confirm">CONFIRM</string>
     <string name="invalid_password">Password should be at least 6 characters</string>
     <string name="email_is_used">This email is used by another user</string>
+    <string name="change_password">Change password</string>
 </resources>

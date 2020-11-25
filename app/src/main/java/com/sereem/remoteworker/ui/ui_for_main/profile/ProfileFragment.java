@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,11 +20,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FileDownloadTask;
@@ -55,12 +58,14 @@ public class ProfileFragment extends Fragment {
     private User user;
     private Database db;
 
-    private EditText emailEdit, passwordEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
-            companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit;
-    private ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3;
+    private EditText emailEdit, firstNameEdit, lastNameEdit, birthdayEdit, phoneEdit,
+            companyIdEdit, emFirstNameEdit, emLastNameEdit, emPhoneEdit, emRelationEdit, medicalConsider;
+    private ImageButton editBtn1, cancelBtn1, editBtn2, cancelBtn2, editBtn3, cancelBtn3,
+                        editBtn4, cancelBtn4;
     private ImageView icon;
-    private AtomicInteger btnCount1, btnCount2, btnCount3;
-    private List<EditText> editTextList1, editTextList2, editTextList3;
+    private Button changePassButton;
+    private AtomicInteger btnCount1, btnCount2, btnCount3, btnCount4;
+    private List<EditText> editTextList1, editTextList2, editTextList3, editTextList4;
     private Drawable addIcon;
 
     private Uri resultUri;
@@ -99,12 +104,30 @@ public class ProfileFragment extends Fragment {
         setupEditAction(editTextList1, editBtn1, cancelBtn1, btnCount1, 1);
         setupEditAction(editTextList2, editBtn2, cancelBtn2, btnCount2, 2);
         setupEditAction(editTextList3, editBtn3, cancelBtn3, btnCount3, 3);
+        setupEditAction(editTextList4, editBtn4, cancelBtn4, btnCount4, 4);
+
+        setupChangePasswordButton();
 
         setupIconAction();
 
         updateUI();
 
         return root;
+    }
+
+    private void setupChangePasswordButton() {
+        PopupChangePassword dialogue = new PopupChangePassword();
+        changePassButton.setOnClickListener(v -> {
+            dialogue.showDialog(getFragmentManager());
+            FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            dialogue.setMessage("The link was sent to:", user.getEmail());
+                        } else {
+                            dialogue.setMessage("Error occurred. Try again later.", null);
+                        }
+                    });
+        });
     }
 
     private void initializeDocumentReference() {
@@ -132,14 +155,14 @@ public class ProfileFragment extends Fragment {
         icon = root.findViewById(R.id.profileIconProfile);
 
         emailEdit = root.findViewById(R.id.emailProfileEdit);
-        passwordEdit = root.findViewById(R.id.passwordProfileEdit);
 
         editBtn1 = root.findViewById(R.id.editButtonProfile1);
         cancelBtn1 = root.findViewById(R.id.cancelButtonProfile1);
 
         editTextList1 = new ArrayList<>();
-        editTextList1.add(emailEdit);
-        editTextList1.add(passwordEdit);
+
+        changePassButton = root.findViewById(R.id.buttonChangePassword);
+
 
         // Second Block
         btnCount2 = new AtomicInteger();
@@ -176,6 +199,17 @@ public class ProfileFragment extends Fragment {
         editTextList3.add(emLastNameEdit);
         editTextList3.add(emPhoneEdit);
         editTextList3.add(emRelationEdit);
+
+        //Medical Considerations
+        btnCount4 = new AtomicInteger();
+
+        medicalConsider = root.findViewById(R.id.medicalConsiderProfileEdit);
+
+        editBtn4 = root.findViewById(R.id.editButtonProfile4);
+        cancelBtn4 = root.findViewById(R.id.cancelButtonProfile4);
+
+        editTextList4 = new ArrayList<>();
+        editTextList4.add(medicalConsider);
     }
 
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
@@ -317,7 +351,6 @@ public class ProfileFragment extends Fragment {
     private void updateUI() {
         updateIcon();
         emailEdit.setText(user.getEmail());
-        passwordEdit.setText(user.getPassword());
         firstNameEdit.setText(user.getFirstName());
         lastNameEdit.setText(user.getLastName());
         birthdayEdit.setText(user.getBirthday());
@@ -327,6 +360,7 @@ public class ProfileFragment extends Fragment {
         emLastNameEdit.setText(user.getEmLastName());
         emPhoneEdit.setText(user.getEmPhone());
         emRelationEdit.setText(user.getEmRelation());
+        medicalConsider.setText(user.getMedicalConsiderations());
     }
 
     private void updateIcon() {
@@ -367,7 +401,7 @@ public class ProfileFragment extends Fragment {
                 emLastNameEdit.getText().toString(),
                 emPhoneEdit.getText().toString(),
                 emRelationEdit.getText().toString(),
-                user.getMedicalConsiderations(),
+                medicalConsider.getText().toString(),
                 user.getIconUri())).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 snackbar.setText("Saved").show();
