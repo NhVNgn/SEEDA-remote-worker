@@ -17,7 +17,7 @@ import android.os.Bundle;
 
 public class SiteDetailActivity extends AppCompatActivity {
     private ColorPalette colorPalette;
-
+    PagerAdapter pagerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar actionBar;
@@ -38,7 +38,7 @@ public class SiteDetailActivity extends AppCompatActivity {
         setUpBackButton();
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -80,6 +80,20 @@ public class SiteDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         colorPalette.registerListener();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == MapsFragment.MY_PERMISSIONS_REQUEST_LOCATION){
+            MapsFragment mapFragment = (MapsFragment) pagerAdapter.fragments[1];
+            if (mapFragment != null) {
+                mapFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
 

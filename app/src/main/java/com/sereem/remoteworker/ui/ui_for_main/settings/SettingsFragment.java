@@ -23,6 +23,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         Preference deleteAccount = getPreferenceManager().findPreference("delete_account");
         deleteAccount.setOnPreferenceClickListener(this);
 
+        SwitchPreference gpsVisibility = getPreferenceManager().findPreference("gps_visibility");
+        gpsVisibility.setOnPreferenceClickListener(this);
 
     }
 
