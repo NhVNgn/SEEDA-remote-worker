@@ -2,6 +2,9 @@ package com.sereem.remoteworker.model;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private String UID;
     private String companyID;
@@ -17,6 +20,7 @@ public class User {
     private String emRelation;
     private String medicalConsiderations;
     private String iconUri;
+    private List<Object> worksites;
     private static User instance;
 
     public static User getInstance() {
@@ -138,6 +142,18 @@ public class User {
         this.medicalConsiderations = medicalConsiderations;
     }
 
+    public List<Object> getWorksites() {
+        return worksites;
+    }
+
+    public void setWorksites(List<Object> list) {
+        this.worksites = list;
+    }
+
+    public static void setInstance(User instance) {
+        User.instance = instance;
+    }
+
     public String getIconUri() {
         return iconUri;
     }
@@ -146,12 +162,16 @@ public class User {
         this.iconUri = iconUri;
     }
 
-    public static User createUserForSaving(String id, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri) {
+    public static User createUserForSaving(String id, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri, List<Object> worksites) {
         return new User(id, companyID, firstName, lastName, email, phone,
-                birthday, emFirstName, emLastName, emPhone,emRelation, medicalConsiderations, iconUri);
+                birthday, emFirstName, emLastName, emPhone,emRelation, medicalConsiderations, iconUri, worksites);
     }
 
-    private User(String UID, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri) {
+    public static boolean isNull() {
+        return instance == null;
+    }
+
+    private User(String UID, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri, List<Object> worksites) {
         this.UID = UID;
         this.companyID = companyID;
         this.firstName = firstName;
@@ -165,5 +185,6 @@ public class User {
         this.emRelation = emRelation;
         this.medicalConsiderations = medicalConsiderations;
         this.iconUri = iconUri;
+        this.worksites = worksites;
     }
 }

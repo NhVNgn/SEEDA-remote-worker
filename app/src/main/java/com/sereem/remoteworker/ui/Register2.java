@@ -129,7 +129,7 @@ public class Register2 extends AppCompatActivity {
                 phoneEditText.getText().toString(),
                 birthdayEditText.getText().toString(),
                 null, null, null,
-                null, null, null);
+                null, null, null, null);
 
         documentReference.set(user).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {

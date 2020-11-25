@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -15,8 +16,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ContactParentItemBinding;
 import com.sereem.remoteworker.model.Database;
@@ -43,6 +51,8 @@ public class ContactsViewFragment extends Fragment {
     ListView listView;
     User me;
     private ColorPalette colorPalette;
+    private ProgressBar progressBar;
+    private View root;
 
 
 
@@ -56,7 +66,6 @@ public class ContactsViewFragment extends Fragment {
             View itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.contact_parent_item, parent, false);
-
             ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
             colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
             binding.setColorPalette(colorPalette);
@@ -79,7 +88,9 @@ public class ContactsViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_contacts_view, container, false);
+        root = inflater.inflate(R.layout.fragment_contacts_view, container, false);
+        progressBar = root.findViewById(R.id.progressBarContacts);
+        progressBar.setVisibility(View.VISIBLE);
         globalContext = root.getContext().getApplicationContext();
         listView = root.findViewById(R.id.contactListView);
         siteDB = new SiteDatabase(root.getContext());
@@ -92,31 +103,57 @@ public class ContactsViewFragment extends Fragment {
         getSite();
         if (userList.isEmpty())
             getConnectedUser();
-        populateListView();
-        setUpListClick(root);
 
         return root;
     }
 
     private void getSite() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                "user", Context.MODE_PRIVATE);
-
-        String id = prefs.getString("last_accessed_site_id", "NONE");
-        userWorkSite = siteDB.getSite(id);
+//        SharedPreferences prefs = getActivity().getSharedPreferences(
+//                "user", Context.MODE_PRIVATE);
+//
+//        String id = prefs.getString("last_accessed_site_id", "NONE");
+        userWorkSite = WorkSite.getChosenWorksite();
     }
 
     private void getConnectedUser(){
-        attendances = attendanceDB.getAllAttendanceList();
-        for (Attendance a : attendances)
-            if (a.getSiteID().equals(userWorkSite.getSiteId())){
-                User user = db.getUserByEmail(a.getWorkerEmail());
-                System.out.println(user.getEmail() + " " + me.getEmail());
-                if (!user.getEmail().equals(me.getEmail()))
-                    {
+//        attendances = attendanceDB.getAllAttendanceList();
+//        for (Attendance a : attendances)
+//            if (a.getSiteID().equals(userWorkSite.getSiteID())){
+//                User user = db.getUserByEmail(a.getWorkerEmail());
+//                System.out.println(user.getEmail() + " " + me.getEmail());
+//                if (!user.getEmail().equals(me.getEmail()))
+//                    {
+//                        userList.add(user);
+//                    }
+//            }
+
+        DocumentReference documentReference;
+        if(userWorkSite.getWorkers() == null) {
+            progressBar.setVisibility(View.INVISIBLE);
+            return;
+        }
+        final int size = userWorkSite.getWorkers().size();
+        for(int i = 0; i < userWorkSite.getWorkers().size(); i++) {
+            final int index = i;
+            documentReference = FirebaseFirestore.getInstance().document("/users/" +
+                    userWorkSite.getWorkers().get(i));
+            documentReference.get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    User user = task.getResult().toObject(User.class);
+                    if(!user.getUID().equals(me.getUID())) {
                         userList.add(user);
                     }
-            }
+//                    if(index == size - 1) {
+                        populateListView();
+                        setUpListClick(root);
+                        progressBar.setVisibility(View.INVISIBLE);
+//                    }
+                } else {
+                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void populateListView(){
@@ -125,10 +162,7 @@ public class ContactsViewFragment extends Fragment {
     }
 
     private void getUser(){
-        SharedPreferences prefs = globalContext.getSharedPreferences("user", Context.MODE_PRIVATE);
-        String email = prefs.getString("email", "NONE");
-        String password = prefs.getString("password", "NONE");
-        me = db.getUser(email, password);
+        me = User.getInstance();
     }
 
     private void setUpListClick(View root){

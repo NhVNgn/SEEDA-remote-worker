@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -38,6 +39,7 @@ import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ui_for_main.PopupSignOutFragment;
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.WorksitesFragment;
 
 import java.io.File;
 import java.util.Objects;
@@ -114,21 +116,6 @@ public class MainActivity extends AppCompatActivity {
         String UID = prefs.getString("UID", "");
         documentReference = FirebaseFirestore.getInstance().document(
                 "/users/" + UID + "/");
-        documentReference.get().addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if(document != null && document.exists()) {
-                    user = User.createNewInstance(document.toObject(User.class));
-                    initializeStorageReference();
-                    downloadIconFromUri();
-                    showUserInfo();
-                }
-            } else {
-                Toast.makeText(MainActivity.this,
-                        Objects.requireNonNull(task.getException()).getLocalizedMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
         documentReference.addSnapshotListener((value, error) -> {
             if(error != null) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG)
@@ -136,13 +123,15 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(value != null && value.exists()) {
                 user = User.createNewInstance(value.toObject(User.class));
+                initializeStorageReference();
+                downloadIconFromUri();
                 showUserInfo();
             }
         });
     }
 
     private void setUpSignOutOption() {
-        NavigationMenuItemView signOut = (NavigationMenuItemView) navigationView.findViewById(R.id.nav_sign_out);
+        NavigationMenuItemView signOut = navigationView.findViewById(R.id.nav_sign_out);
         signOut.setOnClickListener(v -> {
             PopupSignOutFragment dialog = new PopupSignOutFragment(MainActivity.this);
             dialog.showDialog(getSupportFragmentManager());

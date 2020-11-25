@@ -402,7 +402,8 @@ public class ProfileFragment extends Fragment {
                 emPhoneEdit.getText().toString(),
                 emRelationEdit.getText().toString(),
                 medicalConsider.getText().toString(),
-                user.getIconUri())).addOnCompleteListener(task -> {
+                user.getIconUri(),
+                user.getWorksites())).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 snackbar.setText("Saved").show();
             } else {
