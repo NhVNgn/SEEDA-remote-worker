@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -45,9 +43,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sereem.remoteworker.R;
@@ -58,10 +54,8 @@ import com.sereem.remoteworker.ui.ui_for_main.PopupSignOutFragment;
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
-import com.sereem.remoteworker.ui.ui_for_main.worksites.WorksitesFragment;
 
 import java.io.File;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private User user;
     private FusedLocationProviderClient mFusedLocationClient;
     private static final String TAG = "MainActivity";
+    private File iconFile;
+    private boolean isFirstStart = true;
     //private boolean mLocationPermissionGranted = false;
 
     @Override
@@ -133,12 +129,22 @@ public class MainActivity extends AppCompatActivity {
     private void downloadIconFromUri() {
 //        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
 //        progressBar.setVisibility(View.VISIBLE);
-        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpg");
-        iconUri = Uri.fromFile(file);
+        if(!isFirstStart) {
+            return;
+        }
+        isFirstStart = false;
+        if(iconFile.exists()) {
+            iconUri = Uri.fromFile(iconFile);
+            return;
+        }
+        Toast.makeText(this, "Dowloading..", Toast.LENGTH_LONG).show();
+        iconUri = Uri.fromFile(iconFile);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
             if(!task.isSuccessful()) {
                 Toast.makeText(this, task.getException().getLocalizedMessage(),
                         Toast.LENGTH_SHORT).show();
+            } else {
+                showUserInfo();
             }
 //            progressBarsBar.setVisibility(View.INVISIBLE);
         });
@@ -161,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(value != null && value.exists()) {
                 user = User.createNewInstance(value.toObject(User.class));
+                iconFile = new File(getCacheDir() + "/" + user.getUID() + ".jpg");
                 initializeStorageReference();
                 downloadIconFromUri();
                 showUserInfo();

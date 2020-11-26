@@ -2,10 +2,12 @@ package com.sereem.remoteworker.ui.ui_for_main.profile;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,6 +47,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +83,7 @@ public class ProfileFragment extends Fragment {
 
     private DocumentReference documentReference;
     private StorageReference storageReference;
+    private File iconFile;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +95,7 @@ public class ProfileFragment extends Fragment {
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
         user = User.getInstance();
+        iconFile = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpg");
 
         initializeDocumentReference();
         initializeStorageReference();
@@ -255,7 +262,11 @@ public class ProfileFragment extends Fragment {
                     icon.setImageAlpha(255);
                     icon.setForeground(null);
                     if(isIconUpdated) {
-                        saveIcon(resultUri);
+                        try {
+                            saveIcon(resultUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         updateIcon();
                     }
                 } else {
@@ -447,23 +458,25 @@ public class ProfileFragment extends Fragment {
 //    }
     }
 
-    private void saveIcon(Uri uri) {
+    private void saveIcon(Uri uri) throws IOException {
         if(isIconUpdated) {
-            storageReference.putFile(uri).continueWithTask(task -> {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
+                    uri);
+            iconFile.delete();
+            iconFile.createNewFile();
+            FileOutputStream fout = new FileOutputStream(iconFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fout);
+            storageReference.putFile(Uri.fromFile(iconFile)).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
                     Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
                             Toast.LENGTH_LONG).show();
-                }
-                return storageReference.getDownloadUrl();
-            }).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    user.setIconUri(task.getResult().toString());
-                    Toast.makeText(getContext(), task.getResult().toString(), Toast.LENGTH_LONG).show();
-                    updateDataInDatabase1(1);
-                    updateIcon();
                 } else {
-                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
-                            Toast.LENGTH_LONG).show();
+                    storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
+                        user.setIconUri(uri1.toString());
+                        Toast.makeText(getContext(), task.getResult().toString(), Toast.LENGTH_LONG).show();
+                        updateDataInDatabase1(1);
+                        updateIcon();
+                    });
                 }
             });
             isIconUpdated = false;
