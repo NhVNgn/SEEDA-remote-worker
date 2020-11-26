@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -82,6 +83,11 @@
         <activity
             android:name=".ui.RegisterActivity"
             android:theme="@style/Theme.Project.NoActionBar" />
+
+        <service
+            android:name=".ui.ui_for_main.service.LocationService"
+            android:stopWithTask="true">
+        </service>
     </application>
 
 </manifest>
