@@ -37,6 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                     Snackbar.make(getView(), "GPS visibility is enabled", Snackbar.LENGTH_SHORT).show();
                     SharedPreferences prefs = getContext().getSharedPreferences("user", MODE_PRIVATE);
                     prefs.edit().putBoolean("visibility", true).apply();
+                    prefs.edit().putBoolean("isFirstUpdateAfterOff", true).apply();
                 }
                 else {
                     Snackbar.make(getView(), "GPS visibility is disabled", Snackbar.LENGTH_SHORT).show();

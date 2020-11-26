@@ -3,6 +3,8 @@ package com.sereem.remoteworker.ui.ui_for_main.service;
 import android.Manifest;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.GeoPoint;
 import com.sereem.remoteworker.R;
 import android.app.Notification;
@@ -36,6 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.model.User;
+import com.sereem.remoteworker.model.UserLocation;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -53,8 +56,11 @@ public class LocationService extends Service {
     public final static String ACTION_LOCATION_BROADCAST = LocationService.class.getName() + "LocationBroadcast";
     public final static String EXTRA_LATITUDE = "extra_latitude";
     public final static String EXTRA_LONGITUDE = "extra_longitude";
-    private User user;
-    private DocumentReference documentReference;
+//    private User user;
+    private UserLocation userLocation;
+//    private DocumentReference documentReference;
+    private DatabaseReference databaseReference;
+    private boolean isFirstUpdateAfterTurnOff;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,7 +71,7 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
         System.out.println("LocationService called onCreate");
-        user = User.getInstance();
+//        user = User.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         initializeDocumentReference();
         if (Build.VERSION.SDK_INT >= 26) {
@@ -133,10 +139,12 @@ public class LocationService extends Service {
                         if (location != null) {
                             GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                             //UserLocation userLocation = new UserLocation(user, geoPoint, null);
-                            user = User.getInstance();
+//                            user = User.getInstance();
                             Date date = Calendar.getInstance().getTime();
-                            user.setGeo_point(geoPoint);
-                            user.setTimestamp(date);
+                            userLocation = new UserLocation(geoPoint.getLatitude() + ", "
+                                    + geoPoint.getLongitude(), date.toString());
+//                            user.setGeo_point(geoPoint);
+//                            user.setTimestamp(date);
                             saveUserLocation();
                         }
                     }
@@ -159,43 +167,30 @@ public class LocationService extends Service {
     private void initializeDocumentReference() {
         SharedPreferences prefs = this.getSharedPreferences("user", MODE_PRIVATE);
         String UID = prefs.getString("UID", "");
-        documentReference = FirebaseFirestore.getInstance().document(
-                "/users/" + UID + "/");
+//        documentReference = FirebaseFirestore.getInstance().document(
+//                "/users/" + UID + "/");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("userLocations")
+                .child(UID);
     }
 
     private void updateGPSDataInDatabase() {
         if (!getVisibilityPreference())
         {
+            if(!getFirstUpdatePreferences()) {
+                return;
+            } else {
+                SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
+                prefs.edit().putBoolean("isFirstUpdateAfterOff", false).apply();
+            }
             GeoPoint new_geoPoint = new GeoPoint(0.0, 0.0);
-            Date date = new GregorianCalendar(2000, Calendar.JANUARY, 0).getTime();
-            user.setTimestamp(date);
-            user.setGeo_point(new_geoPoint);
+            userLocation = new UserLocation(new_geoPoint.getLatitude() + ", "
+                    + new_geoPoint.getLongitude(), null);
+//            user.setTimestamp(null);
+//            user.setGeo_point(new_geoPoint);
         }
 
 
-        documentReference.set(User.createUserForSavingGPS(
-                user.getUID(),
-                user.getCompanyID(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getBirthday(),
-                user.getEmFirstName(),
-                user.getEmLastName(),
-                user.getEmPhone(),
-                user.getEmRelation(),
-                user.getMedicalConsiderations(),
-                user.getIconUri(),
-                user.getWorksites(),
-                user.getGeo_point(),
-                user.getTimestamp())).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-
-            } else {
-
-            }
-        });
+        databaseReference.setValue(userLocation);
     }
 
     private void sendBroadCastMessage(Location location){
@@ -211,5 +206,10 @@ public class LocationService extends Service {
         boolean value = prefs.getBoolean("visibility", true);
         System.out.println("visibility: " + value);
         return prefs.getBoolean("visibility", true);
+    }
+
+    private boolean getFirstUpdatePreferences(){
+        SharedPreferences prefs = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        return prefs.getBoolean("isFirstUpdateAfterOff", true);
     }
 }

@@ -42,6 +42,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private File iconFile;
     private boolean isFirstStart = true;
+//    private DatabaseReference databaseReference;
     //private boolean mLocationPermissionGranted = false;
 
     @Override
@@ -132,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         if(!isFirstStart) {
             return;
         }
-        isFirstStart = false;
         if(iconFile.exists()) {
             iconUri = Uri.fromFile(iconFile);
             return;
         }
+        isFirstStart = false;
         Toast.makeText(this, "Dowloading..", Toast.LENGTH_LONG).show();
         iconUri = Uri.fromFile(iconFile);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
