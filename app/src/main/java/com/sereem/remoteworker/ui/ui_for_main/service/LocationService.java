@@ -163,7 +163,14 @@ public class LocationService extends Service {
     }
 
     private void updateGPSDataInDatabase() {
-        System.out.println("user geo_point:" + user.getTimestamp().toString());
+        if (!getVisibilityPreference())
+        {
+            GeoPoint new_geoPoint = new GeoPoint(0.0, 0.0);
+            user.setTimestamp(null);
+            user.setGeo_point(new_geoPoint);
+        }
+
+
         documentReference.set(User.createUserForSavingGPS(
                 user.getUID(),
                 user.getCompanyID(),
@@ -196,5 +203,11 @@ public class LocationService extends Service {
             intent.putExtra(EXTRA_LONGITUDE, location.getLongitude());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
+    }
+    private boolean getVisibilityPreference(){
+        SharedPreferences prefs = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        boolean value = prefs.getBoolean("visibility", true);
+        System.out.println("visibility: " + value);
+        return prefs.getBoolean("visibility", true);
     }
 }

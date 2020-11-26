@@ -190,8 +190,6 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                // permission was granted, yay! Do the
-                // location-related task you need to do.
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
@@ -205,11 +203,11 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
     }
 
     private void getSite() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(
-                "user", Context.MODE_PRIVATE);
+        //SharedPreferences prefs = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
 
-        String id = prefs.getString("last_accessed_site_id", "NONE");
-        userWorkSite = siteDB.getSite(id);
+        //String id = prefs.getString("last_accessed_site_id", "NONE");
+        userWorkSite = WorkSite.getChosenWorksite();
     }
+
 
 }
