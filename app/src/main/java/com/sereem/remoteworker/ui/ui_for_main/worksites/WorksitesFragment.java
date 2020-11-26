@@ -137,8 +137,12 @@ public class WorksitesFragment extends Fragment {
 
     public void getWorkSiteForUser() {
 
-        if (userSites.size() > 0) // for the special case when user presses back instead of navigation panel
+        if (userSites.size() > 0) {
+            populateListView();
+            setupListClick(root);
+            progressBar.setVisibility(View.INVISIBLE);
             return;
+        }
         
 //        for (Attendance a : attendanceDB.getAllAttendanceList()) {
 //            if (a.getWorkerEmail().equals(user.getEmail())) {

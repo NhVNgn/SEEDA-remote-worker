@@ -101,8 +101,13 @@ public class ContactsViewFragment extends Fragment {
         getUser();
         attendanceDB = new attendanceDatabase(root.getContext());
         getSite();
-        if (userList.isEmpty())
+        if (userList.isEmpty()) {
             getConnectedUser();
+        } else {
+            populateListView();
+            setUpListClick(root);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
 
         return root;
     }
