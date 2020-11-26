@@ -39,6 +39,7 @@ import com.sereem.remoteworker.model.User;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class LocationService extends Service {
 
@@ -166,7 +167,8 @@ public class LocationService extends Service {
         if (!getVisibilityPreference())
         {
             GeoPoint new_geoPoint = new GeoPoint(0.0, 0.0);
-            user.setTimestamp(null);
+            Date date = new GregorianCalendar(2000, Calendar.JANUARY, 0).getTime();
+            user.setTimestamp(date);
             user.setGeo_point(new_geoPoint);
         }
 
