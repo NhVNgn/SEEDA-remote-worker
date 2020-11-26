@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Project</string>
+    <string name="app_name">Remote Worker</string>
     <string name="first_name">First Name:</string>
     <string name="last_name">Last Name:</string>
     <string name="email">Email</string>
