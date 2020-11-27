@@ -81,12 +81,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private File iconFile;
     private boolean isFirstStart = true;
+    public static Intent serviceIntent;
 //    private DatabaseReference databaseReference;
     //private boolean mLocationPermissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocationService.SHUT_DOWN = false;
         binding = DataBindingUtil.setContentView
                 (this, R.layout.activity_main);
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.MAIN);
@@ -241,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         colorPalette.registerListener();
+        System.out.println("Resume Location service from mainActivtity");
         if(checkMapServices()){
             System.out.println("CheckMapService is true ");
             getLocationPermission();
@@ -273,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startLocationService(){
         if(!isLocationServiceRunning()){
-            Intent serviceIntent = new Intent(this, LocationService.class);
+            serviceIntent = new Intent(this, LocationService.class);
             System.out.println("Service intent is created");
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
                 System.out.println("startForegroundService is called");

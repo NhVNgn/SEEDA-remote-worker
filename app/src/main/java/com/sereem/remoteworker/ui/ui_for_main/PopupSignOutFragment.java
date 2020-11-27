@@ -14,21 +14,23 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
+import com.sereem.remoteworker.model.Constants;
 import com.sereem.remoteworker.ui.LoginActivity;
+import com.sereem.remoteworker.ui.MainActivity;
+import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 public class PopupSignOutFragment  extends AppCompatDialogFragment {
     Activity activity;
     private FirebaseAuth fAuth;
-
     public PopupSignOutFragment(Activity activity) {
         this.activity = activity;
     }
-
     //private ColorPalette colorPalette;
     @NonNull
     @Override
@@ -46,6 +48,11 @@ public class PopupSignOutFragment  extends AppCompatDialogFragment {
                 prefs.edit().putString("email", null).putString("password", null)
                         .putString("UID", "").apply();
                 fAuth.signOut();
+                Intent stopIntent = MainActivity.serviceIntent;
+                stopIntent.setAction(LocationService.ACTION_STOP_FOREGROUND_SERVICE);
+                getActivity().startService(stopIntent);
+                saveInSharedPrefs("", "");
+
                 Intent intent = new Intent(activity, LoginActivity.class);
                 startActivity(intent);
                 activity.finish();
@@ -79,6 +86,11 @@ public class PopupSignOutFragment  extends AppCompatDialogFragment {
     public void onResume() {
         super.onResume();
         //colorPalette.registerListener();
+    }
+
+    private void saveInSharedPrefs(String email, String id) {
+        SharedPreferences prefs = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        prefs.edit().putString("email", email).putString("UID", id).apply();
     }
 
 }

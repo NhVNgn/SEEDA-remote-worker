@@ -39,7 +39,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.UserLocation;
+import com.sereem.remoteworker.ui.MainActivity;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -56,11 +58,35 @@ public class LocationService extends Service {
     public final static String ACTION_LOCATION_BROADCAST = LocationService.class.getName() + "LocationBroadcast";
     public final static String EXTRA_LATITUDE = "extra_latitude";
     public final static String EXTRA_LONGITUDE = "extra_longitude";
+    public final static String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
     private User user;
     private UserLocation userLocation;
-//    private DocumentReference documentReference;
+    public static boolean SHUT_DOWN = false;
+    private DocumentReference documentReference;
     private DatabaseReference databaseReference;
     private boolean isFirstUpdateAfterTurnOff;
+
+    private final LocationCallback mLocationCallback = new LocationCallback(){
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Log.d(TAG, "onLocationResult: got location result.");
+
+            Location location = locationResult.getLastLocation();
+
+            if (location != null) {
+                GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                //UserLocation userLocation = new UserLocation(user, geoPoint, null);
+//                            user = User.getInstance();
+                Date date = Calendar.getInstance().getTime();
+                userLocation = new UserLocation(geoPoint.getLatitude() + ", "
+                        + geoPoint.getLongitude(), date.toString());
+//                            user.setGeo_point(geoPoint);
+//                            user.setTimestamp(date);
+                saveUserLocation();
+            }
+        };
+
+    };;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -71,9 +97,7 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
         System.out.println("LocationService called onCreate");
-        user = User.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        initializeDocumentReference();
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -92,14 +116,27 @@ public class LocationService extends Service {
     }
 
     @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null){
+            String action = intent.getAction();
+            if (action != null && action.equals(ACTION_STOP_FOREGROUND_SERVICE)){
+                System.out.println("CALLING stopForeGroound and stopSelf");
+                SHUT_DOWN = true;
+                stopForeground(true);
+                stopSelf();
+            }
+        }
         Log.d(TAG, "onStartCommand: called.");
         getLocation();
         return START_NOT_STICKY;
     }
 
     private void getLocation() {
-
         // ---------------------------------- LocationRequest ------------------------------------
         // Create the location request to start receiving updates
         LocationRequest mLocationRequestHighAccuracy = new LocationRequest();
@@ -126,34 +163,11 @@ public class LocationService extends Service {
         });
 
 
-
         Log.d(TAG, "getLocation: getting location information.");
-        mFusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-
-                        Log.d(TAG, "onLocationResult: got location result.");
-
-                        Location location = locationResult.getLastLocation();
-
-                        if (location != null) {
-                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                            //UserLocation userLocation = new UserLocation(user, geoPoint, null);
-//                            user = User.getInstance();
-                            Date date = Calendar.getInstance().getTime();
-                            userLocation = new UserLocation(geoPoint.getLatitude() + ", "
-                                    + geoPoint.getLongitude(), date.toString());
-//                            user.setGeo_point(geoPoint);
-//                            user.setTimestamp(date);
-                            saveUserLocation();
-                        }
-                    }
-                },
-                Looper.myLooper()); // Looper.myLooper tells this to repeat forever until thread is destroyed
+        mFusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy, mLocationCallback, Looper.myLooper()); // Looper.myLooper tells this to repeat forever until thread is destroyed
     }
 
     private void saveUserLocation(){
-
         try{
             updateGPSDataInDatabase();
         }catch (NullPointerException e){
@@ -165,6 +179,7 @@ public class LocationService extends Service {
     }
 
     private void initializeDocumentReference() {
+        user = User.getInstance();
         SharedPreferences prefs = this.getSharedPreferences("user", MODE_PRIVATE);
         String UID = prefs.getString("UID", "");
 //        documentReference = FirebaseFirestore.getInstance().document(
@@ -174,6 +189,16 @@ public class LocationService extends Service {
     }
 
     private void updateGPSDataInDatabase() {
+        if (SHUT_DOWN)
+        {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            return;
+        }
+
+        initializeDocumentReferenceForUser();
+        initializeDocumentReference();
+
+
         if (!getVisibilityPreference())
         {
             if(!getFirstUpdatePreferences()) {
@@ -211,5 +236,23 @@ public class LocationService extends Service {
     private boolean getFirstUpdatePreferences(){
         SharedPreferences prefs = this.getSharedPreferences("user", Context.MODE_PRIVATE);
         return prefs.getBoolean("isFirstUpdateAfterOff", true);
+    }
+
+    private void initializeDocumentReferenceForUser() {
+        SharedPreferences prefs = getSharedPreferences("user", MODE_PRIVATE);
+        String UID = prefs.getString("UID", "");
+        System.out.println("UID is" + UID);
+        documentReference = FirebaseFirestore.getInstance().document(
+                "/users/" + UID + "/");
+        documentReference.addSnapshotListener((value, error) -> {
+            if(error != null) {
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+            }
+            else if(value != null && value.exists()) {
+                Log.d(TAG, "user name in doc:" + user.getFirstName());
+                user = User.createNewInstance(value.toObject(User.class));
+            }
+        });
     }
 }

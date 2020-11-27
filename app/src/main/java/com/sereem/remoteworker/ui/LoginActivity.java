@@ -1,5 +1,6 @@
 package com.sereem.remoteworker.ui;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +32,7 @@ import com.sereem.remoteworker.databinding.ActivityLoginBinding;
 //import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
+import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 import java.util.Objects;
 
@@ -53,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         fAuth = FirebaseAuth.getInstance();
-
         SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
         if(sharedPreferences != null && !sharedPreferences.getString("UID", "").equals("")) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
