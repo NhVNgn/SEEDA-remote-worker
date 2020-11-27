@@ -137,8 +137,12 @@ public class WorksitesFragment extends Fragment {
 
     public void getWorkSiteForUser() {
 
-        if (userSites.size() > 0) // for the special case when user presses back instead of navigation panel
+        if (userSites.size() > 0) {
+            populateListView();
+            setupListClick(root);
+            progressBar.setVisibility(View.INVISIBLE);
             return;
+        }
         
 //        for (Attendance a : attendanceDB.getAllAttendanceList()) {
 //            if (a.getWorkerEmail().equals(user.getEmail())) {
@@ -181,10 +185,10 @@ public class WorksitesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(globalContext, SiteDetailActivity.class);
-//                String site_id = userSites.get(position).getSiteID();
-//                intent.putExtra(PROJECT_ID, site_id);
+                String site_id = userSites.get(position).getSiteID();
+                intent.putExtra(PROJECT_ID, site_id);
                 WorkSite.setChosenWorksite(userSites.get(position));
-//                saveInSharedPrefs(site_id, root);
+                saveInSharedPrefs(site_id, root);
                 startActivity(intent);
             }
         });
