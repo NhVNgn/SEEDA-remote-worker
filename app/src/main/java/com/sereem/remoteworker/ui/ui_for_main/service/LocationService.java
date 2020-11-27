@@ -56,7 +56,7 @@ public class LocationService extends Service {
     public final static String ACTION_LOCATION_BROADCAST = LocationService.class.getName() + "LocationBroadcast";
     public final static String EXTRA_LATITUDE = "extra_latitude";
     public final static String EXTRA_LONGITUDE = "extra_longitude";
-//    private User user;
+    private User user;
     private UserLocation userLocation;
 //    private DocumentReference documentReference;
     private DatabaseReference databaseReference;
@@ -71,7 +71,7 @@ public class LocationService extends Service {
     public void onCreate() {
         super.onCreate();
         System.out.println("LocationService called onCreate");
-//        user = User.getInstance();
+        user = User.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         initializeDocumentReference();
         if (Build.VERSION.SDK_INT >= 26) {
@@ -170,7 +170,7 @@ public class LocationService extends Service {
 //        documentReference = FirebaseFirestore.getInstance().document(
 //                "/users/" + UID + "/");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("userLocations")
-                .child(UID);
+                .child(user.getUID());
     }
 
     private void updateGPSDataInDatabase() {
