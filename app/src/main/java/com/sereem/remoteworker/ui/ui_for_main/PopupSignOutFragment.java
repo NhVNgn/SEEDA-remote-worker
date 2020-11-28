@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Constants;
+import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.LoginActivity;
 import com.sereem.remoteworker.ui.MainActivity;
 import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
@@ -52,6 +53,7 @@ public class PopupSignOutFragment  extends AppCompatDialogFragment {
                 stopIntent.setAction(LocationService.ACTION_STOP_FOREGROUND_SERVICE);
                 getActivity().startService(stopIntent);
                 saveInSharedPrefs("", "");
+                User.setInstanceToNull();
 
                 Intent intent = new Intent(activity, LoginActivity.class);
                 startActivity(intent);

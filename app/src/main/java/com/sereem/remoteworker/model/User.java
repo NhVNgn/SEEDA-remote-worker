@@ -37,6 +37,10 @@ public class User {
         return instance;
     }
 
+    public static void setInstanceToNull(){
+        instance = null;
+    }
+
     public static User createNewInstance(User user) {
         instance = user;
         return instance;
