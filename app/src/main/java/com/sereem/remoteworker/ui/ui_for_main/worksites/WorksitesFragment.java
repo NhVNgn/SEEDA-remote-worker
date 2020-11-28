@@ -46,7 +46,7 @@ public class WorksitesFragment extends Fragment {
     User user;
     Database db;
     List<WorkSite> userSites = new ArrayList<>();
-    ListView listView;
+    ListView listView = null;
     private View itemView;
     View root;
 
@@ -55,6 +55,7 @@ public class WorksitesFragment extends Fragment {
     private ItemViewBinding binding;
     private ColorPalette colorPalette;
     private ProgressBar progressBar;
+    ArrayAdapter<WorkSite> adapter = null;
 
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
@@ -78,7 +79,6 @@ public class WorksitesFragment extends Fragment {
             colorPalette.registerListener();
 
             WorkSite ws = userSites.get(position);
-
             // site name
             TextView textSiteName = itemView.findViewById(R.id.textSiteName);
             TextView textSiteId = itemView.findViewById(R.id.textSiteID);
@@ -98,7 +98,6 @@ public class WorksitesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_worksites, container, false);
-
         progressBar = root.findViewById(R.id.progressBarWorksites);
         progressBar.setVisibility(View.VISIBLE);
         globalContext = root.getContext().getApplicationContext();
@@ -114,16 +113,13 @@ public class WorksitesFragment extends Fragment {
             user = User.getInstance();
             getWorkSiteForUser();
         }
-        System.out.println("size = " + userSites.size());
-        for (WorkSite ws : userSites)
-            System.out.println("WorkSite name = " + ws.getName());
-
         return root;
     }
 
     private void populateListView() {
-        ArrayAdapter<WorkSite> adapter = new siteListAdapter();
+        adapter = new siteListAdapter();
         listView.setAdapter(adapter);
+
     }
 
 //    private void getUser() {
@@ -158,6 +154,7 @@ public class WorksitesFragment extends Fragment {
             progressBar.setVisibility(View.INVISIBLE);
             return;
         }
+        System.out.println("getWorkSiteForUser is called");
         DocumentReference documentReference;
         for(int i = 0; i < user.getWorksites().size(); i++) {
             final int position = i;
@@ -165,7 +162,9 @@ public class WorksitesFragment extends Fragment {
             documentReference.get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()) {
                     userSites.add(task.getResult().toObject(WorkSite.class));
+                    System.out.println("userSites is updated" + userSites.get(0) + "  " + user.getEmail());
                     if(position == user.getWorksites().size() - 1) {
+                        System.out.println("populateListView is called in getWorkSiteForUser");
                         populateListView();
                         setupListClick(root);
                         progressBar.setVisibility(View.INVISIBLE);
@@ -202,6 +201,7 @@ public class WorksitesFragment extends Fragment {
     private void initializeDocumentReference() {
         SharedPreferences prefs = getActivity().getSharedPreferences("user", MODE_PRIVATE);
         String UID = prefs.getString("UID", "");
+        System.out.println("current user UID is" + UID);
         DocumentReference documentReference = FirebaseFirestore.getInstance().document(
                 "/users/" + UID + "/");
 
