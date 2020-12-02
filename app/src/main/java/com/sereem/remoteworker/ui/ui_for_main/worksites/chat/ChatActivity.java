@@ -9,35 +9,49 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
+import com.squareup.okhttp.internal.DiskLruCache;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
     DatabaseReference reference;
+    CollectionReference userReference;
     EditText editMessage;
     ImageButton sendButton;
     WorkSite workSite;
     ProgressBar progressBar;
     User user;
+    HashMap<String, String> userList;
 
     MessageAdapter messageAdapter;
     List<Message> messageList;
@@ -66,8 +80,15 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        getUserList();
+
         setupSendButton();
         readMessages();
+    }
+
+    private void getUserList() {
+        userList = new HashMap<>();
+        userReference = FirebaseFirestore.getInstance().collection("/users/");
     }
 
     private void setupSendButton() {
@@ -115,7 +136,7 @@ public class ChatActivity extends AppCompatActivity {
                     messageList.add(message);
                 }
 
-                messageAdapter = new MessageAdapter(getApplicationContext(), messageList);
+                messageAdapter = new MessageAdapter(getApplicationContext(), messageList, userList);
                 recyclerView.setAdapter(messageAdapter);
             }
 

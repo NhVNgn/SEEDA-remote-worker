@@ -13,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
+import com.sereem.remoteworker.model.workSite.WorkSite;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
@@ -25,10 +28,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Message> messages;
 
     private User user;
+    private HashMap<String, String> userList;
 
-    public MessageAdapter(Context context, List<Message> messages) {
+    public MessageAdapter(Context context, List<Message> messages, HashMap<String, String> userList) {
         this.context = context;
         this.messages = messages;
+        this.userList = userList;
 
         user = User.getInstance();
     }
