@@ -88,6 +88,8 @@
             android:name=".ui.ui_for_main.service.LocationService"
             android:stopWithTask="true">
         </service>
+
+
     </application>
 
 </manifest>
