@@ -52,7 +52,7 @@
                 android:paddingBottom="8dp">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/view2"
+                    android:id="@+id/cardView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:elevation="12dp"

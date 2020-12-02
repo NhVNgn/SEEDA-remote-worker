@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sereem.remoteworker">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -14,8 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +22,7 @@
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project">
-
+        <activity android:name=".ui.ui_for_main.worksites.chat.ChatActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -40,7 +38,7 @@
         <activity
             android:name=".ui.Register2"
             android:noHistory="true"
-            android:theme="@style/Theme.Project.NoActionBar"></activity>
+            android:theme="@style/Theme.Project.NoActionBar" />
         <activity
             android:name=".ui.ui_for_main.worksites.SiteDetailActivity"
             android:label="Work site information">
@@ -86,8 +84,7 @@
 
         <service
             android:name=".ui.ui_for_main.service.LocationService"
-            android:stopWithTask="true">
-        </service>
+            android:stopWithTask="true"></service>
     </application>
 
 </manifest>
