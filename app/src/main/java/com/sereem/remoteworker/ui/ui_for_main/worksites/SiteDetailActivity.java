@@ -1,5 +1,6 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
 import com.sereem.remoteworker.ui.ColorPalette;
@@ -36,6 +37,8 @@ public class SiteDetailActivity extends AppCompatActivity {
         TabItem locationInfo = findViewById(R.id.locationInfo);
         ViewPager viewPager = findViewById(R.id.viewPager);
         setUpBackButton();
+        FloatingActionButton fob = findViewById(R.id.fobChat);
+
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
