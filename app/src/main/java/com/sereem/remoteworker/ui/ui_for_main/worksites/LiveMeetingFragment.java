@@ -27,6 +27,7 @@ import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
 
+import java.nio.channels.CancelledKeyException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -40,11 +41,16 @@ public class LiveMeetingFragment extends Fragment {
 
     Button createMeetingButton;
     Button linkButton;
+    Button endButton;
+    private boolean userStartAMeeting = false;
     TextView linkContainerTextView;
-    String urlGoogleMeet = null;
+    TextView hostTextView;
+    public static String urlGoogleMeet = null;
     WorkSite workSite;
-    List<GoogleMeetLink> linkList;
+    public static List<GoogleMeetLink> linkList;
+    public static boolean linkIsSent = false;
     User user;
+    public static String hostName = null;
     private ColorPalette colorPalette;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,13 +62,13 @@ public class LiveMeetingFragment extends Fragment {
         binding.setColorPalette(colorPalette);
         createMeetingButton = root.findViewById(R.id.meetingButton);
         linkButton = root.findViewById(R.id.joinButton);
+        endButton = root.findViewById(R.id.endMeeting);
+        hostTextView = root.findViewById(R.id.HostingInfoTextView);
         linkContainerTextView = root.findViewById(R.id.linkContainerText);
         workSite = WorkSite.getChosenWorksite();
         reference = FirebaseDatabase.getInstance().getReference().child(
                 "lives/" + workSite.getSiteID());
         user = User.getInstance();
-
-
 
         createMeetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +83,7 @@ public class LiveMeetingFragment extends Fragment {
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (urlGoogleMeet == null)
+                if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
                     Toast.makeText(getContext(), "There is not meeting link now", Toast.LENGTH_SHORT).show();
                 else{
                     String url = urlGoogleMeet;
@@ -88,7 +94,14 @@ public class LiveMeetingFragment extends Fragment {
             }
         });
 
+        endButton.setVisibility(View.INVISIBLE);
         receiveGoogleMeetLink();
+
+
+
+
+
+
 
         return root;
     }
@@ -101,8 +114,10 @@ public class LiveMeetingFragment extends Fragment {
             linkContainerTextView.setText(arr[1].trim());
             urlGoogleMeet = arr[1].trim();
             linkContainerTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getFirstName());
-            sendLink(googleMeetLink);
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getEmail());
+            userStartAMeeting = true;
+            if (!linkIsSent)
+                sendLink(googleMeetLink);
 
 
         }
@@ -111,7 +126,7 @@ public class LiveMeetingFragment extends Fragment {
     private void sendLink(GoogleMeetLink googleMeetLink) {
 
 
-
+        linkIsSent = true;
         reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 Toast.makeText(getContext(), "Sent to other user", Toast.LENGTH_SHORT).show();
@@ -126,7 +141,6 @@ public class LiveMeetingFragment extends Fragment {
 
     private void receiveGoogleMeetLink(){
         linkList = new ArrayList<>();
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -139,18 +153,36 @@ public class LiveMeetingFragment extends Fragment {
 
                 if (!linkList.isEmpty())
                 {
-                    host =linkList.get(linkList.size()-1).getHost();
-                    urlGoogleMeet = linkList.get(linkList.size()-1).getLink();
+                    System.out.println("LinkList is not empty");
+                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
+                    urlGoogleMeet = lastLink.getLink();
+                    hostName = lastLink.getHost();
+                    System.out.println(hostName);
+                    hostTextView.setText(hostName);
                     linkContainerTextView.setText(urlGoogleMeet);
-                    Toast.makeText(getContext(), "new live meeting created: " + linkList.get(linkList.size()-1).getLink() + " by " + host, Toast.LENGTH_SHORT).show();
-                }
+                    System.out.println("HOST NAME IS: " + hostName);
 
-                int counters = linkList.size()-1;
-                for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
-                    counters--;
-                    if (counters == 0)
-                        break;
-                    appleSnapshot.getRef().removeValue();
+                    if (hostName != null){
+                        System.out.println("HOST NAME IS NOT NULL");
+                        if (hostName.equals(user.getEmail())){
+                            endButton.setVisibility(View.VISIBLE);
+                            endButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName());
+
+                                    reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            System.out.println("Stop previous meeting successful");
+                                        } else {
+                                            System.out.println("Fail to stop previous meeting");
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
                 }
 
             }
@@ -187,5 +219,25 @@ public class LiveMeetingFragment extends Fragment {
                 handleSendText(intent);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        System.out.println("OnDestroy is called LiveMeetingFragment");
+        super.onDestroy();
+
+        if (userStartAMeeting) {
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName());
+
+            reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    System.out.println("Stop previous meeting successful");
+                } else {
+                    System.out.println("Fail to stop previous meeting");
+
+                }
+            });
+        }
+
     }
 }

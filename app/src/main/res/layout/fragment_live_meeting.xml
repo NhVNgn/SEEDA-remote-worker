@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/linkTextView"
-            android:text="Link created:"
+            android:text="Current Meeting:"
             android:layout_below="@+id/meetingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +47,23 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/linkTextView"/>
 
+        <TextView
+            android:id="@+id/HostingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Host by:"
+            android:layout_below="@+id/linkTextView"
+            android:layout_marginTop="30dp"/>
+
+        <TextView
+            android:id="@+id/HostingInfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No one"
+            android:layout_toEndOf="@+id/HostingTextView"
+            android:layout_alignStart="@+id/linkContainerText"
+            android:layout_below="@+id/meetingButton"
+            android:layout_marginTop="65dp"/>
 
         <Button
             android:id="@+id/joinButton"
@@ -55,8 +72,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linkContainerText"
-            android:text="Join above link"
+            android:text="Join above meeting"
+            android:layout_marginTop="90dp"/>
+
+        <Button
+            android:id="@+id/endMeeting"
+            android:backgroundTint="@{colorPalette.btnBackground}"
+            android:textColor="@{colorPalette.btnText}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/joinButton"
+            android:text="End above meeting"
             android:layout_marginTop="16dp"/>
+
+
     </RelativeLayout>
 
 
