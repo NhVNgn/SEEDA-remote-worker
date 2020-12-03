@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 public class PagerAdapter extends FragmentPagerAdapter {
 
     private int numOfTabs;
-    public Fragment[] fragments = new Fragment[3];
+    public Fragment[] fragments = new Fragment[4];
     public PagerAdapter(FragmentManager fm, int numOfTabs){
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.numOfTabs = numOfTabs;
@@ -24,6 +24,8 @@ public class PagerAdapter extends FragmentPagerAdapter {
             return new MapsFragment();
         else if (position == 2)
             return new ContactsViewFragment();
+        else if (position == 3)
+            return new LiveMeetingFragment();
         return null;
     }
 

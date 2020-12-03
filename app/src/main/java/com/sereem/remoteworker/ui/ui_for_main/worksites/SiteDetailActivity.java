@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 public class SiteDetailActivity extends AppCompatActivity {
     private ColorPalette colorPalette;
     PagerAdapter pagerAdapter;
+    TabLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar actionBar;
@@ -30,10 +32,11 @@ public class SiteDetailActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#275F8E")));
-        TabLayout tabLayout = findViewById(R.id.tabBar);
+        tabLayout = findViewById(R.id.tabBar);
         TabItem tabSiteInfo = findViewById(R.id.siteInfo);
         TabItem tabContactInfo = findViewById(R.id.contactsInfo);
         TabItem locationInfo = findViewById(R.id.locationInfo);
+        TabItem meetingInfo = findViewById(R.id.liveMeetingInfo);
         ViewPager viewPager = findViewById(R.id.viewPager);
         setUpBackButton();
 
@@ -80,6 +83,16 @@ public class SiteDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         colorPalette.registerListener();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                tabLayout.getTabAt(3).select();
+            }
+        }
+
     }
 
     @Override

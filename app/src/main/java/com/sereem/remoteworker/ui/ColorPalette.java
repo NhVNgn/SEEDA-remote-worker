@@ -19,6 +19,7 @@ import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
 import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
 import com.sereem.remoteworker.databinding.ContactParentItemBinding;
 import com.sereem.remoteworker.databinding.FragmentImageViewBinding;
+import com.sereem.remoteworker.databinding.FragmentLiveMeetingBinding;
 import com.sereem.remoteworker.databinding.FragmentLocationViewBinding;
 import com.sereem.remoteworker.databinding.FragmentProfileBinding;
 import com.sereem.remoteworker.databinding.FragmentSiteViewBinding;
@@ -40,7 +41,8 @@ public class ColorPalette implements SensorEventListener {
         IMAGE_VIEW,
         LOCATION,
         SITE_VIEW,
-        CONTACT
+        CONTACT,
+        MEETINGS
     }
 
     private boolean isDark;
@@ -67,6 +69,7 @@ public class ColorPalette implements SensorEventListener {
     private PopupOptionsLayoutBinding popupOptionsLayoutBinding;
     private FragmentImageViewBinding imageViewBinding;
     private FragmentLocationViewBinding locationViewBinding;
+    private FragmentLiveMeetingBinding fragmentLiveMeetingBinding;
     private FragmentSiteViewBinding siteViewBinding;
     private ContactParentItemBinding contactBinding;
 
@@ -109,6 +112,15 @@ public class ColorPalette implements SensorEventListener {
         this.context = context;
         this.type = type;
         this.locationViewBinding = locationViewBinding;
+        getSettings();
+        setSensor();
+        setTheme();
+    }
+
+    public ColorPalette(Context context, FragmentLiveMeetingBinding fragmentLiveMeetingBinding, TYPE type) {
+        this.context = context;
+        this.type = type;
+        this.fragmentLiveMeetingBinding = fragmentLiveMeetingBinding;
         getSettings();
         setSensor();
         setTheme();
@@ -324,6 +336,17 @@ public class ColorPalette implements SensorEventListener {
                 }
                 case LOCATION: {
                     FragmentLocationViewBinding binding = locationViewBinding;
+                    if (event.values[0] == 0 && !isDark()) {
+                        setDark(true);
+                        binding.setColorPalette(this);
+                    } else if (event.values[0] >= 1.0 && isDark()) {
+                        setDark(false);
+                        binding.setColorPalette(this);
+                    }
+                    break;
+                }
+                case MEETINGS: {
+                    FragmentLiveMeetingBinding binding = fragmentLiveMeetingBinding;
                     if (event.values[0] == 0 && !isDark()) {
                         setDark(true);
                         binding.setColorPalette(this);

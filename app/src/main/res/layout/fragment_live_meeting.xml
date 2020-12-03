@@ -1,40 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+<data>
+    <variable
+        name="colorPalette"
+        type="com.sereem.remoteworker.ui.ColorPalette" />
+</data>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ui_for_main.worksites.LiveMeetingFragment"
-    android:layout_marginTop="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="16dp">
-
-    <Button
-        android:id="@+id/meetingButton"
+    >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create a new meeting" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp">
 
-    <TextView
-        android:id="@+id/linkTextView"
-        android:text="Link created:"
-        android:layout_below="@+id/meetingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        <Button
+            android:id="@+id/meetingButton"
+            android:backgroundTint="@{colorPalette.btnBackground}"
+            android:textColor="@{colorPalette.btnText}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Create a new meeting" />
 
-    <TextView
-        android:id="@+id/linkContainerText"
-        android:text="Empty"
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/meetingButton"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/linkTextView"/>
-    
+        <TextView
+            android:id="@+id/linkTextView"
+            android:text="Link created:"
+            android:layout_below="@+id/meetingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/linkContainerText"
+            android:text="Empty"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/meetingButton"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/linkTextView"/>
+
+
+        <Button
+            android:id="@+id/joinButton"
+            android:backgroundTint="@{colorPalette.btnBackground}"
+            android:textColor="@{colorPalette.btnText}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linkContainerText"
+            android:text="Join above link"
+            android:layout_marginTop="16dp"/>
+    </RelativeLayout>
 
 
 
-
-</RelativeLayout>
+</FrameLayout>
+</layout>
