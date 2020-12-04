@@ -1,45 +1,42 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.chat;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
-import com.squareup.okhttp.internal.DiskLruCache;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
@@ -51,12 +48,14 @@ public class ChatActivity extends AppCompatActivity {
     WorkSite workSite;
     ProgressBar progressBar;
     User user;
-    HashMap<String, String> userList;
+    HashMap<String, User> userList;
 
     MessageAdapter messageAdapter;
     List<Message> messageList;
 
     RecyclerView recyclerView;
+
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +82,43 @@ public class ChatActivity extends AppCompatActivity {
         getUserList();
 
         setupSendButton();
-        readMessages();
     }
 
     private void getUserList() {
         userList = new HashMap<>();
-        userReference = FirebaseFirestore.getInstance().collection("/users/");
+        userReference = FirebaseFirestore.getInstance().collection("users");
+        userReference.whereArrayContains("worksites", workSite.getSiteID())
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            if(!user.getUID().equals(document.getId())) {
+                                User coUser = document.toObject(User.class);
+                                userList.put(document.getId(), coUser);
+                                storageReference = FirebaseStorage.getInstance()
+                                        .getReference("profileIcons/" +
+                                        coUser.getUID() + ".jpeg");
+                                downloadIcon(coUser);
+                            }
+                            readMessages();
+                        }
+                    } else {
+                        Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+
+    }
+
+    private void downloadIcon(User user) {
+        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
+        Uri iconUri = Uri.fromFile(file);
+        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
+            if(!task.isSuccessful()) {
+                Toast.makeText(this, task.getException().getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+//            progressBarsBar.setVisibility(View.INVISIBLE);
+        });
     }
 
     private void setupSendButton() {

@@ -1,6 +1,8 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.chat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,9 @@ import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 
+import org.w3c.dom.Text;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +33,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Message> messages;
 
     private User user;
-    private HashMap<String, String> userList;
+    private HashMap<String, User> userList;
 
-    public MessageAdapter(Context context, List<Message> messages, HashMap<String, String> userList) {
+    public MessageAdapter(Context context, List<Message> messages, HashMap<String, User> userList) {
         this.context = context;
         this.messages = messages;
         this.userList = userList;
@@ -58,6 +63,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Message message = messages.get(position);
 
         holder.messageText.setText(message.getText());
+        if(getItemViewType(position) == MSG_TYPE_LEFT) {
+            User user = userList.get(message.getUserId());
+            String name =  user.getFirstName() + " " + user.getLastName();
+            holder.nameText.setText(name);
+            holder.dateText.setText(message.getTimeStamp().substring(11, 16));
+            holder.profileIcon.setImageURI(Uri.fromFile(
+                    new File(context.getCacheDir() + "/" + user.getUID() + ".jpeg")
+            ));
+        }
     }
 
     @Override
@@ -67,13 +81,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView messageText;
-//        ImageView profileIcon;
+        TextView messageText, nameText, dateText;
+        ImageView profileIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             messageText = itemView.findViewById(R.id.textMessage);
+            nameText = itemView.findViewById(R.id.textName);
+            dateText = itemView.findViewById(R.id.textDate);
+            profileIcon = itemView.findViewById(R.id.profileIconChatLeft);
         }
     }
 

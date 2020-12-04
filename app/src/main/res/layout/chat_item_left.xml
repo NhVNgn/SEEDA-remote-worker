@@ -15,9 +15,9 @@
         <ImageView
             android:id="@+id/profileIconChatLeft"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:contentDescription="@string/nav_header_desc"
-            android:background="@drawable/profile_icon" />
+            android:layout_height="match_parent"
+            android:background="@drawable/profile_icon"
+            android:contentDescription="@string/nav_header_desc" />
 
     </androidx.cardview.widget.CardView>
 
@@ -41,17 +41,19 @@
         android:layout_below="@+id/textName"
         android:layout_marginStart="8dp"
         android:padding="8dp"
-        android:textColor="@color/main_blue_color"
+        android:textColor="@color/black"
         android:text="What's app?"/>
 
     <TextView
         android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textMessage"
-        android:layout_toEndOf="@+id/cardView"
-        android:text="TextView"
+        android:layout_toEndOf="@+id/textName"
+        android:textSize="10sp"
+        android:text="20:30"
+        android:textColor="#80000000"
+        android:textStyle="bold"
         android:paddingTop="5dp"
-        android:layout_marginStart="8dp"/>
+        android:layout_marginStart="4dp"/>
 
 </RelativeLayout>
