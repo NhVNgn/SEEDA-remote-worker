@@ -113,7 +113,7 @@ public class LiveMeetingFragment extends Fragment {
             linkContainerTextView.setText(arr[1].trim());
             urlGoogleMeet = arr[1].trim();
             linkContainerTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getFirstName());
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
             userStartAMeeting = true;
             if (!linkIsSent)
                 sendLink(googleMeetLink);
@@ -168,7 +168,7 @@ public class LiveMeetingFragment extends Fragment {
                             endButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName());
+                                    GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
 
                                     reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
@@ -228,7 +228,7 @@ public class LiveMeetingFragment extends Fragment {
         super.onDestroy();
 
         if (userStartAMeeting) {
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName());
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
 
             reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {

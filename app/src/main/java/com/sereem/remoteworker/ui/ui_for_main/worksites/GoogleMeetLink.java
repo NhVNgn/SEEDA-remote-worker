@@ -5,16 +5,22 @@ public class GoogleMeetLink {
     private String link;
     private String timeStamp;
     private String host;
+    private String siteId;
 
-    public GoogleMeetLink(String userId, String link, String timeStamp, String host) {
+    public GoogleMeetLink(String userId, String link, String timeStamp, String host, String siteId) {
         this.userId = userId;
         this.link = link;
         this.timeStamp = timeStamp;
         this.host = host;
+        this.siteId = siteId;
     }
 
     public GoogleMeetLink(){
 
+    }
+
+    public String getSiteId() {
+        return siteId;
     }
 
     public String getHost(){
