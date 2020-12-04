@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment;
+
 public class PagerAdapter extends FragmentPagerAdapter {
 
     private int numOfTabs;
