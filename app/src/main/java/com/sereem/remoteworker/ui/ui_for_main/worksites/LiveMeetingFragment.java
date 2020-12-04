@@ -48,7 +48,7 @@ public class LiveMeetingFragment extends Fragment {
     public static String urlGoogleMeet = null;
     WorkSite workSite;
     public static List<GoogleMeetLink> linkList;
-    public static boolean linkIsSent = false;
+    boolean linkIsSent = false;
     User user;
     public static String hostName = null;
     private ColorPalette colorPalette;
@@ -102,7 +102,6 @@ public class LiveMeetingFragment extends Fragment {
 
 
 
-
         return root;
     }
 
@@ -114,7 +113,7 @@ public class LiveMeetingFragment extends Fragment {
             linkContainerTextView.setText(arr[1].trim());
             urlGoogleMeet = arr[1].trim();
             linkContainerTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getEmail());
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getFirstName());
             userStartAMeeting = true;
             if (!linkIsSent)
                 sendLink(googleMeetLink);
@@ -162,9 +161,9 @@ public class LiveMeetingFragment extends Fragment {
                     linkContainerTextView.setText(urlGoogleMeet);
                     System.out.println("HOST NAME IS: " + hostName);
 
-                    if (hostName != null){
+                    if (hostName != null && !urlGoogleMeet.equals("Meeting has ended")){
                         System.out.println("HOST NAME IS NOT NULL");
-                        if (hostName.equals(user.getEmail())){
+                        if (hostName.equals(user.getFirstName())){
                             endButton.setVisibility(View.VISIBLE);
                             endButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -174,6 +173,8 @@ public class LiveMeetingFragment extends Fragment {
                                     reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             System.out.println("Stop previous meeting successful");
+                                            linkIsSent = false;
+                                            endButton.setVisibility(View.INVISIBLE);
                                         } else {
                                             System.out.println("Fail to stop previous meeting");
 
@@ -232,6 +233,7 @@ public class LiveMeetingFragment extends Fragment {
             reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     System.out.println("Stop previous meeting successful");
+                    linkIsSent = false;
                 } else {
                     System.out.println("Fail to stop previous meeting");
 
