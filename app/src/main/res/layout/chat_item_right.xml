@@ -20,7 +20,22 @@
             android:layout_marginStart="8dp"
             android:padding="8dp"
             android:text="I'm doing great"
+            android:layout_below="@+id/textDate"
             android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/textDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="20:30"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:paddingBottom="2dp"
+            android:textColor="#80000000"
+            android:textStyle="bold"
+            android:paddingTop="5dp"
+            android:layout_marginStart="4dp"/>
 
     </RelativeLayout>
 </RelativeLayout>

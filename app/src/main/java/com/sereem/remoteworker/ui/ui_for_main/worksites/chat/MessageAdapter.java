@@ -63,11 +63,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Message message = messages.get(position);
 
         holder.messageText.setText(message.getText());
+        holder.dateText.setText(message.getTimeStamp().substring(11, 16));
         if(getItemViewType(position) == MSG_TYPE_LEFT) {
             User user = userList.get(message.getUserId());
             String name =  user.getFirstName() + " " + user.getLastName();
             holder.nameText.setText(name);
-            holder.dateText.setText(message.getTimeStamp().substring(11, 16));
             holder.profileIcon.setImageURI(Uri.fromFile(
                     new File(context.getCacheDir() + "/" + user.getUID() + ".jpeg")
             ));
