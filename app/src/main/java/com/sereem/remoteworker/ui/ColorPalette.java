@@ -24,6 +24,7 @@ import com.sereem.remoteworker.databinding.FragmentProfileBinding;
 import com.sereem.remoteworker.databinding.FragmentSiteViewBinding;
 import com.sereem.remoteworker.databinding.ItemViewBinding;
 import com.sereem.remoteworker.databinding.PopupOptionsLayoutBinding;
+import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 // TODO: refactor weird implementation (functional programming?)
 

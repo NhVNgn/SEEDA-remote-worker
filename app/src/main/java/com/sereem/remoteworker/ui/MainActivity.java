@@ -137,15 +137,11 @@ public class MainActivity extends AppCompatActivity {
     private void downloadIconFromUri() {
 //        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
 //        progressBar.setVisibility(View.VISIBLE);
-        if(!isFirstStart) {
-            return;
-        }
-        if(iconFile.exists()) {
+        if(iconFile.exists() && !isFirstStart) {
             iconUri = Uri.fromFile(iconFile);
             return;
         }
         isFirstStart = false;
-        Toast.makeText(this, "Dowloading..", Toast.LENGTH_LONG).show();
         iconUri = Uri.fromFile(iconFile);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
             if(!task.isSuccessful()) {
@@ -160,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeStorageReference() {
         storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
-                user.getUID() + ".jpg");
+                user.getUID() + ".jpeg");
     }
 
     private void initializeDocumentReference() {
@@ -175,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(value != null && value.exists()) {
                 user = User.createNewInstance(value.toObject(User.class));
-                iconFile = new File(getCacheDir() + "/" + user.getUID() + ".jpg");
+                iconFile = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
                 initializeStorageReference();
                 downloadIconFromUri();
                 showUserInfo();

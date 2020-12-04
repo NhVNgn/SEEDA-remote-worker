@@ -1,4 +1,4 @@
-package com.sereem.remoteworker.ui.ui_for_main.worksites;
+package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

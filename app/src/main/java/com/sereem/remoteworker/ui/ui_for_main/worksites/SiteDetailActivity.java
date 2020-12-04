@@ -1,16 +1,21 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
 import com.sereem.remoteworker.ui.ColorPalette;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.chat.ChatActivity;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.MapsFragment;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.PagerAdapter;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -36,6 +41,9 @@ public class SiteDetailActivity extends AppCompatActivity {
         TabItem locationInfo = findViewById(R.id.locationInfo);
         ViewPager viewPager = findViewById(R.id.viewPager);
         setUpBackButton();
+        FloatingActionButton fob = findViewById(R.id.fobChat);
+        fob.setOnClickListener(v -> startActivity(new Intent(
+                SiteDetailActivity.this, ChatActivity.class)));
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());

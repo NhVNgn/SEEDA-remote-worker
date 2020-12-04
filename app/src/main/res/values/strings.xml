@@ -75,4 +75,6 @@
     <string name="invalid_password">Password should be at least 6 characters</string>
     <string name="email_is_used">This email is used by another user</string>
     <string name="change_password">Change password</string>
+    <string name="chat">Chat</string>
+    <string name="type_a_message_here">Type a message here...</string>
 </resources>

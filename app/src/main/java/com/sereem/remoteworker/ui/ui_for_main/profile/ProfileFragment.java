@@ -3,6 +3,7 @@ package com.sereem.remoteworker.ui.ui_for_main.profile;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -146,7 +147,7 @@ public class ProfileFragment extends Fragment {
 
     private void initializeStorageReference() {
         storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
-                user.getUID() + ".jpg");
+                user.getUID() + ".jpeg");
     }
 
     private void createSnackBar() {
@@ -349,7 +350,6 @@ public class ProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
                 MainActivity.iconUri = resultUri;
-                Toast.makeText(getContext(), resultUri.toString(), Toast.LENGTH_LONG).show();
                 isIconUpdated = true;
                 updateIcon();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -465,6 +465,7 @@ public class ProfileFragment extends Fragment {
             iconFile.delete();
             iconFile.createNewFile();
             FileOutputStream fout = new FileOutputStream(iconFile);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fout);
             storageReference.putFile(Uri.fromFile(iconFile)).addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
@@ -473,7 +474,6 @@ public class ProfileFragment extends Fragment {
                 } else {
                     storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                         user.setIconUri(uri1.toString());
-                        Toast.makeText(getContext(), task.getResult().toString(), Toast.LENGTH_LONG).show();
                         updateDataInDatabase1(1);
                         updateIcon();
                     });
