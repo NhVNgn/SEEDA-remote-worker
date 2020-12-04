@@ -1,15 +1,20 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +25,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,8 +45,13 @@ import com.sereem.remoteworker.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.linkList;
+import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.urlGoogleMeet;
 
 public class WorksitesFragment extends Fragment {
 
@@ -113,12 +128,14 @@ public class WorksitesFragment extends Fragment {
             user = User.getInstance();
             getWorkSiteForUser();
         }
+
         return root;
     }
 
     private void populateListView() {
         adapter = new siteListAdapter();
         listView.setAdapter(adapter);
+        receiveGoogleMeetLink();
 
     }
 
@@ -164,7 +181,6 @@ public class WorksitesFragment extends Fragment {
                     userSites.add(task.getResult().toObject(WorkSite.class));
                     System.out.println("userSites is updated" + userSites.get(0) + "  " + user.getEmail());
                     if(position == user.getWorksites().size() - 1) {
-                        System.out.println("populateListView is called in getWorkSiteForUser");
                         populateListView();
                         setupListClick(root);
                         progressBar.setVisibility(View.INVISIBLE);
@@ -175,8 +191,6 @@ public class WorksitesFragment extends Fragment {
                 }
             });
         }
-//        user = User.getInstance();
-//        Toast.makeText(getContext(), user.getFirstName(), Toast.LENGTH_LONG).show();
     }
     private void setupListClick(View root){
         ListView list = root.findViewById(R.id.listViewWorkSite);
@@ -230,6 +244,126 @@ public class WorksitesFragment extends Fragment {
         if(colorPalette != null) {
             colorPalette.registerListener();
         }
+    }
+
+
+
+    private void receiveGoogleMeetLink(){
+        linkList = new ArrayList<>();
+        List<DatabaseReference> databaseReferenceList = new ArrayList<>();
+        // each databse will refer to a worksite
+
+
+        for (WorkSite ws : userSites){
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(
+                    "lives/" + ws.getSiteID());
+            databaseReferenceList.add(reference);
+            System.out.println("add reference:" + ws.getName());
+        }
+
+        // for each database, add a listener
+        for (DatabaseReference reference : databaseReferenceList){
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    linkList.clear();
+                    System.out.println("OnDataChange is called");
+                    String host = "";
+                    for (DataSnapshot snapshotItem : snapshot.getChildren()){
+                        GoogleMeetLink googleMeetLink = snapshotItem.getValue(GoogleMeetLink.class);
+                        linkList.add(googleMeetLink);
+                    }
+
+                    if (!linkList.isEmpty())
+                    {
+                        GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
+                        host = lastLink.getHost();
+
+                        urlGoogleMeet = lastLink.getLink();
+                        if (urlGoogleMeet.equals("Meeting has ended"))
+                            Toast.makeText(getContext(), "WorksitesFragment: No meeting available ", Toast.LENGTH_SHORT).show();
+                        else {
+                            if (!lastLink.getHost().equals(user.getFirstName())) {
+                                showNotification(host, lastLink);
+                            }
+
+                        }
+                    }
+
+                    int counters = linkList.size()-1;
+                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
+                        counters--;
+                        if (counters == 0)
+                            break;
+                        appleSnapshot.getRef().removeValue();
+                    }
+
+                }
+
+                private void showNotification(String host, GoogleMeetLink lastLink) {
+                    AlertDialog dialog = new AlertDialog.Builder(getContext())
+                            .setTitle("Notification")
+                            .setMessage(host + " hosted a meeting right now!")
+                            .setPositiveButton("JOIN", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
+                                        Toast.makeText(getContext(), "Meeting has just ended", Toast.LENGTH_SHORT).show();
+                                    else{
+                                        String url = urlGoogleMeet;
+                                        Intent i = new Intent(Intent.ACTION_VIEW);
+                                        i.setData(Uri.parse(url));
+                                        startActivity(i);
+                                    }
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .create();
+                    dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        private static final int AUTO_DISMISS_MILLIS = 6000;
+                        @Override
+                        public void onShow(final DialogInterface dialog) {
+                            final Button defaultButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                            final CharSequence negativeButtonText = defaultButton.getText();
+                            new CountDownTimer(AUTO_DISMISS_MILLIS, 100) {
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    defaultButton.setText(String.format(
+                                            Locale.getDefault(), "%s (%d)",
+                                            negativeButtonText,
+                                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1 //add one so it never displays zero
+                                    ));
+                                }
+                                @Override
+                                public void onFinish() {
+                                    if (((AlertDialog) dialog).isShowing()) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                            }.start();
+                        }
+                    });
+                    if(!getActivity().isFinishing())
+                    {
+                        dialog.show();
+                    }
+
+                }
+
+
+
+
+
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+
     }
 
 }
