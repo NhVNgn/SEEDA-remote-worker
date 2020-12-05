@@ -103,14 +103,18 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
         siteDB = new SiteDatabase(getContext());
         getSite();
         LatLng site_coordinate = getLocationFromAddress(getContext(), userWorkSite.getLocation());
-        String site_title = userWorkSite.getName();
-        String site_snippet = userWorkSite.getLocation();
-        MarkerOptions marker = new MarkerOptions().position(site_coordinate).title(site_title).snippet(site_snippet);
-        Marker m = mGoogleMap.addMarker(marker);
-        m.setIcon(BitmapDescriptorFactory.fromBitmap(createSmallerMarker(R.drawable.construction)));
-        m.showInfoWindow();
-        float zoomLevel = 16.0f;
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site_coordinate, zoomLevel));
+        if (site_coordinate != null)
+        {
+            String site_title = userWorkSite.getName();
+            String site_snippet = userWorkSite.getLocation();
+            MarkerOptions marker = new MarkerOptions().position(site_coordinate).title(site_title).snippet(site_snippet);
+            Marker m = mGoogleMap.addMarker(marker);
+            m.setIcon(BitmapDescriptorFactory.fromBitmap(createSmallerMarker(R.drawable.construction)));
+            m.showInfoWindow();
+            float zoomLevel = 16.0f;
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(site_coordinate, zoomLevel));
+        }
+
     }
 
     public LatLng getLocationFromAddress(Context context, String siteAddress){
@@ -125,6 +129,10 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
             site_coordinates = new LatLng(location.getLatitude(), location.getLongitude());
         } catch (IOException ex){
             ex.printStackTrace();
+        }
+        if (site_coordinates == null)
+        {
+            site_coordinates = new LatLng(49.279881, -122.921738);
         }
         return site_coordinates;
     }

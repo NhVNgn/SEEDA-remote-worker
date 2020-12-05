@@ -280,8 +280,10 @@ public class WorksitesFragment extends Fragment {
                         host = lastLink.getHost();
 
                         urlGoogleMeet = lastLink.getLink();
-                        if (urlGoogleMeet.equals("Meeting has ended"))
-                            Toast.makeText(getContext(), "WorksitesFragment: No meeting available ", Toast.LENGTH_SHORT).show();
+                        if (urlGoogleMeet.equals("Meeting has ended")) {
+                            if (getActivity() != null)
+                                Toast.makeText(getContext(), "WorksitesFragment: No meeting available ", Toast.LENGTH_SHORT).show();
+                        }
                         else {
                             if (!lastLink.getHost().equals(user.getFirstName())) {
                                 showNotification(host, lastLink);
@@ -301,52 +303,55 @@ public class WorksitesFragment extends Fragment {
                 }
 
                 private void showNotification(String host, GoogleMeetLink lastLink) {
-                    AlertDialog dialog = new AlertDialog.Builder(getContext())
-                            .setTitle("Notification")
-                            .setMessage(host + " hosted a meeting right now!")
-                            .setPositiveButton("JOIN", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
-                                        Toast.makeText(getContext(), "Meeting has just ended", Toast.LENGTH_SHORT).show();
-                                    else{
-                                        String url = urlGoogleMeet;
-                                        Intent i = new Intent(Intent.ACTION_VIEW);
-                                        i.setData(Uri.parse(url));
-                                        if (!url.contains("Meeting has ended"))
-                                            startActivity(i);
+                    if(getActivity() != null){
+                        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                                .setTitle("Notification")
+                                .setMessage(host + " hosted a meeting right now!")
+                                .setPositiveButton("JOIN", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
+                                            Toast.makeText(getContext(), "Meeting has just ended", Toast.LENGTH_SHORT).show();
+                                        else{
+                                            String url = urlGoogleMeet;
+                                            Intent i = new Intent(Intent.ACTION_VIEW);
+                                            i.setData(Uri.parse(url));
+                                            if (!url.contains("Meeting has ended"))
+                                                startActivity(i);
+                                        }
                                     }
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .create();
-                    dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        private static final int AUTO_DISMISS_MILLIS = 6000;
-                        @Override
-                        public void onShow(final DialogInterface dialog) {
-                            final Button defaultButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
-                            final CharSequence negativeButtonText = defaultButton.getText();
-                            new CountDownTimer(AUTO_DISMISS_MILLIS, 100) {
-                                @Override
-                                public void onTick(long millisUntilFinished) {
-                                    defaultButton.setText(String.format(
-                                            Locale.getDefault(), "%s (%d)",
-                                            negativeButtonText,
-                                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1 //add one so it never displays zero
-                                    ));
-                                }
-                                @Override
-                                public void onFinish() {
-                                    if (((AlertDialog) dialog).isShowing()) {
-                                        dialog.dismiss();
+                                })
+                                .setNegativeButton(android.R.string.no, null)
+                                .create();
+                        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                            private static final int AUTO_DISMISS_MILLIS = 6000;
+                            @Override
+                            public void onShow(final DialogInterface dialog) {
+                                final Button defaultButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                                final CharSequence negativeButtonText = defaultButton.getText();
+                                new CountDownTimer(AUTO_DISMISS_MILLIS, 100) {
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+                                        defaultButton.setText(String.format(
+                                                Locale.getDefault(), "%s (%d)",
+                                                negativeButtonText,
+                                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1 //add one so it never displays zero
+                                        ));
                                     }
-                                }
-                            }.start();
+                                    @Override
+                                    public void onFinish() {
+                                        if (((AlertDialog) dialog).isShowing()) {
+                                            dialog.dismiss();
+                                        }
+                                    }
+                                }.start();
+                            }
+                        });
+                        if(!getActivity().isFinishing())
+                        {
+                            dialog.show();
                         }
-                    });
-                    if(!getActivity().isFinishing())
-                    {
-                        dialog.show();
+
                     }
 
                 }

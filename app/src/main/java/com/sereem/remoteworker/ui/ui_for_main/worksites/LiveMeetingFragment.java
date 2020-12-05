@@ -83,7 +83,7 @@ public class LiveMeetingFragment extends Fragment {
         linkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
+                if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available") || urlGoogleMeet.contains("Meeting has ended"))
                     Toast.makeText(getContext(), "There is not meeting link now", Toast.LENGTH_SHORT).show();
                 else{
                     String url = urlGoogleMeet;

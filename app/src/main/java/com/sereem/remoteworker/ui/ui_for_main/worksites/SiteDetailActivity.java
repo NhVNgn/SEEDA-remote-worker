@@ -188,7 +188,8 @@ public class SiteDetailActivity extends AppCompatActivity {
                                     String url = urlGoogleMeet;
                                     Intent i = new Intent(Intent.ACTION_VIEW);
                                     i.setData(Uri.parse(url));
-                                    startActivity(i);
+                                    if (!url.contains("Meeting has ended"))
+                                        startActivity(i);
                                 }
                             }
                         })
