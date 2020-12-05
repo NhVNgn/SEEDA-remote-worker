@@ -4,11 +4,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.sereem.remoteworker.R;
-import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
 import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
 //import com.sereem.remoteworker.model.Database;
-import com.sereem.remoteworker.model.CustomSnackbar;
-import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,13 +14,11 @@ import androidx.databinding.DataBindingUtil;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -85,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
                     snackbar.setText(getString(R.string.email_is_used)).show();
                     emailEditText.requestFocus();
                 } catch (Exception e) {
+                    ErrorDialog.show(this);
                     Log.e(TAG, e.getMessage());
                 }
             }

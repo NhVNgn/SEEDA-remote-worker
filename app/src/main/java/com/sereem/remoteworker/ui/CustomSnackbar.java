@@ -1,4 +1,4 @@
-package com.sereem.remoteworker.model;
+package com.sereem.remoteworker.ui;
 
 import android.graphics.Color;
 import android.view.View;

@@ -3,8 +3,6 @@ package com.sereem.remoteworker.ui.ui_for_main.profile;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,30 +14,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentProfileBinding;
-import com.sereem.remoteworker.model.CustomSnackbar;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ColorPalette;
@@ -52,9 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.app.Activity.RESULT_OK;
@@ -95,8 +82,6 @@ public class ProfileFragment extends Fragment {
         colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.PROFILE);
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(getViewLifecycleOwner());
-
-        snackbar = CustomSnackbar.create(root);
 
         user = User.getInstance();
         iconFile = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpg");
@@ -220,6 +205,7 @@ public class ProfileFragment extends Fragment {
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
                                  ImageButton cancelBtn, AtomicInteger btnCount, int numOfBlock) {
         editBtn.setOnClickListener(v -> {
+            snackbar = CustomSnackbar.create(getView());
             if(btnCount.get() % 2 == 0) {
                 for(EditText editText : editTextList) {
                     makeTextEditable(editText);

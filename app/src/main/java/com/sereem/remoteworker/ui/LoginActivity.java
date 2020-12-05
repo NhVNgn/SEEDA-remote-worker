@@ -1,39 +1,32 @@
 package com.sereem.remoteworker.ui;
 
-import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityLoginBinding;
 //import com.sereem.remoteworker.model.Database;
-import com.sereem.remoteworker.model.CustomSnackbar;
-import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
-import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 import java.util.Objects;
 
@@ -135,8 +128,17 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, task.getException().toString(),
-                            Toast.LENGTH_LONG).show();
+                    try {
+                        throw Objects.requireNonNull(task.getException());
+                    } catch (FirebaseAuthInvalidUserException e) {
+                        incorrectEmailText.setText(getString(R.string.user_not_found));
+                        setIncorrectEmail();
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        incorrectPasswordText.setText(getString(R.string.incorrect_password));
+                        setIncorrectPassword();
+                    } catch (Exception e) {
+                        ErrorDialog.show(this);
+                    }
                 }
                 progressBar.setVisibility(View.INVISIBLE);
             });
@@ -148,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                 null, null, null);
         emailEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
         emailEdit.setTextColor(getColor(R.color.red_incorrect));
+        emailEdit.requestFocus();
     }
 
     private void setIncorrectPassword() {
@@ -155,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                 null, null, null);
         passwordEdit.setBackgroundResource(R.drawable.edit_text_incorrect);
         passwordEdit.setTextColor(getColor(R.color.red_incorrect));
+        passwordEdit.requestFocus();
     }
 
     private void setupFocusListener() {
