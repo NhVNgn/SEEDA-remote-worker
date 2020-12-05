@@ -118,6 +118,7 @@ public class LocationService extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        Toast.makeText(this, "LocationService is destroyed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -191,7 +192,10 @@ public class LocationService extends Service {
     private void updateGPSDataInDatabase() {
         if (SHUT_DOWN)
         {
+
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            stopForeground(true);
+            stopSelf();
             return;
         }
 
@@ -213,9 +217,13 @@ public class LocationService extends Service {
 //            user.setTimestamp(null);
 //            user.setGeo_point(new_geoPoint);
         }
-
-
         databaseReference.setValue(userLocation);
+        if (!getVisibilityPreference()){
+            System.out.println("removeLocation was called");
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            stopForeground(true);
+            stopSelf();
+        }
     }
 
     private void sendBroadCastMessage(Location location){

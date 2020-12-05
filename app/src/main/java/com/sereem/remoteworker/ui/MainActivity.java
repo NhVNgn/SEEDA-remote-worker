@@ -240,6 +240,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         colorPalette.registerListener();
         System.out.println("Resume Location service from mainActivtity");
+        checkLocationService();
+    }
+
+    public void checkLocationService() {
         if(checkMapServices()){
             System.out.println("CheckMapService is true ");
             getLocationPermission();
@@ -274,14 +278,26 @@ public class MainActivity extends AppCompatActivity {
         if(!isLocationServiceRunning()){
             serviceIntent = new Intent(this, LocationService.class);
             System.out.println("Service intent is created");
+            System.out.println("MainActivity: visibility " + getVisibilityPreference());
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-                System.out.println("startForegroundService is called");
-                MainActivity.this.startForegroundService(serviceIntent);
+               if (getVisibilityPreference()){
+                   System.out.println("startForegroundService is called");
+                   MainActivity.this.startForegroundService(serviceIntent);
+               }
             }else{
-                System.out.println("startService is called");
-                startService(serviceIntent);
+                if (getVisibilityPreference()) {
+                    System.out.println("MainActivity: startService is called");
+                    startService(serviceIntent);
+                }
             }
         }
+    }
+
+    private boolean getVisibilityPreference(){
+        SharedPreferences prefs = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        boolean value = prefs.getBoolean("visibility", true);
+        System.out.println("visibility: " + value);
+        return prefs.getBoolean("visibility", true);
     }
 
     public boolean isServicesOK(){
