@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityLoginBinding;
 //import com.sereem.remoteworker.model.Database;
+import com.sereem.remoteworker.model.CustomSnackbar;
 import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
@@ -63,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
+        snackbar = CustomSnackbar.create(getWindow().getDecorView());
+
         binding = DataBindingUtil.setContentView
                 (this, R.layout.activity_login);
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.LOGIN);
@@ -88,16 +91,8 @@ public class LoginActivity extends AppCompatActivity {
         setupSingInButton();
         setupSignUpButton();
         setupFocusListener();
-        createSnackBar();
     }
 
-
-
-    private void createSnackBar() {
-        snackbar = Snackbar.make(getWindow().getDecorView(), "", Snackbar.LENGTH_SHORT);
-        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
-                .setTextColor(Color.WHITE);
-    }
 
     private void setCustomTheme() {
         ColorDrawable color = new ColorDrawable(getColor(R.color.main_blue_color));

@@ -7,6 +7,7 @@ import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
 import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
 //import com.sereem.remoteworker.model.Database;
+import com.sereem.remoteworker.model.CustomSnackbar;
 import com.sereem.remoteworker.model.User;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -54,13 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        createSnackBar();
-    }
-
-    private void createSnackBar() {
-        snackbar = Snackbar.make(findViewById(android.R.id.content), "", Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
-                .setTextColor(Color.WHITE);
+        snackbar = CustomSnackbar.create(findViewById(android.R.id.content));
     }
 
     public void nextStep(View view) {

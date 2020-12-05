@@ -39,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentProfileBinding;
+import com.sereem.remoteworker.model.CustomSnackbar;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ColorPalette;
@@ -95,6 +96,8 @@ public class ProfileFragment extends Fragment {
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
+        snackbar = CustomSnackbar.create(root);
+
         user = User.getInstance();
         iconFile = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpg");
 
@@ -148,12 +151,6 @@ public class ProfileFragment extends Fragment {
     private void initializeStorageReference() {
         storageReference = FirebaseStorage.getInstance().getReference("profileIcons/" +
                 user.getUID() + ".jpeg");
-    }
-
-    private void createSnackBar() {
-        snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
-                .setTextColor(Color.WHITE);
     }
 
     private void initializeVariables() {
@@ -223,7 +220,6 @@ public class ProfileFragment extends Fragment {
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
                                  ImageButton cancelBtn, AtomicInteger btnCount, int numOfBlock) {
         editBtn.setOnClickListener(v -> {
-            createSnackBar();
             if(btnCount.get() % 2 == 0) {
                 for(EditText editText : editTextList) {
                     makeTextEditable(editText);
