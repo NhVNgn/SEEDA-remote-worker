@@ -92,14 +92,14 @@ public class ColorPalette implements SensorEventListener {
         setTheme();
     }
 
-    public ColorPalette(Context context, ContactParentItemBinding contactBinding, TYPE type) {
-        this.context = context;
-        this.type = type;
-        this.contactBinding = contactBinding;
-        getSettings();
-        setSensor();
-        setTheme();
-    }
+//    public ColorPalette(Context context, ContactParentItemBinding contactBinding, TYPE type) {
+//        this.context = context;
+//        this.type = type;
+//        this.contactBinding = contactBinding;
+//        getSettings();
+//        setSensor();
+//        setTheme();
+//    }
 
     public ColorPalette(Context context, FragmentSiteViewBinding siteViewBinding, TYPE type) {
         this.context = context;
@@ -357,17 +357,17 @@ public class ColorPalette implements SensorEventListener {
                     }
                     break;
                 }
-                case CONTACT: {
-                    ContactParentItemBinding binding = contactBinding;
-                    if (event.values[0] == 0 && !isDark()) {
-                        setDark(true);
-                        binding.setColorPalette(this);
-                    } else if (event.values[0] >= 1.0 && isDark()) {
-                        setDark(false);
-                        binding.setColorPalette(this);
-                    }
-                    break;
-                }
+//                case CONTACT: {
+//                    ContactParentItemBinding binding = contactBinding;
+//                    if (event.values[0] == 0 && !isDark()) {
+//                        setDark(true);
+//                        binding.setColorPalette(this);
+//                    } else if (event.values[0] >= 1.0 && isDark()) {
+//                        setDark(false);
+//                        binding.setColorPalette(this);
+//                    }
+//                    break;
+//                }
                 case REGISTER2: {
                     ActivityRegister2Binding binding = register2Binding;
                     if (event.values[0] == 0 && !isDark()) {

@@ -68,10 +68,10 @@ public class ContactsViewFragment extends Fragment {
             View itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.contact_parent_item, parent, false);
-            ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
-            binding.getRoot().setTag(binding);
-            colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
-            binding.setColorPalette(colorPalette);
+//            ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
+//            binding.getRoot().setTag(binding);
+//            colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
+//            binding.setColorPalette(colorPalette);
             userMap = SiteDetailActivity.getUserList();
             // get user
             User user = userList.get(position);
@@ -85,7 +85,7 @@ public class ContactsViewFragment extends Fragment {
             if(iconFile.exists()) {
                 profileIcon.setImageURI(Uri.fromFile(iconFile));
             }
-            colorPalette.registerListener();
+//            colorPalette.registerListener();
 
             // fill image
             return itemView;
@@ -197,20 +197,20 @@ public class ContactsViewFragment extends Fragment {
     }
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(colorPalette != null) {
-            colorPalette.unregisterListener();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(colorPalette != null) {
-            colorPalette.registerListener();
-        }
-    }
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        if(colorPalette != null) {
+//            colorPalette.unregisterListener();
+//        }
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if(colorPalette != null) {
+//            colorPalette.registerListener();
+//        }
+//    }
 
 }
