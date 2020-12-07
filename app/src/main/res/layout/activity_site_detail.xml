@@ -31,7 +31,6 @@
         android:layout_height="wrap_content"
         app:tabIndicatorColor="@color/main_blue_color"
         app:tabSelectedTextColor="@color/main_blue_color"
-        android:background="#E4E9EE"
         >
 
         <com.google.android.material.tabs.TabItem

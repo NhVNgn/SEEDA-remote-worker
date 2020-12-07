@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 
 import java.io.IOException;
 import java.util.List;
@@ -205,7 +206,7 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
                 }
 
             } else {
-                Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+                CustomSnackbar.create(getView()).setText("Permission denied").show();
             }
         }
     }

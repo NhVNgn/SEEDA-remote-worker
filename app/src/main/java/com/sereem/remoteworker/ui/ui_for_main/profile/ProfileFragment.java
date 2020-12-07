@@ -450,10 +450,7 @@ public class ProfileFragment extends Fragment {
             bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fout);
             storageReference.putFile(Uri.fromFile(iconFile)).addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
-                            Toast.LENGTH_LONG).show();
-                } else {
+                if (task.isSuccessful()){
                     storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                         user.setIconUri(uri1.toString());
                         updateDataInDatabase1(1);

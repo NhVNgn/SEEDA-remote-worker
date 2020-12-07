@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,9 +17,9 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.sereem.remoteworker.R;
-import com.sereem.remoteworker.databinding.PopupOptionsLayoutBinding;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 import com.sereem.remoteworker.ui.LoginActivity;
 
 public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
@@ -50,7 +49,7 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
                     db.deleteRow(correct_email);
                     attendDatabase.deleteRow(correct_email);
 
-                    Toast.makeText(getContext(), "YOUR ACCOUNT IS DELETED", Toast.LENGTH_SHORT).show();
+                    CustomSnackbar.create(getView()).setText("YOUR ACCOUNT IS DELETED").show();
                     SharedPreferences prefs = getContext()
                             .getSharedPreferences("user", Context.MODE_PRIVATE);
                     prefs.edit().putString("username", null).putString("password", null)
@@ -60,7 +59,7 @@ public class PopupDeleteFragmnet  extends AppCompatDialogFragment {
                     getActivity().finish();
                 }
                 else
-                    Toast.makeText(getContext(), "WRONG PASSWORD", Toast.LENGTH_SHORT).show();
+                    CustomSnackbar.create(getView()).setText("WRONG PASSWORD").show();
             }
         };
 

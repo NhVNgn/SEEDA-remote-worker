@@ -29,6 +29,7 @@ import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
+import com.sereem.remoteworker.ui.ErrorDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +150,7 @@ public class ContactsViewFragment extends Fragment {
                         progressBar.setVisibility(View.INVISIBLE);
 //                    }
                 } else {
-                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
-                            Toast.LENGTH_LONG).show();
+                    ErrorDialog.show(getContext());
                 }
             });
         }

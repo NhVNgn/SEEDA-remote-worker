@@ -3,17 +3,15 @@ package com.sereem.remoteworker.ui.ui_for_main.worksites;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,12 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentLiveMeetingBinding;
-import com.sereem.remoteworker.databinding.FragmentLocationViewBinding;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
+import com.sereem.remoteworker.ui.CustomSnackbar;
+import com.sereem.remoteworker.ui.ErrorDialog;
 
-import java.nio.channels.CancelledKeyException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -84,7 +82,7 @@ public class LiveMeetingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available") || urlGoogleMeet.contains("Meeting has ended"))
-                    Toast.makeText(getContext(), "There is not meeting link now", Toast.LENGTH_SHORT).show();
+                    CustomSnackbar.create(getView()).setText("There is not meeting link now").show();
                 else{
                     String url = urlGoogleMeet;
                     Intent i = new Intent(Intent.ACTION_VIEW);
@@ -128,11 +126,9 @@ public class LiveMeetingFragment extends Fragment {
         linkIsSent = true;
         reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                Toast.makeText(getContext(), "Sent to other user", Toast.LENGTH_SHORT).show();
+                CustomSnackbar.create(getView()).setText("Sent to other user").show();
             }else {
-                Toast.makeText(getContext(),
-                        task.getException().getLocalizedMessage(),
-                        Toast.LENGTH_LONG).show();
+                ErrorDialog.show(getContext());
                 
             }
         });

@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -27,16 +25,13 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.sereem.remoteworker.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.sereem.remoteworker.ui.MainActivity;
+import com.sereem.remoteworker.R;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
-
-import java.util.Objects;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
 
@@ -106,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(requireActivity(), available, 1000);
             dialog.show();
         }else{
-            Toast.makeText(requireActivity(), "You can't make map requests", Toast.LENGTH_SHORT).show();
+            CustomSnackbar.create(getView()).setText("You can't make map requests").show();
         }
         return false;
     }
