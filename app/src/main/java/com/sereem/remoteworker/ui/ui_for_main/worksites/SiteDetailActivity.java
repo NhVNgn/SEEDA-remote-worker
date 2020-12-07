@@ -24,17 +24,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
 import com.sereem.remoteworker.ui.CustomSnackbar;
+import com.sereem.remoteworker.ui.ErrorDialog;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.chat.ChatActivity;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.MapsFragment;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.PagerAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +54,7 @@ public class SiteDetailActivity extends AppCompatActivity {
     private ColorPalette colorPalette;
     PagerAdapter pagerAdapter;
     TabLayout tabLayout;
+    private static HashMap<String, User> userList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActionBar actionBar;
@@ -88,8 +98,46 @@ public class SiteDetailActivity extends AppCompatActivity {
 
             }
         });
+        setUserList();
         receiveGoogleMeetLink();
 
+    }
+
+    private void setUserList() {
+        userList = new HashMap<>();
+        CollectionReference userReference;
+        WorkSite workSite = WorkSite.getChosenWorksite();
+        User user = User.getInstance();
+        userReference = FirebaseFirestore.getInstance().collection("users");
+        userReference.whereArrayContains("worksites", workSite.getSiteID())
+                .get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (!user.getUID().equals(document.getId())) {
+                        User coUser = document.toObject(User.class);
+                        userList.put(document.getId(), coUser);
+                        StorageReference storageReference = FirebaseStorage.getInstance()
+                                .getReference("profileIcons/" +
+                                        coUser.getUID() + ".jpeg");
+                        downloadIcon(coUser, storageReference);
+                    }
+                }
+            } else {
+                ErrorDialog.show(this);
+            }
+        });
+    }
+
+    public static HashMap<String, User> getUserList() {
+        return userList;
+    }
+
+    private void downloadIcon(User user, StorageReference storageReference) {
+        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
+        Uri iconUri = Uri.fromFile(file);
+        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
+//            progressBarsBar.setVisibility(View.INVISIBLE);
+        });
     }
 
     private void setUpBackButton(){

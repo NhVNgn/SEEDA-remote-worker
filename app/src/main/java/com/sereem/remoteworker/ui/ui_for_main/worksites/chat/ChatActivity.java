@@ -32,6 +32,7 @@ import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ErrorDialog;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.SiteDetailActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -80,42 +81,42 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        getUserList();
-
+//        getUserList();
+        userList = SiteDetailActivity.getUserList();
+        readMessages();
         setupSendButton();
     }
 
-    private void getUserList() {
-        userList = new HashMap<>();
-        userReference = FirebaseFirestore.getInstance().collection("users");
-        userReference.whereArrayContains("worksites", workSite.getSiteID())
-                .get().addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
-                        for(QueryDocumentSnapshot document : task.getResult()) {
-                            if(!user.getUID().equals(document.getId())) {
-                                User coUser = document.toObject(User.class);
-                                userList.put(document.getId(), coUser);
-                                storageReference = FirebaseStorage.getInstance()
-                                        .getReference("profileIcons/" +
-                                        coUser.getUID() + ".jpeg");
-                                downloadIcon(coUser);
-                            }
-                            readMessages();
-                        }
-                    } else {
-                        ErrorDialog.show(this);
-                    }
-                });
+//    private void getUserList() {
+//        userList = new HashMap<>();
+//        userReference = FirebaseFirestore.getInstance().collection("users");
+//        userReference.whereArrayContains("worksites", workSite.getSiteID())
+//                .get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                for (QueryDocumentSnapshot document : task.getResult()) {
+//                    if (!user.getUID().equals(document.getId())) {
+//                        User coUser = document.toObject(User.class);
+//                        userList.put(document.getId(), coUser);
+////                        storageReference = FirebaseStorage.getInstance()
+////                                .getReference("profileIcons/" +
+////                                        coUser.getUID() + ".jpeg");
+////                        downloadIcon(coUser);
+//                    }
+//                    readMessages();
+//                }
+//            } else {
+//                ErrorDialog.show(this);
+//            }
+//        });
+//    }
 
-    }
-
-    private void downloadIcon(User user) {
-        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
-        Uri iconUri = Uri.fromFile(file);
-        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
-//            progressBarsBar.setVisibility(View.INVISIBLE);
-        });
-    }
+//    private void downloadIcon(User user) {
+//        File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
+//        Uri iconUri = Uri.fromFile(file);
+//        storageReference.getFile(iconUri).addOnCompleteListener(task -> {
+////            progressBarsBar.setVisibility(View.INVISIBLE);
+//        });
+//    }
 
     private void setupSendButton() {
         sendButton.setOnClickListener(v -> {

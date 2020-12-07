@@ -22,13 +22,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ItemViewBinding;
 import com.sereem.remoteworker.model.Database;
@@ -168,35 +173,31 @@ public class WorksitesFragment extends Fragment {
             return;
         }
         System.out.println("getWorkSiteForUser is called");
-        DocumentReference documentReference;
-        for(int i = 0; i < user.getWorksites().size(); i++) {
-            final int position = i;
-            documentReference = fStore.document("/worksites/" + user.getWorksites().get(i));
-            documentReference.get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()) {
-                    userSites.add(task.getResult().toObject(WorkSite.class));
-                    System.out.println("userSites is updated" + userSites.get(0) + "  " + user.getEmail());
-                    if(position == user.getWorksites().size() - 1) {
+        CollectionReference collectionReference;
+        collectionReference = fStore.collection("worksites");
+        collectionReference.whereArrayContains("workers", user.getUID())
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            userSites.add(document.toObject(WorkSite.class));
+                        }
                         populateListView();
                         setupListClick(root);
                         progressBar.setVisibility(View.INVISIBLE);
+                    } else {
+                        ErrorDialog.show(getContext());
                     }
-                }
-            });
-        }
+                });
     }
     private void setupListClick(View root){
         ListView list = root.findViewById(R.id.listViewWorkSite);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(globalContext, SiteDetailActivity.class);
-                String site_id = userSites.get(position).getSiteID();
-                intent.putExtra(PROJECT_ID, site_id);
-                WorkSite.setChosenWorksite(userSites.get(position));
-                saveInSharedPrefs(site_id, root);
-                startActivity(intent);
-            }
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(globalContext, SiteDetailActivity.class);
+            String site_id = userSites.get(position).getSiteID();
+            intent.putExtra(PROJECT_ID, site_id);
+            WorkSite.setChosenWorksite(userSites.get(position));
+            saveInSharedPrefs(site_id, root);
+            startActivity(intent);
         });
     }
 

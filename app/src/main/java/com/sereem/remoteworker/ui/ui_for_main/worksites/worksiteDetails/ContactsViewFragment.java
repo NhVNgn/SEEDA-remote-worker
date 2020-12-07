@@ -2,6 +2,7 @@ package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,8 +32,11 @@ import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
 import com.sereem.remoteworker.ui.ErrorDialog;
+import com.sereem.remoteworker.ui.ui_for_main.worksites.SiteDetailActivity;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -54,6 +59,7 @@ public class ContactsViewFragment extends Fragment {
 
 
     public class userListAdapter extends ArrayAdapter<User>{
+        private HashMap<String, User> userMap;
         public userListAdapter() {super(globalContext, R.layout.contact_parent_item, userList);}
 
         @SuppressLint("SetTextI18n")
@@ -65,13 +71,19 @@ public class ContactsViewFragment extends Fragment {
             ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
             colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
             binding.setColorPalette(colorPalette);
-
+            userMap = SiteDetailActivity.getUserList();
             // get user
             User user = userList.get(position);
             System.out.println(user.getFirstName());
             // user name
             TextView userTextName = itemView.findViewById(R.id.parentHeader);
-            userTextName.setText(user.getFirstName() + user.getLastName());
+            userTextName.setText(user.getFirstName() + " " + user.getLastName());
+            ImageView profileIcon = itemView.findViewById(R.id.userAvatar);
+            File iconFile = new File(getContext().getCacheDir() + "/" +
+                    user.getUID() + ".jpeg");
+            if(iconFile.exists()) {
+                profileIcon.setImageURI(Uri.fromFile(iconFile));
+            }
             colorPalette.registerListener();
 
             // fill image
@@ -128,32 +140,37 @@ public class ContactsViewFragment extends Fragment {
 //                    }
 //            }
 
-        DocumentReference documentReference;
-        if(userWorkSite.getWorkers() == null) {
-            progressBar.setVisibility(View.INVISIBLE);
-            return;
-        }
-        final int size = userWorkSite.getWorkers().size();
-        for(int i = 0; i < userWorkSite.getWorkers().size(); i++) {
-            final int index = i;
-            documentReference = FirebaseFirestore.getInstance().document("/users/" +
-                    userWorkSite.getWorkers().get(i));
-            documentReference.get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()) {
-                    User user = task.getResult().toObject(User.class);
-                    if(user != null && !user.getUID().equals(me.getUID())) {
-                        userList.add(user);
-                    }
-//                    if(index == size - 1) {
-                        populateListView();
-                        setUpListClick(root);
-                        progressBar.setVisibility(View.INVISIBLE);
+//        DocumentReference documentReference;
+//        if(userWorkSite.getWorkers() == null) {
+//            progressBar.setVisibility(View.INVISIBLE);
+//            return;
+//        }
+//        final int size = userWorkSite.getWorkers().size();
+//        for(int i = 0; i < userWorkSite.getWorkers().size(); i++) {
+//            final int index = i;
+//            documentReference = FirebaseFirestore.getInstance().document("/users/" +
+//                    userWorkSite.getWorkers().get(i));
+//            documentReference.get().addOnCompleteListener(task -> {
+//                if(task.isSuccessful()) {
+//                    User user = task.getResult().toObject(User.class);
+//                    if(user != null && !user.getUID().equals(me.getUID())) {
+//                        userList.add(user);
 //                    }
-                } else {
-                    ErrorDialog.show(getContext());
-                }
-            });
-        }
+////                    if(index == size - 1) {
+//                        populateListView();
+//                        setUpListClick(root);
+//                        progressBar.setVisibility(View.INVISIBLE);
+////                    }
+//                } else {
+//                    ErrorDialog.show(getContext());
+//                }
+//            });
+//        }
+        userList = new ArrayList<>(SiteDetailActivity.getUserList().values());
+        Toast.makeText(getContext(), "" + userList.size(), Toast.LENGTH_LONG).show();
+        populateListView();
+        setUpListClick(root);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void populateListView(){

@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     private void downloadIconFromUri() {
 //        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
 //        progressBar.setVisibility(View.VISIBLE);
-        if(iconFile.exists() && !isFirstStart) {
+        if(!isFirstStart) {
             iconUri = Uri.fromFile(iconFile);
             return;
         }
