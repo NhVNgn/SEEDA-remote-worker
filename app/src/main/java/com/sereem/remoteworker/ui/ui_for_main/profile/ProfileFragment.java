@@ -3,8 +3,6 @@ package com.sereem.remoteworker.ui.ui_for_main.profile;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,29 +14,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentProfileBinding;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ColorPalette;
@@ -51,9 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.app.Activity.RESULT_OK;
@@ -150,12 +138,6 @@ public class ProfileFragment extends Fragment {
                 user.getUID() + ".jpeg");
     }
 
-    private void createSnackBar() {
-        snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG);
-        snackbar.setBackgroundTint(Color.parseColor("#204E75"))
-                .setTextColor(Color.WHITE);
-    }
-
     private void initializeVariables() {
         // First block
         btnCount1 = new AtomicInteger();
@@ -223,7 +205,7 @@ public class ProfileFragment extends Fragment {
     private void setupEditAction(List<EditText> editTextList, ImageButton editBtn,
                                  ImageButton cancelBtn, AtomicInteger btnCount, int numOfBlock) {
         editBtn.setOnClickListener(v -> {
-            createSnackBar();
+            snackbar = CustomSnackbar.create(getView());
             if(btnCount.get() % 2 == 0) {
                 for(EditText editText : editTextList) {
                     makeTextEditable(editText);
@@ -468,10 +450,7 @@ public class ProfileFragment extends Fragment {
             bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fout);
             storageReference.putFile(Uri.fromFile(iconFile)).addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Toast.makeText(getContext(), task.getException().getLocalizedMessage(),
-                            Toast.LENGTH_LONG).show();
-                } else {
+                if (task.isSuccessful()){
                     storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                         user.setIconUri(uri1.toString());
                         updateDataInDatabase1(1);

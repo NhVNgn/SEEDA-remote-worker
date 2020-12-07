@@ -1,6 +1,24 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,33 +29,12 @@ import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
+import com.sereem.remoteworker.ui.CustomSnackbar;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.chat.ChatActivity;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.MapsFragment;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.PagerAdapter;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.viewpager.widget.ViewPager;
-
-import android.content.Intent;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -164,7 +161,8 @@ public class SiteDetailActivity extends AppCompatActivity {
 
                     urlGoogleMeet = lastLink.getLink();
                     if (urlGoogleMeet.equals("Meeting has ended")) {
-                        //Toast.makeText(SiteDetailActivity.this, "No meeting available ", Toast.LENGTH_SHORT).show();
+                        CustomSnackbar.create(getWindow().getDecorView().getRootView())
+                                .setText("No meeting available").show();
                     }
                     else {
                         if (!lastLink.getHost().equals(User.getInstance().getFirstName())) {
@@ -183,12 +181,14 @@ public class SiteDetailActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
-                                    Toast.makeText(SiteDetailActivity.this, "Meeting has just ended", Toast.LENGTH_SHORT).show();
+                                    CustomSnackbar.create(getWindow().getDecorView().getRootView())
+                                            .setText("Meeting has just ended").show();
                                 else{
                                     String url = urlGoogleMeet;
                                     Intent i = new Intent(Intent.ACTION_VIEW);
                                     i.setData(Uri.parse(url));
-                                    startActivity(i);
+                                    if (!url.contains("Meeting has ended"))
+                                        startActivity(i);
                                 }
                             }
                         })

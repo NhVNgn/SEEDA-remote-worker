@@ -80,37 +80,6 @@ public class Register2 extends AppCompatActivity {
     }
 
     public void addWorker(View view){
-//        List<String> argsArray = new ArrayList<>();
-//        argsArray.add(firstNameEditText.getText().toString());
-//        argsArray.add(lastNameEditText.getText().toString());
-//        argsArray.add(email);
-//        argsArray.add(password);
-//        argsArray.add(phoneEditText.getText().toString());
-//        argsArray.add(birthdayEditText.getText().toString());
-//        argsArray.add(companyIdEditText.getText().toString());
-//        argsArray.add(null);
-//        argsArray.add(null);
-//        argsArray.add(null);
-//        argsArray.add(null);
-//        argsArray.add(null);
-//        argsArray.add(null);
-//
-//
-//
-//        long id = db.insertData(argsArray);
-//        if (id < 0)
-//        {
-//            Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
-//        }
-//        else {
-//            attendDb.addSample(email, "burnaby123");
-//            attendDb.addSample(email, "surrey123");
-//            attendDb.addSample(email, "portmoody123");
-//            attendDb.addSample(email, "coquitlam123");
-//            attendDb.addSample(email, "van123");
-//
-//
-//        }
         saveUserToFirebase();
     }
 
@@ -137,7 +106,7 @@ public class Register2 extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Toast.makeText(Register2.this, "success", Toast.LENGTH_SHORT).show();
+                ErrorDialog.show(this);
                 Log.e(TAG, Objects.requireNonNull(task.getException()).getMessage());
             }
             progressBar.setVisibility(View.INVISIBLE);

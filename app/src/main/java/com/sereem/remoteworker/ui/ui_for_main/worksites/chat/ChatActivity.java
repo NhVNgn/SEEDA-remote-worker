@@ -31,6 +31,7 @@ import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.workSite.WorkSite;
+import com.sereem.remoteworker.ui.ErrorDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,8 +103,7 @@ public class ChatActivity extends AppCompatActivity {
                             readMessages();
                         }
                     } else {
-                        Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(),
-                                Toast.LENGTH_LONG).show();
+                        ErrorDialog.show(this);
                     }
                 });
 
@@ -113,10 +113,6 @@ public class ChatActivity extends AppCompatActivity {
         File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
         Uri iconUri = Uri.fromFile(file);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
-            if(!task.isSuccessful()) {
-                Toast.makeText(this, task.getException().getLocalizedMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
 //            progressBarsBar.setVisibility(View.INVISIBLE);
         });
     }
@@ -144,9 +140,7 @@ public class ChatActivity extends AppCompatActivity {
             if(task.isSuccessful()) {
                 Toast.makeText(getApplicationContext(), "Sent", Toast.LENGTH_SHORT).show();
             }else {
-                Toast.makeText(getApplicationContext(),
-                        task.getException().getLocalizedMessage(),
-                        Toast.LENGTH_LONG).show();
+                ErrorDialog.show(this);
             }
             progressBar.setVisibility(View.INVISIBLE);
             sendButton.setVisibility(View.VISIBLE);

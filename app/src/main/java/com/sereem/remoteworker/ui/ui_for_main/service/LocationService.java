@@ -1,12 +1,6 @@
 package com.sereem.remoteworker.ui.ui_for_main.service;
 
 import android.Manifest;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.GeoPoint;
-import com.sereem.remoteworker.R;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,8 +16,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -35,16 +27,18 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.model.UserLocation;
-import com.sereem.remoteworker.ui.MainActivity;
+import com.sereem.remoteworker.ui.ErrorDialog;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class LocationService extends Service {
 
@@ -191,7 +185,10 @@ public class LocationService extends Service {
     private void updateGPSDataInDatabase() {
         if (SHUT_DOWN)
         {
+
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            stopForeground(true);
+            stopSelf();
             return;
         }
 
@@ -213,9 +210,13 @@ public class LocationService extends Service {
 //            user.setTimestamp(null);
 //            user.setGeo_point(new_geoPoint);
         }
-
-
         databaseReference.setValue(userLocation);
+        if (!getVisibilityPreference()){
+            System.out.println("removeLocation was called");
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+            stopForeground(true);
+            stopSelf();
+        }
     }
 
     private void sendBroadCastMessage(Location location){
@@ -245,9 +246,8 @@ public class LocationService extends Service {
         documentReference = FirebaseFirestore.getInstance().document(
                 "/users/" + UID + "/");
         documentReference.addSnapshotListener((value, error) -> {
-            if(error != null) {
-                Toast.makeText(this, error.getMessage(), Toast.LENGTH_LONG)
-                        .show();
+            if(error != null && error.getCode() != FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                ErrorDialog.show(this);
             }
             else if(value != null && value.exists()) {
                 Log.d(TAG, "user name in doc:" + user.getFirstName());

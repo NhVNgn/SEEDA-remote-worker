@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,25 +41,22 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.material.internal.NavigationMenuItemView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityMainBinding;
-//import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
 import com.sereem.remoteworker.ui.ui_for_main.PopupSignOutFragment;
-import com.google.android.material.internal.NavigationMenuItemView;
-import com.google.android.material.navigation.NavigationView;
 import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 import java.io.File;
+
+//import com.sereem.remoteworker.model.Database;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -144,10 +140,7 @@ public class MainActivity extends AppCompatActivity {
         isFirstStart = false;
         iconUri = Uri.fromFile(iconFile);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
-            if(!task.isSuccessful()) {
-                Toast.makeText(this, task.getException().getLocalizedMessage(),
-                        Toast.LENGTH_SHORT).show();
-            } else {
+            if(task.isSuccessful()) {
                 showUserInfo();
             }
 //            progressBarsBar.setVisibility(View.INVISIBLE);
@@ -165,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
         documentReference = FirebaseFirestore.getInstance().document(
                 "/users/" + UID + "/");
         documentReference.addSnapshotListener((value, error) -> {
-            if(error != null) {
-                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG)
-                .show();
+            if(error != null && error.getCode() !=
+                    FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                ErrorDialog.show(this);
             }
             else if(value != null && value.exists()) {
                 user = User.createNewInstance(value.toObject(User.class));
@@ -240,6 +233,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         colorPalette.registerListener();
         System.out.println("Resume Location service from mainActivtity");
+        checkLocationService();
+    }
+
+    public void checkLocationService() {
         if(checkMapServices()){
             System.out.println("CheckMapService is true ");
             getLocationPermission();
@@ -274,14 +271,26 @@ public class MainActivity extends AppCompatActivity {
         if(!isLocationServiceRunning()){
             serviceIntent = new Intent(this, LocationService.class);
             System.out.println("Service intent is created");
+            System.out.println("MainActivity: visibility " + getVisibilityPreference());
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-                System.out.println("startForegroundService is called");
-                MainActivity.this.startForegroundService(serviceIntent);
+               if (getVisibilityPreference()){
+                   System.out.println("startForegroundService is called");
+                   MainActivity.this.startForegroundService(serviceIntent);
+               }
             }else{
-                System.out.println("startService is called");
-                startService(serviceIntent);
+                if (getVisibilityPreference()) {
+                    System.out.println("MainActivity: startService is called");
+                    startService(serviceIntent);
+                }
             }
         }
+    }
+
+    private boolean getVisibilityPreference(){
+        SharedPreferences prefs = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        boolean value = prefs.getBoolean("visibility", true);
+        System.out.println("visibility: " + value);
+        return prefs.getBoolean("visibility", true);
     }
 
     public boolean isServicesOK(){
@@ -300,7 +309,8 @@ public class MainActivity extends AppCompatActivity {
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, 1000);
             dialog.show();
         }else{
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+            CustomSnackbar.create(getWindow().getDecorView()).setText("You can't make map requests")
+                    .show();
         }
         return false;
     }
