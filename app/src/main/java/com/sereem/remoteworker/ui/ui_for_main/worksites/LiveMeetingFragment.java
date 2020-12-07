@@ -211,17 +211,24 @@ public class LiveMeetingFragment extends Fragment {
         String action = intent.getAction();
         String type = intent.getType();
 
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
+        if (Intent.ACTION_SEND.equals(action) && type != null && !checkIfIntentIsRepeated(intent)) {
             if ("text/plain".equals(type)) {
                 handleSendText(intent);
             }
         }
 
+        getActivity().getIntent().setAction("");
         if(!linkIsSent) {
             endButton.setVisibility(View.INVISIBLE);
         }
     }
 
+    private boolean checkIfIntentIsRepeated(Intent intent){
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        String[] arr = sharedText.split("\n");
+        System.out.println("onResume: urlGoogleMeetIs " +  urlGoogleMeet + "intent url is" + arr[1].trim());
+        return arr[1].trim().equals(urlGoogleMeet);
+    }
     @Override
     public void onDestroy() {
         System.out.println("OnDestroy is called LiveMeetingFragment");

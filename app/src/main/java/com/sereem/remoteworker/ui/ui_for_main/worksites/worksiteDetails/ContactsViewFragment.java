@@ -69,6 +69,7 @@ public class ContactsViewFragment extends Fragment {
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.contact_parent_item, parent, false);
             ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
+            binding.getRoot().setTag(binding);
             colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
             binding.setColorPalette(colorPalette);
             userMap = SiteDetailActivity.getUserList();

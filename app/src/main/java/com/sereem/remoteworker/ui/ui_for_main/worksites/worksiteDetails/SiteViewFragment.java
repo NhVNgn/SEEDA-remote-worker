@@ -10,6 +10,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +51,24 @@ public class SiteViewFragment extends Fragment {
         siteIdText = root.findViewById(R.id.siteIdTextDisplay);
         masterPointText = root.findViewById(R.id.masterPointTextDisplay);
         operationHoursText = root.findViewById(R.id.hoursTextDisplay);
+
+        WebView webView = root.findViewById(R.id.webView);
+        webView.loadUrl("https://www.seerem.seeda.ca/home");
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient());
+
+
+        webView.setVisibility(View.INVISIBLE);
+
+        Button button = root.findViewById(R.id.siteEmergencyInfoText);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.setVisibility(View.VISIBLE);
+            }
+        });
 
         siteNameText.setText(userWorkSite.getName());
         siteIdText.setText(userWorkSite.getSiteID());
