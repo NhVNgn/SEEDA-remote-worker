@@ -216,6 +216,10 @@ public class LiveMeetingFragment extends Fragment {
                 handleSendText(intent);
             }
         }
+
+        if(!linkIsSent) {
+            endButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -238,4 +242,5 @@ public class LiveMeetingFragment extends Fragment {
         }
 
     }
+
 }
