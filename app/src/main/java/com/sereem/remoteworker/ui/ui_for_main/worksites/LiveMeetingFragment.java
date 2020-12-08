@@ -121,11 +121,9 @@ public class LiveMeetingFragment extends Fragment {
     }
 
     private void sendLink(GoogleMeetLink googleMeetLink) {
-
-
-        linkIsSent = true;
-        reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
+        reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                linkIsSent = true;
                 CustomSnackbar.create(getView()).setText("Sent to other user").show();
             }else {
                 ErrorDialog.show(getContext());
@@ -166,7 +164,7 @@ public class LiveMeetingFragment extends Fragment {
                                 public void onClick(View view) {
                                     GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
 
-                                    reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
+                                    reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
                                             System.out.println("Stop previous meeting successful");
                                             linkIsSent = false;
@@ -237,7 +235,7 @@ public class LiveMeetingFragment extends Fragment {
         if (userStartAMeeting) {
             GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
 
-            reference.push().setValue(googleMeetLink).addOnCompleteListener(task -> {
+            reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     System.out.println("Stop previous meeting successful");
                     linkIsSent = false;

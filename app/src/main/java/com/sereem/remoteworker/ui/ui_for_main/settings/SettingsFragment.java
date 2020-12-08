@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -47,26 +48,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         autoTheme.setOnPreferenceClickListener(this);
         SwitchPreference darkTheme = getPreferenceManager().findPreference("dark_theme");
         darkTheme.setOnPreferenceClickListener(this);
+        Preference feedback = getPreferenceManager().findPreference("feedback");
+        feedback.setOnPreferenceClickListener(preference -> {
+            String supportEmail = "for.iee.2018@gmail.com";
+            String subject = "Remote Worker Feedback";
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {supportEmail});
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            startActivity(Intent.createChooser(intent, "Choose an Email client:"));
+            return true;
+        });
 
         SwitchPreference gpsVisibility = getPreferenceManager().findPreference("gps_visibility");
-        gpsVisibility.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean isOn = (boolean) newValue;
-                if (isOn){
-                    Snackbar.make(getView(), "GPS visibility is enabled", Snackbar.LENGTH_SHORT).show();
-                    SharedPreferences prefs = getContext().getSharedPreferences("user", MODE_PRIVATE);
-                    prefs.edit().putBoolean("visibility", true).apply();
-                    checkLocationService();
-                    prefs.edit().putBoolean("isFirstUpdateAfterOff", true).apply();
-                }
-                else {
-                    Snackbar.make(getView(), "GPS visibility is disabled", Snackbar.LENGTH_SHORT).show();
-                    SharedPreferences prefs = getContext().getSharedPreferences("user", MODE_PRIVATE);
-                    prefs.edit().putBoolean("visibility", false).apply();
-                }
-                return true;
+        gpsVisibility.setOnPreferenceChangeListener((preference, newValue) -> {
+            boolean isOn = (boolean) newValue;
+            if (isOn){
+                Snackbar.make(getView(), "GPS visibility is enabled", Snackbar.LENGTH_SHORT).show();
+                SharedPreferences prefs = getContext().getSharedPreferences("user", MODE_PRIVATE);
+                prefs.edit().putBoolean("visibility", true).apply();
+                checkLocationService();
+                prefs.edit().putBoolean("isFirstUpdateAfterOff", true).apply();
             }
+            else {
+                Snackbar.make(getView(), "GPS visibility is disabled", Snackbar.LENGTH_SHORT).show();
+                SharedPreferences prefs = getContext().getSharedPreferences("user", MODE_PRIVATE);
+                prefs.edit().putBoolean("visibility", false).apply();
+            }
+            return true;
         });
 
     }
@@ -139,14 +148,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             return;
         }
         Log.d(TAG, "getLastKnownLocation: called WW");
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                Log.d(TAG, "onComplete: called.");
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "startLocationService: called.");
-                    startLocationService();
-                }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+            Log.d(TAG, "onComplete: called.");
+            if (task.isSuccessful()) {
+                Log.d(TAG, "startLocationService: called.");
+                startLocationService();
             }
         });
 
