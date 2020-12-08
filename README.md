@@ -6,5 +6,5 @@
 
     Email and pasword for test account
 
-Email: test@test.ca
-Password: 12345678
+    Email: test@test.ca
+    Password: 12345678
