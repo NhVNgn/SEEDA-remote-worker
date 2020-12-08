@@ -241,6 +241,8 @@ public class LiveMeetingFragment extends Fragment {
         }
         if(!linkIsSent) {
             endButton.setVisibility(View.INVISIBLE);
+        } else {
+            endButton.setVisibility(View.VISIBLE);
         }
 
     }
