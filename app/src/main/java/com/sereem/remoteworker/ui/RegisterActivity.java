@@ -64,24 +64,20 @@ public class RegisterActivity extends AppCompatActivity {
             if(task.isSuccessful()) {
                 intent.putExtra(NEW_EMAIL, new_email);
                 intent.putExtra(NEW_PASSWORD, new_password);
-                saveInSharedPrefs(new_email, fAuth.getCurrentUser().getUid());
                 startActivity(intent);
                 finish();
             } else {
                 try {
                     throw Objects.requireNonNull(task.getException());
                 } catch (FirebaseAuthWeakPasswordException e) {
-                    snackbar.setText(getString(R.string.invalid_password)).show();
+                    snackbar.setText(e.getMessage()).show();
                     passwordEditText.requestFocus();
-                } catch (FirebaseAuthInvalidCredentialsException e) {
-                    snackbar.setText(getString(R.string.invalid_email)).show();
-                    emailEditText.requestFocus();
-                } catch (FirebaseAuthUserCollisionException e) {
-                    snackbar.setText(getString(R.string.email_is_used)).show();
+                } catch (FirebaseAuthUserCollisionException | FirebaseAuthInvalidCredentialsException e) {
+                    snackbar.setText(e.getMessage()).show();
                     emailEditText.requestFocus();
                 } catch (Exception e) {
                     ErrorDialog.show(this);
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, e.toString());
                 }
             }
             progressBar.setVisibility(View.INVISIBLE);
@@ -93,11 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
         saveInSharedPrefs(site_id, root);
         startActivity(intent);*/
 
-    }
-
-    private void saveInSharedPrefs(String email, String id) {
-        SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
-        prefs.edit().putString("email", email).putString("UID", id).apply();
     }
 
     @Override

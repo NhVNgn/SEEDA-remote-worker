@@ -43,8 +43,9 @@ public class Register2 extends AppCompatActivity {
     private ColorPalette colorPalette;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
+    private boolean isUserCreated;
 //    Database db;
-    attendanceDatabase attendDb;
+//    attendanceDatabase attendDb;
 
 
     @Override
@@ -56,7 +57,8 @@ public class Register2 extends AppCompatActivity {
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(this);
 //        db = new Database(this);
-        attendDb = new attendanceDatabase(this);
+//        attendDb = new attendanceDatabase(this);
+        isUserCreated = false;
         Intent intent = getIntent();
 
         fAuth = FirebaseAuth.getInstance();
@@ -102,15 +104,23 @@ public class Register2 extends AppCompatActivity {
 
         documentReference.set(user).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                isUserCreated = true;
+                saveInSharedPrefs(email, fAuth.getCurrentUser().getUid());
                 Intent intent = MainActivity.makeLaunchIntent(Register2.this, email, password);
                 startActivity(intent);
                 finish();
             } else {
+                fAuth.getCurrentUser().delete();
                 ErrorDialog.show(this);
                 Log.e(TAG, Objects.requireNonNull(task.getException()).getMessage());
             }
             progressBar.setVisibility(View.INVISIBLE);
         });
+    }
+
+    private void saveInSharedPrefs(String email, String id) {
+        SharedPreferences prefs = getSharedPreferences("user", Context.MODE_PRIVATE);
+        prefs.edit().putString("email", email).putString("UID", id).apply();
     }
 
     @Override
@@ -123,5 +133,15 @@ public class Register2 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         colorPalette.registerListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!isUserCreated) {
+            fAuth.getCurrentUser().delete();
+            if(fAuth.getCurrentUser() != null)
+                fAuth.signOut();
+        }
     }
 }

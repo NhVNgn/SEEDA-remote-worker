@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView incorrectEmailText, incorrectPasswordText;
 //    private Database db;
-    private Snackbar snackbar;
     private FirebaseAuth fAuth;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
@@ -56,8 +55,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
-        snackbar = CustomSnackbar.create(getWindow().getDecorView());
 
         binding = DataBindingUtil.setContentView
                 (this, R.layout.activity_login);
@@ -98,11 +95,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupSingInButton() {
         signInButton.setOnClickListener(v -> {
+
             String email = emailEdit.getText().toString();
             String password = passwordEdit.getText().toString();
 
-            if(!isValidMail(email)) {
-                snackbar.setText(getString(R.string.invalid_email)).show();
+            if(email == null || email.equals("")) {
+                incorrectEmailText.setText(R.string.email_empty);
+                setIncorrectEmail();
+                return;
+            }
+            if(password == null || password.equals("")) {
+                incorrectPasswordText.setText(R.string.password_empty);
+                setIncorrectPassword();
+                return;
             }
 
 //            User user = db.getUser(email, password);

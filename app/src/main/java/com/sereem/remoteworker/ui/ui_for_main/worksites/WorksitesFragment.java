@@ -259,40 +259,36 @@ public class WorksitesFragment extends Fragment {
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    linkList.clear();
+//                    linkList.clear();
                     System.out.println("OnDataChange is called");
                     String host = "";
-                    for (DataSnapshot snapshotItem : snapshot.getChildren()){
-                        GoogleMeetLink googleMeetLink = snapshotItem.getValue(GoogleMeetLink.class);
-                        linkList.add(googleMeetLink);
-                    }
+                    GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
+//                    linkList.add(googleMeetLink);
 
-                    if (!linkList.isEmpty())
+                    if (googleMeetLink != null)
                     {
-                        GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
-                        host = lastLink.getHost();
-
-                        urlGoogleMeet = lastLink.getLink();
+                        host = googleMeetLink.getHost();
+                        urlGoogleMeet = googleMeetLink.getLink();
                         if (urlGoogleMeet.equals("Meeting has ended")) {
                             if (getActivity() != null)
                                 CustomSnackbar.create(getView()).setText("No meeting available")
                                         .show();
                         }
                         else {
-                            if (!lastLink.getHost().equals(user.getFirstName())) {
-                                showNotification(host, lastLink);
+                            if (!googleMeetLink.getUserId().equals(user.getUID())) {
+                                showNotification(host, googleMeetLink);
                             }
 
                         }
                     }
 
-                    int counters = linkList.size()-1;
-                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
-                        counters--;
-                        if (counters == 0)
-                            break;
-                        appleSnapshot.getRef().removeValue();
-                    }
+//                    int counters = linkList.size()-1;
+//                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
+//                        counters--;
+//                        if (counters == 0)
+//                            break;
+//                        appleSnapshot.getRef().removeValue();
+//                    }
 
                 }
 
