@@ -1,20 +1,5 @@
 package com.sereem.remoteworker.ui;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.sereem.remoteworker.R;
-import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
-//import com.sereem.remoteworker.model.Database;
-import com.sereem.remoteworker.model.User;
-import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,13 +8,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.sereem.remoteworker.R;
+import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
+import com.sereem.remoteworker.model.User;
+
 import java.util.Objects;
+
+/**
+ * Register2 class, used for creating information about the user and saving it into the Firebase
+ * Cloudstore
+ */
 
 public class Register2 extends AppCompatActivity {
 
@@ -44,8 +39,6 @@ public class Register2 extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     private boolean isUserCreated;
-//    Database db;
-//    attendanceDatabase attendDb;
 
 
     @Override
@@ -56,8 +49,6 @@ public class Register2 extends AppCompatActivity {
         colorPalette = new ColorPalette(this, binding, ColorPalette.TYPE.REGISTER2);
         binding.setColorPalette(colorPalette);
         binding.setLifecycleOwner(this);
-//        db = new Database(this);
-//        attendDb = new attendanceDatabase(this);
         isUserCreated = false;
         Intent intent = getIntent();
 

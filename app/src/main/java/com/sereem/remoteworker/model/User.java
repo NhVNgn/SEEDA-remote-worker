@@ -1,13 +1,10 @@
 package com.sereem.remoteworker.model;
 
-import android.net.Uri;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ServerTimestamp;
 
+/**
+ * User class, used for storing information about a single user.
+ */
 public class User {
     private String UID;
     private String companyID;
@@ -23,8 +20,6 @@ public class User {
     private String emRelation;
     private String medicalConsiderations;
     private String iconUri;
-//    private GeoPoint geo_point;
-//    private @ServerTimestamp Date timestamp;
 
 
     private List<Object> worksites;
@@ -153,22 +148,6 @@ public class User {
         this.medicalConsiderations = medicalConsiderations;
     }
 
-//    public GeoPoint getGeo_point() {
-//        return geo_point;
-//    }
-//
-//    public Date getTimestamp() {
-//        return timestamp;
-//    }
-//
-//    public void setGeo_point(GeoPoint geo_point) {
-//        this.geo_point = geo_point;
-//    }
-
-//    public void setTimestamp(Date timestamp) {
-//        this.timestamp = timestamp;
-//    }
-
     public List<Object> getWorksites() {
         return worksites;
     }
@@ -189,7 +168,12 @@ public class User {
         this.iconUri = iconUri;
     }
 
-    public static User createUserForSaving(String id, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri, List<Object> worksites) {
+    public static User createUserForSaving(String id, String companyID, String firstName,
+                                           String lastName, String email, String phone,
+                                           String birthday, String emFirstName, String emLastName,
+                                           String emPhone, String emRelation,
+                                           String medicalConsiderations, String iconUri,
+                                           List<Object> worksites) {
 
         return new User(id, companyID, firstName, lastName, email, phone,
                 birthday, emFirstName, emLastName, emPhone,emRelation, medicalConsiderations, iconUri, worksites);
@@ -199,14 +183,22 @@ public class User {
         return instance == null;
     }
 
-    public static User createUserForSavingGPS(String id, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri, List<Object> worksites) {
+    public static User createUserForSavingGPS(String id, String companyID, String firstName,
+                                              String lastName, String email, String phone,
+                                              String birthday, String emFirstName, String emLastName,
+                                              String emPhone, String emRelation,
+                                              String medicalConsiderations, String iconUri,
+                                              List<Object> worksites) {
 
         return new User(id, companyID, firstName, lastName, email, phone,
                 birthday, emFirstName, emLastName, emPhone,emRelation, medicalConsiderations, iconUri, worksites);
     }
 
 
-    private User(String UID, String companyID, String firstName, String lastName, String email, String phone, String birthday, String emFirstName, String emLastName, String emPhone, String emRelation, String medicalConsiderations, String iconUri, List<Object> worksites) {
+    private User(String UID, String companyID, String firstName, String lastName, String email,
+                 String phone, String birthday, String emFirstName, String emLastName,
+                 String emPhone, String emRelation, String medicalConsiderations,
+                 String iconUri, List<Object> worksites) {
         this.UID = UID;
         this.companyID = companyID;
         this.firstName = firstName;
@@ -221,8 +213,6 @@ public class User {
         this.medicalConsiderations = medicalConsiderations;
         this.iconUri = iconUri;
         this.worksites = worksites;
-//        this.geo_point = geo_point;
-//        this.timestamp = timestamp;
     }
 
 }

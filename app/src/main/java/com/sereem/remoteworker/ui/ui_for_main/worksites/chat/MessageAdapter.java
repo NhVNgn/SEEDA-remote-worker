@@ -1,6 +1,5 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.chat;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -15,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.Message;
 import com.sereem.remoteworker.model.User;
-import com.sereem.remoteworker.model.workSite.WorkSite;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+/**
+ * MessageAdapter class, extends RecyclerView.Adapter, used by ChatActivity to display messages.
+ */
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 

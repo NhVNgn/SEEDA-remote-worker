@@ -5,6 +5,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * dbHelper class, not used by the application, used in iteration 2 to support
+ *  * user database. Used for creating tables in user database.
+ */
 public class dbHelper extends SQLiteOpenHelper {
 
 

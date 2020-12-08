@@ -1,13 +1,13 @@
 package com.sereem.remoteworker.ui;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-
-import androidx.fragment.app.DialogFragment;
 
 import com.sereem.remoteworker.R;
 
+/**
+ * ErrorDialog class, used for displaying internet connection errors.
+ */
 public class ErrorDialog {
     public static void show(Context context) {
         new AlertDialog.Builder(context)

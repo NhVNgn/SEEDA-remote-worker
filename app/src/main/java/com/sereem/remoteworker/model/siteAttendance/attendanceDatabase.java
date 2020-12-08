@@ -8,6 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * attendanceDatabase class, used for storing data about connections between users and worksites.
+ * Uses SQLite Database.
+ */
 public class attendanceDatabase {
     private SQLiteDatabase db;
     private Context context;

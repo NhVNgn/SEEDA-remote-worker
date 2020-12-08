@@ -1,5 +1,9 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites;
 
+/**
+ * GoogleMeetLink class, used for storing information about a single google meet link.
+ */
+
 public class GoogleMeetLink {
     private String userId;
     private String link;

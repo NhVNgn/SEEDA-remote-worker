@@ -8,7 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class    SiteDatabase {
+/**
+ * SiteDatabase class, used for storing all worksites. Uses SQLite Database.
+ */
+public class SiteDatabase {
     private SQLiteDatabase db;
     private Context context;
     private List<WorkSite> allWorkSite;

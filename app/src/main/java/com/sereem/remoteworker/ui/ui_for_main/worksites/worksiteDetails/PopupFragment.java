@@ -19,6 +19,10 @@ import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.PopupOptionsLayoutBinding;
 import com.sereem.remoteworker.ui.ColorPalette;
 
+/**
+ * PopupFragment class, used for displaying communication options for chosen user.
+ */
+
 public class PopupFragment extends AppCompatDialogFragment {
     ImageButton sms;
     ImageButton phone;
@@ -38,40 +42,28 @@ public class PopupFragment extends AppCompatDialogFragment {
         sms = v.findViewById(R.id.smsButton);
         phone = v.findViewById(R.id.phoneButton);
         email = v.findViewById(R.id.emailButton);
-        sms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Uri sms = Uri.parse("smsto:" + contact_number);
-                Intent intent = new Intent(Intent.ACTION_SENDTO, sms);
-                intent.putExtra(Intent.EXTRA_TEXT, "How are you doing today?");
-                startActivity(Intent.createChooser(intent, "send a text to"));
-            }
+        sms.setOnClickListener(view -> {
+            Uri sms = Uri.parse("smsto:" + contact_number);
+            Intent intent = new Intent(Intent.ACTION_SENDTO, sms);
+            intent.putExtra(Intent.EXTRA_TEXT, "How are you doing today?");
+            startActivity(Intent.createChooser(intent, "send a text to"));
         });
 
-        email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact_email});
-                intent.putExtra(Intent.EXTRA_SUBJECT, "This is subject header");
-                startActivity(intent);
-            }
+        email.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {contact_email});
+            intent.putExtra(Intent.EXTRA_SUBJECT, "This is subject header");
+            startActivity(intent);
         });
 
-        phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + contact_number));
-                startActivity(intent);
-            }
+        phone.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + contact_number));
+            startActivity(intent);
         });
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        DialogInterface.OnClickListener listener = (dialogInterface, i) -> {
 
-            }
         };
 
         return new AlertDialog.Builder(getActivity())

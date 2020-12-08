@@ -1,18 +1,15 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentLocationViewBinding;
@@ -20,6 +17,10 @@ import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
 
+/**
+ * LocationViewFragment, used for displaying google maps inside the app. Displays the location of
+ * chosen worksite.
+ */
 public class LocationViewFragment extends Fragment {
     SiteDatabase siteDB;
     WorkSite userWorkSite = null;
@@ -38,12 +39,7 @@ public class LocationViewFragment extends Fragment {
         siteDB = new SiteDatabase(root.getContext());
         getSite();
         mapButton = (Button) root.findViewById(R.id.addressButton);
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchMapIntent(root);
-            }
-        });
+        mapButton.setOnClickListener(view -> launchMapIntent());
         addressText = root.findViewById(R.id.addressTextDisplay);
         addressText.setText(userWorkSite.getLocation());
 
@@ -52,14 +48,10 @@ public class LocationViewFragment extends Fragment {
 
     }
     private void getSite() {
-//        SharedPreferences prefs = getActivity().getSharedPreferences(
-//                "user", Context.MODE_PRIVATE);
-//
-//        String id = prefs.getString("last_accessed_site_id", "NONE");
         userWorkSite = WorkSite.getChosenWorksite();
     }
 
-    public void launchMapIntent(View view){
+    public void launchMapIntent(){
         // process address
         StringBuilder uri_address = new StringBuilder();
         String raw_address = userWorkSite.getLocation();
@@ -67,8 +59,6 @@ public class LocationViewFragment extends Fragment {
         String url = "geo:0,0?q=";
         uri_address.append(url).append(separate_address[0]).append(",").append(separate_address[1]);
 
-
-        // Uri gmmIntentUri =  Uri.parse("geo:0,0?q=888 University Dr, Burnaby, British Columbia");
         Uri gmmIntentUri =  Uri.parse(String.valueOf(uri_address));
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");

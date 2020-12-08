@@ -1,7 +1,5 @@
 package com.sereem.remoteworker.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,16 +23,16 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ActivityLoginBinding;
-//import com.sereem.remoteworker.model.Database;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
+/**
+ * LoginActivity class, allows the user to sign in to the account.
+ */
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEdit, passwordEdit;
     private Button signInButton;
     private TextView incorrectEmailText, incorrectPasswordText;
-//    private Database db;
     private FirebaseAuth fAuth;
 
     private Drawable emailRed, emailBlue, lockRed, lockBlue;
@@ -68,8 +66,6 @@ public class LoginActivity extends AppCompatActivity {
         incorrectPasswordText = findViewById(R.id.incorrectPasswordText);
         signInButton = findViewById(R.id.signInButtonLogin);
 
-//        db = new Database(this);
-
         emailBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_blue_login, null);
         emailRed = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_email_red, null);
         lockBlue = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_lock_blue, null);
@@ -89,10 +85,6 @@ public class LoginActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(color);
     }
 
-    private boolean isValidMail(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
     private void setupSingInButton() {
         signInButton.setOnClickListener(v -> {
 
@@ -109,16 +101,6 @@ public class LoginActivity extends AppCompatActivity {
                 setIncorrectPassword();
                 return;
             }
-
-//            User user = db.getUser(email, password);
-
-//            if(user.getFirstName().equals("NOT_FOUND")) {
-//                incorrectEmailText.setText(getText(R.string.user_not_found));
-//                setIncorrectEmail();
-//            } if(user.getFirstName().equals("INCORRECT_PASSWORD")) {
-//                incorrectPasswordText.setText(getText(R.string.incorrect_password));
-//                setIncorrectPassword();
-//            }
 
             ProgressBar progressBar = findViewById(R.id.progressBarLogin);
             progressBar.setVisibility(View.VISIBLE);
@@ -233,9 +215,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         colorPalette.registerListener();
-    }
-
-    public static Intent makeIntent(Context context) {
-        return new Intent(context, LoginActivity.class);
     }
 }

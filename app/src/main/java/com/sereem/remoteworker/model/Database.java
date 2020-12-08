@@ -10,6 +10,9 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database class, used for storing all users. Uses SQLite Database.
+ */
 public class Database {
     private SQLiteDatabase db;
     private Context context;
@@ -20,16 +23,16 @@ public class Database {
         context = c;
         helper = new dbHelper(context);
 
-        addSample("Denys", "", "dovsiien@sfu.ca", "123", "111", "", "",
-                    "", "", "", "", "", "");
-        addSample("Vy", "", "nhanvyn@sfu.ca", "123", "111", "", "",
-                "", "", "", "", "", "");
-
-        addSample("Vy2", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
-                "", "", "", "", "", "");
-
-        addSample("Vy3", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
-                "", "", "", "", "", "");
+//        addSample("Denys", "", "dovsiien@sfu.ca", "123", "111", "", "",
+//                    "", "", "", "", "", "");
+//        addSample("Vy", "", "nhanvyn@sfu.ca", "123", "111", "", "",
+//                "", "", "", "", "", "");
+//
+//        addSample("Vy2", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
+//                "", "", "", "", "", "");
+//
+//        addSample("Vy3", "", "nhanvyhl1234@gmail.com", "123", "111", "", "",
+//                "", "", "", "", "", "");
 
     }
 
@@ -142,14 +145,9 @@ public class Database {
         }
         else {
             System.out.println("user added successfully");
-//            User newUser = new User(firstName, lastName, email, password, phone,
-//                    birthday, companyID,  emFirstName,  emLastName,  emPhone,
-//                     emRelation,  MedConsider,  IconRes.getBytes());
-//            defaultUserList.add(newUser);
         }
     }
     private void fillUser(User user, Cursor cursor) {
-//        user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.UID))));
         user.setCompanyID((cursor.getString(cursor.getColumnIndex(Constants.COMPANY_ID))));
         user.setFirstName(cursor.getString(cursor.getColumnIndex(Constants.FIRST_NAME)));
         user.setLastName(cursor.getString(cursor.getColumnIndex(Constants.LAST_NAME)));
@@ -162,8 +160,6 @@ public class Database {
         user.setEmPhone(cursor.getString(cursor.getColumnIndex(Constants.EM_PHONE)));
         user.setEmRelation(cursor.getString(cursor.getColumnIndex(Constants.EM_RELATION)));
         user.setMedicalConsiderations(cursor.getString(cursor.getColumnIndex(Constants.MED_CONSIDERATIONS)));
-//        if(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI)) != null)
-//            user.setIconUri(Uri.parse(cursor.getString(cursor.getColumnIndex(Constants.ICON_URI))));
     }
 
     public int deleteRow(String email){

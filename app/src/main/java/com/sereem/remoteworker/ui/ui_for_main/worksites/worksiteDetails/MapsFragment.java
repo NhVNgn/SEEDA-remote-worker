@@ -1,63 +1,46 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.CustomSnackbar;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
-
+/**
+ * MapsFragment extends SupportMapFragment, implements OnMapReadyCallback, LocationListener.
+ * Used by LocationsViewFragment to display google map.
+ */
 public class MapsFragment extends SupportMapFragment implements OnMapReadyCallback, LocationListener {
 
     GoogleMap mGoogleMap;
-    LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     SiteDatabase siteDB;
@@ -194,7 +177,7 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -212,9 +195,6 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
     }
 
     private void getSite() {
-        //SharedPreferences prefs = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
-
-        //String id = prefs.getString("last_accessed_site_id", "NONE");
         userWorkSite = WorkSite.getChosenWorksite();
     }
 

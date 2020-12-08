@@ -1,5 +1,9 @@
 package com.sereem.remoteworker.model.siteAttendance;
 
+/**
+ * Attendance class, not used by the application, used in iteration 2 to support attendance database.
+ * Holds information about a single attendance.
+ */
 public class Attendance {
     private String workerEmail;
     private int UID;

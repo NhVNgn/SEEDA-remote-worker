@@ -1,19 +1,18 @@
 package com.sereem.remoteworker.model.workSite;
 
-import com.sereem.remoteworker.model.User;
-
 import java.util.List;
 
+/**
+ * WorkSite class, used for holding information about a single worksite.
+ */
 public class WorkSite {
     private String name;
-//    private int UID;
     private String siteID;
     private String location;
     private String hours;
     private String masterPoint;
     private List<Object> workers;
     private static WorkSite chosenWorksite;
-//    private List<User> contactList;
 
     public WorkSite(String name, String siteID, String location, String hours, String masterPoint) {
         this.name = name;
@@ -46,10 +45,6 @@ public class WorkSite {
     public void setName(String name) {
         this.name = name;
     }
-
-//    public void setUID(int UID) {
-//        this.UID = UID;
-//    }
 
     public void setSiteID(String siteID) {
         this.siteID = siteID;

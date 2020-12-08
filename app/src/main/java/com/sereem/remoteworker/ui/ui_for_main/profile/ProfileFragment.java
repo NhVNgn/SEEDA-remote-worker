@@ -47,6 +47,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * ProfileFragment class, used for displaying and editing user information
+ */
 public class ProfileFragment extends Fragment {
 
     private User user;
@@ -84,7 +87,7 @@ public class ProfileFragment extends Fragment {
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
         user = User.getInstance();
-        iconFile = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpg");
+        iconFile = new File(getActivity().getCacheDir() + "/" + user.getUID() + ".jpeg");
 
         initializeDocumentReference();
         initializeStorageReference();
@@ -240,7 +243,6 @@ public class ProfileFragment extends Fragment {
                 } else {
                     editBtn.setImageResource(R.drawable.ic_edit_white);
                 }
-//                updateNavView();
                 if(numOfBlock == 1) {
                     icon.setImageAlpha(255);
                     icon.setForeground(null);
@@ -253,7 +255,7 @@ public class ProfileFragment extends Fragment {
                         updateIcon();
                     }
                 } else {
-                    updateDataInDatabase1(numOfBlock);
+                    updateDataInDatabase1();
                 }
             }
             btnCount.incrementAndGet();
@@ -367,21 +369,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-//    private void updateNavView() {
-//        View headerView = MainActivity.getHeaderView();
-//        ImageView icon = headerView.findViewById(R.id.profileIconMain);
-//        if(user.getIconUri() != null) {
-//            icon.setImageURI(user.getIconUri());
-//        } else {
-//            icon.setImageResource(R.drawable.profile_icon);
-//        }
-//        TextView emailText = headerView.findViewById(R.id.emailMainTextView);
-//        emailText.setText(user.getEmail());
-//        TextView nameText = headerView.findViewById(R.id.nameMainTextView);
-//        nameText.setText(user.getFirstName() + " " + user.getLastName());
-//    }
-
-    private void updateDataInDatabase1(int numOfBlock) {
+    private void updateDataInDatabase1() {
         documentReference.set(User.createUserForSaving(
                 user.getUID(),
                 companyIdEdit.getText().toString(),
@@ -403,41 +391,6 @@ public class ProfileFragment extends Fragment {
                 snackbar.setText("Error occurred").show();
             }
         });
-
-//        int result = 0;
-//        if(numOfBlock == 1) {
-//            ContentValues cv = new ContentValues();
-//            cv.put(Constants.EMAIL, emailEdit.getText().toString());
-//            cv.put(Constants.PASSWORD, passwordEdit.getText().toString());
-////            saveIcon(cv);
-//            if(isIconUpdated) {
-//                cv.put(Constants.ICON_URI, resultUri.toString());
-//            }
-////            result = db.update(user.getUID(), cv);
-//        } else if(numOfBlock == 2) {
-//            ContentValues cv = new ContentValues();
-//            cv.put(Constants.FIRST_NAME, firstNameEdit.getText().toString());
-//            cv.put(Constants.LAST_NAME, lastNameEdit.getText().toString());
-//            cv.put(Constants.BIRTHDAY, birthdayEdit.getText().toString());
-//            cv.put(Constants.PHONE, phoneEdit.getText().toString());
-//            cv.put(Constants.COMPANY_ID, companyIdEdit.getText().toString());
-////            result = db.update(user.getUID(), cv);
-//        } else if(numOfBlock == 3) {
-//            ContentValues cv = new ContentValues();
-//            cv.put(Constants.EM_FIRST_NAME, emFirstNameEdit.getText().toString());
-//            cv.put(Constants.EM_LAST_NAME, emLastNameEdit.getText().toString());
-//            cv.put(Constants.EM_PHONE, emPhoneEdit.getText().toString());
-//            cv.put(Constants.EM_RELATION, emRelationEdit.getText().toString());
-////            result = db.update(user.getUID(), cv);
-//        }
-//
-//        if(result > 0) {
-//            snackbar.setText("Saved").setDuration(Snackbar.LENGTH_SHORT).show();
-//            updateSharedPrefs(numOfBlock);
-//        } else {
-//            snackbar.setText("Cancelled").setDuration(Snackbar.LENGTH_SHORT).show();
-//        }
-//    }
     }
 
     private void saveIcon(Uri uri) throws IOException {
@@ -453,7 +406,7 @@ public class ProfileFragment extends Fragment {
                 if (task.isSuccessful()){
                     storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                         user.setIconUri(uri1.toString());
-                        updateDataInDatabase1(1);
+                        updateDataInDatabase1();
                         updateIcon();
                     });
                 }
@@ -461,17 +414,6 @@ public class ProfileFragment extends Fragment {
             isIconUpdated = false;
         }
     }
-
-//    private void updateSharedPrefs(int numOfBlock) {
-//        if(numOfBlock == 1) {
-//            SharedPreferences prefs = getActivity().getSharedPreferences("user",
-//                    MODE_PRIVATE);
-//            prefs.edit().remove("email").remove("password")
-//                    .putString("email", emailEdit.getText().toString())
-//                    .putString("password", passwordEdit.getText().toString())
-//                    .apply();
-//        }
-//    }
 
     @Override
     public void onPause() {

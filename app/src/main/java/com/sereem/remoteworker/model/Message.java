@@ -1,5 +1,8 @@
 package com.sereem.remoteworker.model;
 
+/**
+ * Message class. Used by ChatActivity to store information about a single message.
+ */
 public class Message {
     private String userId;
     private String text;

@@ -18,6 +18,10 @@ import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentImageViewBinding;
 import com.sereem.remoteworker.ui.ColorPalette;
 
+/**
+ * ImageViewFragment class, used for displaying profile icon
+ */
+
 public class ImageViewFragment extends AppCompatDialogFragment {
     private Uri iconUri;
     private ColorPalette colorPalette;

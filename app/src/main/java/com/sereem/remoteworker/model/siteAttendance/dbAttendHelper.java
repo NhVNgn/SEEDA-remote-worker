@@ -5,6 +5,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * attendanceConstants class, not used by the application, used in iteration 2 to support
+ *  * attendance database. Used for creating tables in attendance database.
+ */
 public class dbAttendHelper extends SQLiteOpenHelper {
     private Context context;
 

@@ -3,6 +3,10 @@ package com.sereem.remoteworker.model.siteAttendance;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * attendanceConstants class, not used by the application, used in iteration 2 to support
+ * attendance database. Holds constants for attendance database.
+ */
 public class attendanceConstants {
     public static final String DATABASE_NAME = "attendanceDatabase";
     public static final int DATABASE_VERSION = 1;

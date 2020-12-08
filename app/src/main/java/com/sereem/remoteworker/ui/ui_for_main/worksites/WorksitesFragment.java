@@ -12,7 +12,6 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,8 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +30,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.ItemViewBinding;
 import com.sereem.remoteworker.model.Database;
@@ -54,6 +50,10 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.linkList;
 import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.urlGoogleMeet;
 
+/**
+ * WorksitesFragment class, used for displaying the list of all worksites which are assigned to the
+ * user.
+ */
 public class WorksitesFragment extends Fragment {
 
     Context globalContext = null;
@@ -63,17 +63,15 @@ public class WorksitesFragment extends Fragment {
     Database db;
     List<WorkSite> userSites = new ArrayList<>();
     ListView listView = null;
-    private View itemView;
     View root;
 
     public static final String PROJECT_ID = "project_id";
 
-    private ItemViewBinding binding;
     private ColorPalette colorPalette;
     private ProgressBar progressBar;
     ArrayAdapter<WorkSite> adapter = null;
 
-    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
     public class siteListAdapter extends ArrayAdapter<WorkSite> {
         public siteListAdapter() {
@@ -83,11 +81,11 @@ public class WorksitesFragment extends Fragment {
         @SuppressLint("SetTextI18n")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            itemView = convertView;
+            View itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.item_view, parent, false);
             // get site
-            binding = ItemViewBinding.bind(itemView);
+            com.sereem.remoteworker.databinding.ItemViewBinding binding = ItemViewBinding.bind(itemView);
             colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.ITEM_VIEW);
             binding.setColorPalette(colorPalette);
             binding.setLifecycleOwner(getViewLifecycleOwner());
@@ -101,13 +99,8 @@ public class WorksitesFragment extends Fragment {
             textSiteName.setText(ws.getName());
             textSiteId.setText("Site ID: " + ws.getSiteID());
 
-            // fill image
-
             return itemView;
-
         }
-
-
     }
 
 
@@ -121,8 +114,6 @@ public class WorksitesFragment extends Fragment {
         siteDB = new SiteDatabase(root.getContext());
         attendanceDB = new attendanceDatabase(root.getContext());
         db = new Database(root.getContext());
-//        user = User.getInstance();
-//        getWorkSiteForUser();
         if(User.isNull()) {
             initializeDocumentReference();
         } else {
@@ -140,15 +131,6 @@ public class WorksitesFragment extends Fragment {
 
     }
 
-//    private void getUser() {
-//        SharedPreferences prefs = getActivity().getSharedPreferences(
-//                "user", Context.MODE_PRIVATE);
-//
-//        String email = prefs.getString("email", "NONE");
-//        String password = prefs.getString("password", "NONE");
-//        user = db.getUser(email, password);
-//    }
-
     public void getWorkSiteForUser() {
 
         if (userSites.size() > 0) {
@@ -157,17 +139,6 @@ public class WorksitesFragment extends Fragment {
             progressBar.setVisibility(View.INVISIBLE);
             return;
         }
-        
-//        for (Attendance a : attendanceDB.getAllAttendanceList()) {
-//            if (a.getWorkerEmail().equals(user.getEmail())) {
-//                for (WorkSite ws : siteDB.getAllWorkSite()) {
-//                    if (a.getSiteID().equals(ws.getSiteId())) {
-//                        System.out.println(ws.getName());
-//                        userSites.add(ws);
-//                    }
-//                }
-//            }
-//        }
         if(user.getWorksites() == null) {
             progressBar.setVisibility(View.INVISIBLE);
             return;
@@ -244,8 +215,6 @@ public class WorksitesFragment extends Fragment {
     private void receiveGoogleMeetLink(){
         linkList = new ArrayList<>();
         List<DatabaseReference> databaseReferenceList = new ArrayList<>();
-        // each databse will refer to a worksite
-
 
         for (WorkSite ws : userSites){
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(
@@ -259,11 +228,9 @@ public class WorksitesFragment extends Fragment {
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    linkList.clear();
                     System.out.println("OnDataChange is called");
                     String host = "";
                     GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
-//                    linkList.add(googleMeetLink);
 
                     if (googleMeetLink != null)
                     {
@@ -276,40 +243,28 @@ public class WorksitesFragment extends Fragment {
                         }
                         else {
                             if (!googleMeetLink.getUserId().equals(user.getUID())) {
-                                showNotification(host, googleMeetLink);
+                                showNotification(host);
                             }
 
                         }
                     }
-
-//                    int counters = linkList.size()-1;
-//                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
-//                        counters--;
-//                        if (counters == 0)
-//                            break;
-//                        appleSnapshot.getRef().removeValue();
-//                    }
-
                 }
 
-                private void showNotification(String host, GoogleMeetLink lastLink) {
+                private void showNotification(String host) {
                     if(getActivity() != null){
                         AlertDialog dialog = new AlertDialog.Builder(getContext())
                                 .setTitle("Notification")
                                 .setMessage(host + " hosted a meeting right now!")
-                                .setPositiveButton("JOIN", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
-                                            CustomSnackbar.create(getView()).setText("Meeting has just ended")
-                                                .show();
-                                        else{
-                                            String url = urlGoogleMeet;
-                                            Intent i = new Intent(Intent.ACTION_VIEW);
-                                            i.setData(Uri.parse(url));
-                                            if (!url.contains("Meeting has ended"))
-                                                startActivity(i);
-                                        }
+                                .setPositiveButton("JOIN", (dialog1, which) -> {
+                                    if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
+                                        CustomSnackbar.create(getView()).setText("Meeting has just ended")
+                                            .show();
+                                    else{
+                                        String url = urlGoogleMeet;
+                                        Intent i = new Intent(Intent.ACTION_VIEW);
+                                        i.setData(Uri.parse(url));
+                                        if (!url.contains("Meeting has ended"))
+                                            startActivity(i);
                                     }
                                 })
                                 .setNegativeButton(android.R.string.no, null)
@@ -344,23 +299,13 @@ public class WorksitesFragment extends Fragment {
                         }
 
                     }
-
                 }
-
-
-
-
-
-
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    if(error.getCode() != DatabaseError.PERMISSION_DENIED && getContext() != null)
+                        ErrorDialog.show(getContext());
                 }
             });
         }
-
-
     }
-
 }
