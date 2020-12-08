@@ -139,17 +139,15 @@ public class LiveMeetingFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 linkList.clear();
                 String host = "";
-                for (DataSnapshot snapshotItem : snapshot.getChildren()){
-                    GoogleMeetLink googleMeetLink = snapshotItem.getValue(GoogleMeetLink.class);
-                    linkList.add(googleMeetLink);
-                }
+                GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
+//                linkList.add(googleMeetLink);
 
-                if (!linkList.isEmpty())
+                if (googleMeetLink != null)
                 {
                     System.out.println("LinkList is not empty");
-                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
-                    urlGoogleMeet = lastLink.getLink();
-                    hostName = lastLink.getHost();
+//                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
+                    urlGoogleMeet = googleMeetLink.getLink();
+                    hostName = googleMeetLink.getHost();
                     System.out.println(hostName);
                     hostTextView.setText(hostName);
                     linkContainerTextView.setText(urlGoogleMeet);
@@ -191,10 +189,6 @@ public class LiveMeetingFragment extends Fragment {
     }
 
 
-
-
-
-
     @Override
     public void onPause() {
         super.onPause();
@@ -232,19 +226,19 @@ public class LiveMeetingFragment extends Fragment {
         System.out.println("OnDestroy is called LiveMeetingFragment");
         super.onDestroy();
 
-        if (userStartAMeeting) {
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
-
-            reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    System.out.println("Stop previous meeting successful");
-                    linkIsSent = false;
-                } else {
-                    System.out.println("Fail to stop previous meeting");
-
-                }
-            });
-        }
+//        if (userStartAMeeting) {
+//            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
+//
+//            reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
+//                if (task.isSuccessful()) {
+//                    System.out.println("Stop previous meeting successful");
+//                    linkIsSent = false;
+//                } else {
+//                    System.out.println("Fail to stop previous meeting");
+//
+//                }
+//            });
+//        }
 
     }
 

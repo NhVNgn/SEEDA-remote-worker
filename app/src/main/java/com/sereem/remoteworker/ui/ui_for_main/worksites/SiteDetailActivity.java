@@ -187,7 +187,7 @@ public class SiteDetailActivity extends AppCompatActivity {
     }
 
     private void receiveGoogleMeetLink(){
-        linkList = new ArrayList<>();
+//        linkList = new ArrayList<>();
         WorkSite workSite = WorkSite.getChosenWorksite();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(
                 "lives/" + workSite.getSiteID());
@@ -195,26 +195,24 @@ public class SiteDetailActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                linkList.clear();
+//                linkList.clear();
                 String host = "";
-                for (DataSnapshot snapshotItem : snapshot.getChildren()){
-                    GoogleMeetLink googleMeetLink = snapshotItem.getValue(GoogleMeetLink.class);
-                    linkList.add(googleMeetLink);
-                }
+                GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
+                linkList.add(googleMeetLink);
 
-                if (!linkList.isEmpty())
+                if (googleMeetLink != null)
                 {
-                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
-                    host = lastLink.getHost();
+//                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
+                    host = googleMeetLink.getHost();
 
-                    urlGoogleMeet = lastLink.getLink();
+                    urlGoogleMeet = googleMeetLink.getLink();
                     if (urlGoogleMeet.equals("Meeting has ended")) {
                         CustomSnackbar.create(getWindow().getDecorView().getRootView())
                                 .setText("No meeting available").show();
                     }
                     else {
-                        if (!lastLink.getHost().equals(User.getInstance().getFirstName())) {
-                            showNotification(host, lastLink);
+                        if (!googleMeetLink.getHost().equals(User.getInstance().getFirstName())) {
+                            showNotification(host, googleMeetLink);
                         }
                     }
                 }

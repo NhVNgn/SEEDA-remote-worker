@@ -262,37 +262,34 @@ public class WorksitesFragment extends Fragment {
                     linkList.clear();
                     System.out.println("OnDataChange is called");
                     String host = "";
-                    for (DataSnapshot snapshotItem : snapshot.getChildren()){
-                        GoogleMeetLink googleMeetLink = snapshotItem.getValue(GoogleMeetLink.class);
-                        linkList.add(googleMeetLink);
-                    }
+                    GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
+//                    linkList.add(googleMeetLink);
 
-                    if (!linkList.isEmpty())
+                    if (googleMeetLink != null)
                     {
-                        GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
-                        host = lastLink.getHost();
+                        host = googleMeetLink.getHost();
 
-                        urlGoogleMeet = lastLink.getLink();
+                        urlGoogleMeet = googleMeetLink.getLink();
                         if (urlGoogleMeet.equals("Meeting has ended")) {
                             if (getActivity() != null)
                                 CustomSnackbar.create(getView()).setText("No meeting available")
                                         .show();
                         }
                         else {
-                            if (!lastLink.getHost().equals(user.getFirstName())) {
-                                showNotification(host, lastLink);
+                            if (!googleMeetLink.getHost().equals(user.getFirstName())) {
+                                showNotification(host, googleMeetLink);
                             }
 
                         }
                     }
 
-                    int counters = linkList.size()-1;
-                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
-                        counters--;
-                        if (counters == 0)
-                            break;
-                        appleSnapshot.getRef().removeValue();
-                    }
+//                    int counters = linkList.size()-1;
+//                    for (DataSnapshot appleSnapshot: snapshot.getChildren()) {
+//                        counters--;
+//                        if (counters == 0)
+//                            break;
+//                        appleSnapshot.getRef().removeValue();
+//                    }
 
                 }
 
