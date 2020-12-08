@@ -1,5 +1,8 @@
 package com.sereem.remoteworker.model;
 
+/**
+ * UserLocation class, used for storing information about user's current location
+ */
 
 public class UserLocation {
     public String timeStamp;

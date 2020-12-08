@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -39,8 +37,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
@@ -56,14 +52,14 @@ import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
 import java.io.File;
 
-//import com.sereem.remoteworker.model.Database;
-
+/**
+ * MainActivity class, used for displaying all features and manipulating with them.
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static Uri iconUri;
 
     private AppBarConfiguration mAppBarConfiguration;
-//    private Database db;
     private static View headerView;
     private ColorPalette colorPalette;
     private ActivityMainBinding binding;
@@ -78,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
     private File iconFile;
     private boolean isFirstStart = true;
     public static Intent serviceIntent;
-//    private DatabaseReference databaseReference;
-    //private boolean mLocationPermissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +102,8 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
-//        db = new Database(this);
         initializeDocumentReference();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//        initializeStorageReference();
-//        downloadIconFromUri();
 
 
         // get broadcast latLng from service
@@ -131,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void downloadIconFromUri() {
-//        ProgressBar progressBar = root.findViewById(R.id.progressBarProfile);
-//        progressBar.setVisibility(View.VISIBLE);
         if(!isFirstStart) {
             iconUri = Uri.fromFile(iconFile);
             return;
@@ -143,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             if(task.isSuccessful()) {
                 showUserInfo();
             }
-//            progressBarsBar.setVisibility(View.INVISIBLE);
         });
     }
 
@@ -249,18 +237,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         Log.d(TAG, "getLastKnownLocation: called WW");
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                Log.d(TAG, "onComplete: called.");
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "startLocationService: called.");
-                    startLocationService();
-                }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+            Log.d(TAG, "onComplete: called.");
+            if (task.isSuccessful()) {
+                Log.d(TAG, "startLocationService: called.");
+                startLocationService();
             }
         });
 
@@ -348,9 +334,4 @@ public class MainActivity extends AppCompatActivity {
                     100);
         }
     }
-
-
-
-
-
 }

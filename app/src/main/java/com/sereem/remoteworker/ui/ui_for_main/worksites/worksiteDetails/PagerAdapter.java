@@ -9,9 +9,15 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment;
 
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * PagerAdapter class extends FragmentPagerAdapter, used by SiteDetailActivity
+ * to implement Tab View.
+ */
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    private int numOfTabs;
+    private final int numOfTabs;
     public Fragment[] fragments = new Fragment[4];
     public PagerAdapter(FragmentManager fm, int numOfTabs){
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -36,8 +42,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
         return numOfTabs;
     }
 
+    @NotNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NotNull ViewGroup container, int position) {
         Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
         fragments[position]  = createdFragment;
         return createdFragment;

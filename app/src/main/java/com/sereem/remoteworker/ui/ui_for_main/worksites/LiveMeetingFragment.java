@@ -30,7 +30,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-
+/**
+ * LiveMeetingFragment class, used for creating new google meeting and showing current meeting.
+ */
 public class LiveMeetingFragment extends Fragment {
 
     DatabaseReference reference;
@@ -68,38 +70,27 @@ public class LiveMeetingFragment extends Fragment {
                 "lives/" + workSite.getSiteID());
         user = User.getInstance();
 
-        createMeetingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "http://meet.google.com/new";
+        createMeetingButton.setOnClickListener(view -> {
+            String url = "http://meet.google.com/new";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
+
+        linkButton.setOnClickListener(view -> {
+            if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available")
+                    || urlGoogleMeet.contains("Meeting has ended"))
+                CustomSnackbar.create(getView()).setText("There is not meeting link now").show();
+            else{
+                String url = urlGoogleMeet;
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
             }
         });
 
-        linkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available") || urlGoogleMeet.contains("Meeting has ended"))
-                    CustomSnackbar.create(getView()).setText("There is not meeting link now").show();
-                else{
-                    String url = urlGoogleMeet;
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                }
-            }
-        });
-
         endButton.setVisibility(View.INVISIBLE);
         receiveGoogleMeetLink();
-
-
-
-
-
-
         return root;
     }
 
@@ -111,7 +102,9 @@ public class LiveMeetingFragment extends Fragment {
             linkContainerTextView.setText(arr[1].trim());
             urlGoogleMeet = arr[1].trim();
             linkContainerTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet, Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), urlGoogleMeet,
+                    Calendar.getInstance().getTime().toString(),
+                    user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
             userStartAMeeting = true;
             if (!linkIsSent)
                 sendLink(googleMeetLink);
@@ -138,14 +131,11 @@ public class LiveMeetingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 linkList.clear();
-                String host = "";
                 GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
-//                linkList.add(googleMeetLink);
 
                 if (googleMeetLink != null)
                 {
                     System.out.println("LinkList is not empty");
-//                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
                     urlGoogleMeet = googleMeetLink.getLink();
                     hostName = googleMeetLink.getHost();
                     System.out.println(hostName);
@@ -157,32 +147,33 @@ public class LiveMeetingFragment extends Fragment {
                         System.out.println("HOST NAME IS NOT NULL");
                         if (googleMeetLink.getUserId().equals(user.getUID())){
                             endButton.setVisibility(View.VISIBLE);
-                            endButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
+                            endButton.setOnClickListener(view -> {
+                                GoogleMeetLink googleMeetLink1 = new GoogleMeetLink(user.getUID(),
+                                        "Meeting has ended",
+                                        Calendar.getInstance().getTime().toString(),
+                                        user.getFirstName(),
+                                        WorkSite.getChosenWorksite().getSiteID());
 
-                                    reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            System.out.println("Stop previous meeting successful");
-                                            linkIsSent = false;
-                                            endButton.setVisibility(View.INVISIBLE);
-                                        } else {
-                                            System.out.println("Fail to stop previous meeting");
+                                reference.setValue(googleMeetLink1).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        System.out.println("Stop previous meeting successful");
+                                        linkIsSent = false;
+                                        endButton.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        System.out.println("Fail to stop previous meeting");
 
-                                        }
-                                    });
-                                }
+                                    }
+                                });
                             });
                         }
                     }
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                if(error.getCode() != DatabaseError.PERMISSION_DENIED && getContext() != null)
+                    ErrorDialog.show(getContext());
             }
         });
 

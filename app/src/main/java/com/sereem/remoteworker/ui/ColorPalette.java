@@ -17,7 +17,6 @@ import com.sereem.remoteworker.databinding.ActivityMainBinding;
 import com.sereem.remoteworker.databinding.ActivityRegister2Binding;
 import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
 import com.sereem.remoteworker.databinding.ActivitySiteDetailBinding;
-import com.sereem.remoteworker.databinding.ContactParentItemBinding;
 import com.sereem.remoteworker.databinding.FragmentImageViewBinding;
 import com.sereem.remoteworker.databinding.FragmentLiveMeetingBinding;
 import com.sereem.remoteworker.databinding.FragmentLocationViewBinding;
@@ -25,10 +24,11 @@ import com.sereem.remoteworker.databinding.FragmentProfileBinding;
 import com.sereem.remoteworker.databinding.FragmentSiteViewBinding;
 import com.sereem.remoteworker.databinding.ItemViewBinding;
 import com.sereem.remoteworker.databinding.PopupOptionsLayoutBinding;
-import com.sereem.remoteworker.ui.ui_for_main.service.LocationService;
 
-// TODO: refactor weird implementation (functional programming?)
-
+/**
+ * ColorPalette class, implements SensorEventListener, used for changing app's theme
+ * and manipulating with light sensor.
+ */
 public class ColorPalette implements SensorEventListener {
     public enum TYPE {
         LOGIN,
@@ -72,7 +72,6 @@ public class ColorPalette implements SensorEventListener {
     private FragmentLocationViewBinding locationViewBinding;
     private FragmentLiveMeetingBinding fragmentLiveMeetingBinding;
     private FragmentSiteViewBinding siteViewBinding;
-    private ContactParentItemBinding contactBinding;
 
     public ColorPalette(Context context, ActivityMainBinding mainBinding, TYPE type) {
         this.context = context;
@@ -91,15 +90,6 @@ public class ColorPalette implements SensorEventListener {
         setSensor();
         setTheme();
     }
-
-//    public ColorPalette(Context context, ContactParentItemBinding contactBinding, TYPE type) {
-//        this.context = context;
-//        this.type = type;
-//        this.contactBinding = contactBinding;
-//        getSettings();
-//        setSensor();
-//        setTheme();
-//    }
 
     public ColorPalette(Context context, FragmentSiteViewBinding siteViewBinding, TYPE type) {
         this.context = context;
@@ -357,17 +347,6 @@ public class ColorPalette implements SensorEventListener {
                     }
                     break;
                 }
-//                case CONTACT: {
-//                    ContactParentItemBinding binding = contactBinding;
-//                    if (event.values[0] == 0 && !isDark()) {
-//                        setDark(true);
-//                        binding.setColorPalette(this);
-//                    } else if (event.values[0] >= 1.0 && isDark()) {
-//                        setDark(false);
-//                        binding.setColorPalette(this);
-//                    }
-//                    break;
-//                }
                 case REGISTER2: {
                     ActivityRegister2Binding binding = register2Binding;
                     if (event.values[0] == 0 && !isDark()) {

@@ -1,35 +1,25 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.fragment.app.Fragment;
+
 import com.sereem.remoteworker.R;
 import com.sereem.remoteworker.databinding.FragmentSiteViewBinding;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
 import com.sereem.remoteworker.ui.ColorPalette;
 
+/**
+ * SiteViewFragment class, used for displaying the information about chosen worksite.
+ */
 public class SiteViewFragment extends Fragment {
 
     SiteDatabase siteDB;
@@ -57,14 +47,11 @@ public class SiteViewFragment extends Fragment {
 
 
         Button button = root.findViewById(R.id.siteEmergencyInfoText);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://www.seerem.seeda.ca/home";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
+        button.setOnClickListener(view -> {
+            String url = "https://www.seerem.seeda.ca/home";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
         siteNameText.setText(userWorkSite.getName());
@@ -75,11 +62,6 @@ public class SiteViewFragment extends Fragment {
     }
 
     private void getSite() {
-//        SharedPreferences prefs = getActivity().getSharedPreferences(
-//                "user", Context.MODE_PRIVATE);
-
-//        String id = prefs.getString("last_accessed_site_id", "NONE");
-
         userWorkSite = WorkSite.getChosenWorksite();
     }
 

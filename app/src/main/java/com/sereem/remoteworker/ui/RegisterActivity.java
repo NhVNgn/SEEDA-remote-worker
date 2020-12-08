@@ -1,34 +1,34 @@
 package com.sereem.remoteworker.ui;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.sereem.remoteworker.R;
-import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
-//import com.sereem.remoteworker.model.Database;
-import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.sereem.remoteworker.R;
+import com.sereem.remoteworker.databinding.ActivityRegisterBinding;
+
 import java.util.Objects;
 
+/**
+ * RegisterActivity class, used for creating account and saving it to the Firebase Authentication.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
 
     EditText emailEditText, passwordEditText;
     public static final String NEW_EMAIL = "new_email";
     public static final String NEW_PASSWORD = "new_password";
-//    Database db;
     private ColorPalette colorPalette;
     private Snackbar snackbar;
     private FirebaseAuth fAuth;
@@ -46,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
 
         fAuth = FirebaseAuth.getInstance();
-//        db = new Database(this);
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -82,13 +81,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
             progressBar.setVisibility(View.INVISIBLE);
         });
-
-        /*Intent intent = new Intent(globalContext, SiteDetailActivity.class);
-        String site_id = userSites.get(position).getSiteId();
-        intent.putExtra(PROJECT_ID, site_id);
-        saveInSharedPrefs(site_id, root);
-        startActivity(intent);*/
-
     }
 
     @Override

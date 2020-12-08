@@ -3,6 +3,10 @@ package com.sereem.remoteworker.model.workSite;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SiteConstants class, not used by the application, used in iteration 2 to support
+ * worksite database. Holds constants for worksite database.
+ */
 public class SiteConstants {
     public static final String DATABASE_NAME = "siteDatabase";
     public static final int DATABASE_VERSION = 1;

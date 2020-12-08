@@ -3,6 +3,10 @@ package com.sereem.remoteworker.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Constants class, not used by the application, used in iteration 2 to support
+ * user database. Holds constants for user database.
+ */
 public class Constants {
     public static final String DATABASE_NAME = "workerDatabase";
     public static final int DATABASE_VERSION = 1;

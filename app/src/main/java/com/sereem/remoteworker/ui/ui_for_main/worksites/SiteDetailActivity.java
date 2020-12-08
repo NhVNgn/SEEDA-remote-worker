@@ -17,15 +17,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -41,8 +41,9 @@ import com.sereem.remoteworker.ui.ui_for_main.worksites.chat.ChatActivity;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.MapsFragment;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails.PagerAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,9 @@ import java.util.concurrent.TimeUnit;
 import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.linkList;
 import static com.sereem.remoteworker.ui.ui_for_main.worksites.LiveMeetingFragment.urlGoogleMeet;
 
+/**
+ * SiteDetailActivity class, used for interaction with chosen worksite. Uses Tab View.
+ */
 public class SiteDetailActivity extends AppCompatActivity {
     private ColorPalette colorPalette;
     PagerAdapter pagerAdapter;
@@ -68,10 +72,6 @@ public class SiteDetailActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#275F8E")));
         tabLayout = findViewById(R.id.tabBar);
-        TabItem tabSiteInfo = findViewById(R.id.siteInfo);
-        TabItem tabContactInfo = findViewById(R.id.contactsInfo);
-        TabItem locationInfo = findViewById(R.id.locationInfo);
-        TabItem meetingInfo = findViewById(R.id.liveMeetingInfo);
         ViewPager viewPager = findViewById(R.id.viewPager);
         setUpBackButton();
         FloatingActionButton fob = findViewById(R.id.fobChat);
@@ -136,7 +136,6 @@ public class SiteDetailActivity extends AppCompatActivity {
         File file = new File(getCacheDir() + "/" + user.getUID() + ".jpeg");
         Uri iconUri = Uri.fromFile(file);
         storageReference.getFile(iconUri).addOnCompleteListener(task -> {
-//            progressBarsBar.setVisibility(View.INVISIBLE);
         });
     }
 
@@ -174,7 +173,8 @@ public class SiteDetailActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
         if (requestCode == MapsFragment.MY_PERMISSIONS_REQUEST_LOCATION){
             MapsFragment mapFragment = (MapsFragment) pagerAdapter.fragments[1];
             if (mapFragment != null) {
@@ -187,7 +187,6 @@ public class SiteDetailActivity extends AppCompatActivity {
     }
 
     private void receiveGoogleMeetLink(){
-//        linkList = new ArrayList<>();
         WorkSite workSite = WorkSite.getChosenWorksite();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(
                 "lives/" + workSite.getSiteID());
@@ -195,14 +194,12 @@ public class SiteDetailActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                linkList.clear();
                 String host = "";
                 GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
                 linkList.add(googleMeetLink);
 
                 if (googleMeetLink != null)
                 {
-//                    GoogleMeetLink lastLink = linkList.get(linkList.size()-1);
                     host = googleMeetLink.getHost();
 
                     urlGoogleMeet = googleMeetLink.getLink();
@@ -212,30 +209,26 @@ public class SiteDetailActivity extends AppCompatActivity {
                     }
                     else {
                         if (!googleMeetLink.getUserId().equals(User.getInstance().getUID())) {
-                            showNotification(host, googleMeetLink);
+                            showNotification(host);
                         }
                     }
                 }
-
             }
 
-            private void showNotification(String host, GoogleMeetLink lastLink) {
+            private void showNotification(String host) {
                 AlertDialog dialog = new AlertDialog.Builder(SiteDetailActivity.this)
                         .setTitle("Notification")
                         .setMessage(host + " hosted a meeting right now!")
-                        .setPositiveButton("JOIN", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
-                                    CustomSnackbar.create(getWindow().getDecorView().getRootView())
-                                            .setText("Meeting has just ended").show();
-                                else{
-                                    String url = urlGoogleMeet;
-                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setData(Uri.parse(url));
-                                    if (!url.contains("Meeting has ended"))
-                                        startActivity(i);
-                                }
+                        .setPositiveButton("JOIN", (dialog1, which) -> {
+                            if (urlGoogleMeet == null || urlGoogleMeet.equals("No meeting available"))
+                                CustomSnackbar.create(getWindow().getDecorView().getRootView())
+                                        .setText("Meeting has just ended").show();
+                            else{
+                                String url = urlGoogleMeet;
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.setData(Uri.parse(url));
+                                if (!url.contains("Meeting has ended"))
+                                    startActivity(i);
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -268,19 +261,12 @@ public class SiteDetailActivity extends AppCompatActivity {
                 {
                     dialog.show();
                 }
-
-
             }
-
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                if(error.getCode() != DatabaseError.PERMISSION_DENIED && getApplicationContext() != null)
+                    ErrorDialog.show(getApplicationContext());
             }
         });
-
     }
-
-
 }

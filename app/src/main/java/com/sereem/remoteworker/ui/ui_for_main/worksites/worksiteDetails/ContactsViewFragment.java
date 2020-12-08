@@ -4,15 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,18 +14,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.sereem.remoteworker.R;
-import com.sereem.remoteworker.databinding.ContactParentItemBinding;
 import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.User;
-import com.sereem.remoteworker.model.siteAttendance.Attendance;
 import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
 import com.sereem.remoteworker.model.workSite.SiteDatabase;
 import com.sereem.remoteworker.model.workSite.WorkSite;
-import com.sereem.remoteworker.ui.ColorPalette;
-import com.sereem.remoteworker.ui.ErrorDialog;
 import com.sereem.remoteworker.ui.ui_for_main.worksites.SiteDetailActivity;
 
 import java.io.File;
@@ -39,19 +30,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * ContactsViewFragment, used for displaying all users assigned to a chosen worksite.
+ */
 public class ContactsViewFragment extends Fragment {
     Context globalContext = null;
-    private FragmentActivity myContext;
     SiteDatabase siteDB;
     attendanceDatabase attendanceDB;
     Database db;
     WorkSite userWorkSite = null;
-    List<Attendance> attendances;
     List<User> userList = new ArrayList<>();
     ListView listView;
     User me;
-    private ColorPalette colorPalette;
     private ProgressBar progressBar;
     private View root;
 
@@ -68,10 +58,6 @@ public class ContactsViewFragment extends Fragment {
             View itemView = convertView;
             if (itemView == null)
                 itemView = getLayoutInflater().inflate(R.layout.contact_parent_item, parent, false);
-//            ContactParentItemBinding binding = ContactParentItemBinding.bind(itemView);
-//            binding.getRoot().setTag(binding);
-//            colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.CONTACT);
-//            binding.setColorPalette(colorPalette);
             userMap = SiteDetailActivity.getUserList();
             // get user
             User user = userList.get(position);
@@ -85,8 +71,6 @@ public class ContactsViewFragment extends Fragment {
             if(iconFile.exists()) {
                 profileIcon.setImageURI(Uri.fromFile(iconFile));
             }
-//            colorPalette.registerListener();
-
             // fill image
             return itemView;
         }
@@ -122,53 +106,11 @@ public class ContactsViewFragment extends Fragment {
     }
 
     private void getSite() {
-//        SharedPreferences prefs = getActivity().getSharedPreferences(
-//                "user", Context.MODE_PRIVATE);
-//
-//        String id = prefs.getString("last_accessed_site_id", "NONE");
         userWorkSite = WorkSite.getChosenWorksite();
     }
 
     private void getConnectedUser(){
-//        attendances = attendanceDB.getAllAttendanceList();
-//        for (Attendance a : attendances)
-//            if (a.getSiteID().equals(userWorkSite.getSiteID())){
-//                User user = db.getUserByEmail(a.getWorkerEmail());
-//                System.out.println(user.getEmail() + " " + me.getEmail());
-//                if (!user.getEmail().equals(me.getEmail()))
-//                    {
-//                        userList.add(user);
-//                    }
-//            }
-
-//        DocumentReference documentReference;
-//        if(userWorkSite.getWorkers() == null) {
-//            progressBar.setVisibility(View.INVISIBLE);
-//            return;
-//        }
-//        final int size = userWorkSite.getWorkers().size();
-//        for(int i = 0; i < userWorkSite.getWorkers().size(); i++) {
-//            final int index = i;
-//            documentReference = FirebaseFirestore.getInstance().document("/users/" +
-//                    userWorkSite.getWorkers().get(i));
-//            documentReference.get().addOnCompleteListener(task -> {
-//                if(task.isSuccessful()) {
-//                    User user = task.getResult().toObject(User.class);
-//                    if(user != null && !user.getUID().equals(me.getUID())) {
-//                        userList.add(user);
-//                    }
-////                    if(index == size - 1) {
-//                        populateListView();
-//                        setUpListClick(root);
-//                        progressBar.setVisibility(View.INVISIBLE);
-////                    }
-//                } else {
-//                    ErrorDialog.show(getContext());
-//                }
-//            });
-//        }
         userList = new ArrayList<>(SiteDetailActivity.getUserList().values());
-        Toast.makeText(getContext(), "" + userList.size(), Toast.LENGTH_LONG).show();
         populateListView();
         setUpListClick(root);
         progressBar.setVisibility(View.INVISIBLE);
@@ -185,32 +127,11 @@ public class ContactsViewFragment extends Fragment {
 
     private void setUpListClick(View root){
         ListView list = root.findViewById(R.id.contactListView);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                FragmentManager manager = getFragmentManager();
-                User user = userList.get(position);
-                PopupFragment dialog = new PopupFragment();
-                dialog.showDialog(user.getEmail(), user.getPhone(), manager);
-            }
+        list.setOnItemClickListener((adapterView, view, position, l) -> {
+            FragmentManager manager = getFragmentManager();
+            User user = userList.get(position);
+            PopupFragment dialog = new PopupFragment();
+            dialog.showDialog(user.getEmail(), user.getPhone(), manager);
         });
     }
-
-
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if(colorPalette != null) {
-//            colorPalette.unregisterListener();
-//        }
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if(colorPalette != null) {
-//            colorPalette.registerListener();
-//        }
-//    }
-
 }

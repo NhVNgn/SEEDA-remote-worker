@@ -40,6 +40,9 @@ import com.sereem.remoteworker.ui.ErrorDialog;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * LocationService class, extends Service, used for sending user's locations to the server.
+ */
 public class LocationService extends Service {
 
     private static final String TAG = "LocationService";
@@ -69,13 +72,9 @@ public class LocationService extends Service {
 
             if (location != null) {
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                //UserLocation userLocation = new UserLocation(user, geoPoint, null);
-//                            user = User.getInstance();
                 Date date = Calendar.getInstance().getTime();
                 userLocation = new UserLocation(geoPoint.getLatitude() + ", "
                         + geoPoint.getLongitude(), date.toString());
-//                            user.setGeo_point(geoPoint);
-//                            user.setTimestamp(date);
                 saveUserLocation();
             }
         };
@@ -175,9 +174,6 @@ public class LocationService extends Service {
     private void initializeDocumentReference() {
         user = User.getInstance();
         SharedPreferences prefs = this.getSharedPreferences("user", MODE_PRIVATE);
-        String UID = prefs.getString("UID", "");
-//        documentReference = FirebaseFirestore.getInstance().document(
-//                "/users/" + UID + "/");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("userLocations")
                 .child(user.getUID());
     }
@@ -207,8 +203,6 @@ public class LocationService extends Service {
             GeoPoint new_geoPoint = new GeoPoint(0.0, 0.0);
             userLocation = new UserLocation(new_geoPoint.getLatitude() + ", "
                     + new_geoPoint.getLongitude(), null);
-//            user.setTimestamp(null);
-//            user.setGeo_point(new_geoPoint);
         }
         databaseReference.setValue(userLocation);
         if (!getVisibilityPreference()){

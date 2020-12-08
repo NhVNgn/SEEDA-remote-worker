@@ -24,6 +24,9 @@ import com.sereem.remoteworker.model.Database;
 import com.sereem.remoteworker.model.siteAttendance.attendanceDatabase;
 import com.sereem.remoteworker.ui.LoginActivity;
 
+/**
+ * PopupChangePassword, used for changing user's password
+ */
 public class PopupChangePassword extends AppCompatDialogFragment {
     //private ColorPalette colorPalette;
     TextView dialogueMessage, emailText;
@@ -32,9 +35,6 @@ public class PopupChangePassword extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.popup_change_password, null);
-        //PopupOptionsLayoutBinding binding = PopupOptionsLayoutBinding.bind(v);
-        //colorPalette = new ColorPalette(getContext(), binding, ColorPalette.TYPE.POPUP);
-        //binding.setColorPalette(colorPalette);
 
         dialogueMessage = v.findViewById(R.id.changeMessage);
         emailText = v.findViewById(R.id.changeEmail);
@@ -71,13 +71,11 @@ public class PopupChangePassword extends AppCompatDialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        //colorPalette.unregisterListener();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //colorPalette.registerListener();
     }
 
 }
