@@ -259,7 +259,7 @@ public class WorksitesFragment extends Fragment {
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    linkList.clear();
+//                    linkList.clear();
                     System.out.println("OnDataChange is called");
                     String host = "";
                     GoogleMeetLink googleMeetLink = snapshot.getValue(GoogleMeetLink.class);
@@ -268,7 +268,6 @@ public class WorksitesFragment extends Fragment {
                     if (googleMeetLink != null)
                     {
                         host = googleMeetLink.getHost();
-
                         urlGoogleMeet = googleMeetLink.getLink();
                         if (urlGoogleMeet.equals("Meeting has ended")) {
                             if (getActivity() != null)
@@ -276,7 +275,7 @@ public class WorksitesFragment extends Fragment {
                                         .show();
                         }
                         else {
-                            if (!googleMeetLink.getHost().equals(user.getFirstName())) {
+                            if (!googleMeetLink.getUserId().equals(user.getUID())) {
                                 showNotification(host, googleMeetLink);
                             }
 

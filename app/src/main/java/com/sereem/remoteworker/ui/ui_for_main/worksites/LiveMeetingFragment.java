@@ -155,7 +155,7 @@ public class LiveMeetingFragment extends Fragment {
 
                     if (hostName != null && !urlGoogleMeet.equals("Meeting has ended")){
                         System.out.println("HOST NAME IS NOT NULL");
-                        if (hostName.equals(user.getFirstName())){
+                        if (googleMeetLink.getUserId().equals(user.getUID())){
                             endButton.setVisibility(View.VISIBLE);
                             endButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -226,19 +226,19 @@ public class LiveMeetingFragment extends Fragment {
         System.out.println("OnDestroy is called LiveMeetingFragment");
         super.onDestroy();
 
-//        if (userStartAMeeting) {
-//            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
-//
-//            reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
-//                if (task.isSuccessful()) {
-//                    System.out.println("Stop previous meeting successful");
-//                    linkIsSent = false;
-//                } else {
-//                    System.out.println("Fail to stop previous meeting");
-//
-//                }
-//            });
-//        }
+        if (userStartAMeeting) {
+            GoogleMeetLink googleMeetLink = new GoogleMeetLink(user.getUID(), "Meeting has ended", Calendar.getInstance().getTime().toString(), user.getFirstName(), WorkSite.getChosenWorksite().getSiteID());
+
+            reference.setValue(googleMeetLink).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    System.out.println("Stop previous meeting successful");
+                    linkIsSent = false;
+                } else {
+                    System.out.println("Fail to stop previous meeting");
+
+                }
+            });
+        }
 
     }
 

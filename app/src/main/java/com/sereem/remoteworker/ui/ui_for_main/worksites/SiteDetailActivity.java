@@ -211,7 +211,7 @@ public class SiteDetailActivity extends AppCompatActivity {
                                 .setText("No meeting available").show();
                     }
                     else {
-                        if (!googleMeetLink.getHost().equals(User.getInstance().getFirstName())) {
+                        if (!googleMeetLink.getUserId().equals(User.getInstance().getUID())) {
                             showNotification(host, googleMeetLink);
                         }
                     }
