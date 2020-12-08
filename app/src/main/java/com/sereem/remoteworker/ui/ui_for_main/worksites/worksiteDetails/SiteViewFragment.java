@@ -1,7 +1,9 @@
 package com.sereem.remoteworker.ui.ui_for_main.worksites.worksiteDetails;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,21 +54,16 @@ public class SiteViewFragment extends Fragment {
         masterPointText = root.findViewById(R.id.masterPointTextDisplay);
         operationHoursText = root.findViewById(R.id.hoursTextDisplay);
 
-        WebView webView = root.findViewById(R.id.webView);
-        webView.loadUrl("https://www.seerem.seeda.ca/home");
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
 
-        webView.setWebViewClient(new WebViewClient());
-
-
-        webView.setVisibility(View.INVISIBLE);
 
         Button button = root.findViewById(R.id.siteEmergencyInfoText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                webView.setVisibility(View.VISIBLE);
+                String url = "https://www.seerem.seeda.ca/home";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
 
