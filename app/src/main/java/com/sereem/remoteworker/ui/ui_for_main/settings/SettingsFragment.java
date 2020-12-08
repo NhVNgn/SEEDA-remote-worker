@@ -47,8 +47,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         autoTheme.setOnPreferenceClickListener(this);
         SwitchPreference darkTheme = getPreferenceManager().findPreference("dark_theme");
         darkTheme.setOnPreferenceClickListener(this);
-        Preference deleteAccount = getPreferenceManager().findPreference("delete_account");
-        deleteAccount.setOnPreferenceClickListener(this);
 
         SwitchPreference gpsVisibility = getPreferenceManager().findPreference("gps_visibility");
         gpsVisibility.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -75,11 +73,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals("delete_account")) {
-            FragmentManager manager = getFragmentManager();
-            PopupDeleteFragmnet dialog = new PopupDeleteFragmnet();
-            dialog.showDialog(manager);
-        }
 
         Snackbar.make(getView(), "Restart the app (will be fixed)", Snackbar.LENGTH_SHORT).show();
         return true;
