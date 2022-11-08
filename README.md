@@ -1,8 +1,8 @@
-    Seerem Remote Worker App
+    # Seerem Remote Worker App
 
-    IAT 365 Final Project
-
-    In order to access all worksites you should sing in to existing test account.
+    Description: networking mobile application for construction worker and manager. Built with Android studio and Firebase
+    
+    In order to access all worksites you should sign in to existing test account.
 
     Email and pasword for test account
 
